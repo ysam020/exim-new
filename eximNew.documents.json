@@ -1,0 +1,791 @@
+[{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9a4"
+  },
+  "document_code": "380000",
+  "document_name": "Commercial Invoice"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9a5"
+  },
+  "document_code": "271000",
+  "document_name": "Packing List"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9a6"
+  },
+  "document_code": "704000",
+  "document_name": "Master Bill of Lading"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9a7"
+  },
+  "document_code": "861000",
+  "document_name": "Certificate of Origin"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9a8"
+  },
+  "document_code": "315000",
+  "document_name": "Contract"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9a9"
+  },
+  "document_code": "91WH13",
+  "document_name": "Insurance"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9aa"
+  },
+  "document_code": "856001",
+  "document_name": "Pre-Shipment Inspection Certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ab"
+  },
+  "document_code": "001000",
+  "document_name": "Certificate of Analysis"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ac"
+  },
+  "document_code": "101000",
+  "document_name": "Registration Document (SIMS/NFMIMS/PIMS)"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ad"
+  },
+  "document_code": "005000",
+  "document_name": "Price/Sales Catalogue"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ae"
+  },
+  "document_code": "105000",
+  "document_name": "Purchase Order"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9af"
+  },
+  "document_code": "861001",
+  "document_name": "Certificate of Origin - Singapore [073/2005, 074/2005, 075/2005, 010/2008]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9b0"
+  },
+  "document_code": "861002",
+  "document_name": "Certificate of Origin - Chile [101/2007, 019/2017]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9b1"
+  },
+  "document_code": "861003",
+  "document_name": "Certificate of Origin - Sri Lanka [026/2000, 060/2000, 002/2007]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9b2"
+  },
+  "document_code": "861004",
+  "document_name": "Certificate of Origin - Malaysia [053/2011]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9b3"
+  },
+  "document_code": "861005",
+  "document_name": "Certificate of Origin - Korea [151/2009, 152/2009]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9b4"
+  },
+  "document_code": "861006",
+  "document_name": "Certificate of Origin - ASEAN [046/2011, 063/2011]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9b5"
+  },
+  "document_code": "861007",
+  "document_name": "Certificate of Origin - SAFTA [099/2011, 068/2012]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9b6"
+  },
+  "document_code": "861008",
+  "document_name": "Certificate of Origin - MERCOSUR [057/2009]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9b7"
+  },
+  "document_code": "861009",
+  "document_name": "Certificate of Origin - Afghanistan [076/2003]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9b8"
+  },
+  "document_code": "861010",
+  "document_name": "Certificate of Origin - ASIA-Pacific Trade Agreement [050/2018]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9b9"
+  },
+  "document_code": "861011",
+  "document_name": "Certificate of Origin - SAARC Preferential Trade Agreement [105/99]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ba"
+  },
+  "document_code": "861012",
+  "document_name": "Certificate of Origin - Thailand [085/2004]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9bb"
+  },
+  "document_code": "861013",
+  "document_name": "Certificate of Origin - Least Developed Countries (LDC) [096/2008]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9bc"
+  },
+  "document_code": "861014",
+  "document_name": "Certificate of Origin - Agreement on Global System of Trade Preferences [236/89]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9bd"
+  },
+  "document_code": "861015",
+  "document_name": "Certificate of Origin - Japan [069/2011]"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9be"
+  },
+  "document_code": "911FT0",
+  "document_name": "Scrips/Licences issued by DGFT"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9bf"
+  },
+  "document_code": "165000",
+  "document_name": "Bond"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9c0"
+  },
+  "document_code": "250000",
+  "document_name": "Crew list declaration"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9c1"
+  },
+  "document_code": "298000",
+  "document_name": "Dangerous goods list"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9c2"
+  },
+  "document_code": "6490HZ",
+  "document_name": "Consent to Operate/ Registration"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9c3"
+  },
+  "document_code": "6490DC",
+  "document_name": "Certified copy of the licensed premises"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9c4"
+  },
+  "document_code": "651000",
+  "document_name": "Manufacturing license"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9c5"
+  },
+  "document_code": "651001",
+  "document_name": "Indusrtial License"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9c6"
+  },
+  "document_code": "700000",
+  "document_name": "Waybill"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9c7"
+  },
+  "document_code": "703000",
+  "document_name": "House waybill"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9c9"
+  },
+  "document_code": "705000",
+  "document_name": "Bill of lading"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ca"
+  },
+  "document_code": "708000",
+  "document_name": "Empty container bill"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9cb"
+  },
+  "document_code": "709000",
+  "document_name": "Tanker bill of lading"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9cc"
+  },
+  "document_code": "710000",
+  "document_name": "Sea waybill"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9cd"
+  },
+  "document_code": "711000",
+  "document_name": "Inland waterway bill of lading"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ce"
+  },
+  "document_code": "713000",
+  "document_name": "Mates receipt"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9cf"
+  },
+  "document_code": "714000",
+  "document_name": "House bill of lading"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9d0"
+  },
+  "document_code": "720000",
+  "document_name": "Rail consignment note (generic term)"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9d1"
+  },
+  "document_code": "730000",
+  "document_name": "Road consignment note"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9d2"
+  },
+  "document_code": "740000",
+  "document_name": "Air waybill"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9d3"
+  },
+  "document_code": "741000",
+  "document_name": "Master air waybill"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9d4"
+  },
+  "document_code": "744000",
+  "document_name": "Crews effects declaration"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9d5"
+  },
+  "document_code": "745000",
+  "document_name": "Passenger list"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9d6"
+  },
+  "document_code": "788000",
+  "document_name": "Container manifest (unit packing list)"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9d7"
+  },
+  "document_code": "7880FS",
+  "document_name": "Container Stuffing Report"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9d8"
+  },
+  "document_code": "797000",
+  "document_name": "Maritime declaration of health"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9d9"
+  },
+  "document_code": "798000",
+  "document_name": "Certificate of registry"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9da"
+  },
+  "document_code": "799000",
+  "document_name": "Ships stores declaration"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9db"
+  },
+  "document_code": "XXX002",
+  "document_name": "Stuffing List"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9dc"
+  },
+  "document_code": "XXX000",
+  "document_name": "Protocols Approval Letter"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9dd"
+  },
+  "document_code": "105000",
+  "document_name": "Purchase order"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9de"
+  },
+  "document_code": "271000",
+  "document_name": "Packing list"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9e0"
+  },
+  "document_code": "325000",
+  "document_name": "Proforma invoice"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9e1"
+  },
+  "document_code": "331000",
+  "document_name": "Commercial invoice which includes a packing list"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9e2"
+  },
+  "document_code": "430000",
+  "document_name": "Bankers guarantee"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9e3"
+  },
+  "document_code": "465000",
+  "document_name": "Documentary credit"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9e4"
+  },
+  "document_code": "870000",
+  "document_name": "Consular invoice"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9e5"
+  },
+  "document_code": "934000",
+  "document_name": "Value declaration (GATT Valuation Declaration)"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9e6"
+  },
+  "document_code": "935000",
+  "document_name": "Customs invoice"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9e7"
+  },
+  "document_code": "955000",
+  "document_name": "ATA carnet"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9e8"
+  },
+  "document_code": "520000",
+  "document_name": "Insurance certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ea"
+  },
+  "document_code": "0010DC",
+  "document_name": "Certificate of analysis - Drug"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9eb"
+  },
+  "document_code": "0010FS",
+  "document_name": "Certificate of Analysis - Food & Supplement"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ec"
+  },
+  "document_code": "1002",
+  "document_name": "Lab analysis Report"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ed"
+  },
+  "document_code": "1003",
+  "document_name": "Blood Analysis Report"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ee"
+  },
+  "document_code": "2000",
+  "document_name": "Certificate of conformity"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ef"
+  },
+  "document_code": "3000",
+  "document_name": "Certificate of quality"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9f0"
+  },
+  "document_code": "3001",
+  "document_name": "Product Approval"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9f1"
+  },
+  "document_code": "0030DC",
+  "document_name": "Batch Release Certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9f2"
+  },
+  "document_code": "4000",
+  "document_name": "Test report"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9f3"
+  },
+  "document_code": "4001",
+  "document_name": "Test Certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9f4"
+  },
+  "document_code": "5000",
+  "document_name": "Price/sales catalogue"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9f5"
+  },
+  "document_code": "6000",
+  "document_name": "Product specification report"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9f6"
+  },
+  "document_code": "6001",
+  "document_name": "Technical Writeup/ Literature"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9f7"
+  },
+  "document_code": "11000",
+  "document_name": "Federal label approval"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9f8"
+  },
+  "document_code": "0110FS",
+  "document_name": "Specimen Copy of Label"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9f9"
+  },
+  "document_code": "0380AQ",
+  "document_name": "Vaccination certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9fa"
+  },
+  "document_code": "0530HZ",
+  "document_name": "Safety and hazard data sheet"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9fb"
+  },
+  "document_code": "101001",
+  "document_name": "Importer Exporter Certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9fc"
+  },
+  "document_code": "1010DC",
+  "document_name": "Registration Certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9fd"
+  },
+  "document_code": "101002",
+  "document_name": "RCMC"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9fe"
+  },
+  "document_code": "293000",
+  "document_name": "Inspection report"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2e9ff"
+  },
+  "document_code": "626000",
+  "document_name": "Convention on International Trade in Endangered Species of Wild Fauna and Flora (CITES) Certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea00"
+  },
+  "document_code": "627000",
+  "document_name": "Free Sale Certificate in the Country of Origin"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea01"
+  },
+  "document_code": "629000",
+  "document_name": "Veterinary quarantine certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea02"
+  },
+  "document_code": "636000",
+  "document_name": "Health certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea03"
+  },
+  "document_code": "6360AQ",
+  "document_name": "Health certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea04"
+  },
+  "document_code": "637000",
+  "document_name": "Food grade certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea05"
+  },
+  "document_code": "648000",
+  "document_name": "Certificate of compliance with standards of the World Organization for Animal Health (OIE)"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea06"
+  },
+  "document_code": "649000",
+  "document_name": "Production facility license"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea07"
+  },
+  "document_code": "6570PQ",
+  "document_name": "Phytosanitary Re- export Certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea08"
+  },
+  "document_code": "811000",
+  "document_name": "Export licence"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea09"
+  },
+  "document_code": "8510FS",
+  "document_name": "Phytosanitary certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea0a"
+  },
+  "document_code": "852000",
+  "document_name": "Sanitary certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea0b"
+  },
+  "document_code": "8520AQ",
+  "document_name": "Saniary Import Permit"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea0c"
+  },
+  "document_code": "853000",
+  "document_name": "Veterinary certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea0d"
+  },
+  "document_code": "856000",
+  "document_name": "Inspection certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea10"
+  },
+  "document_code": "864000",
+  "document_name": "Preference certificate of origin"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea11"
+  },
+  "document_code": "865000",
+  "document_name": "Certificate of origin form GSP"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea12"
+  },
+  "document_code": "890000",
+  "document_name": "Dangerous goods declaration"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea13"
+  },
+  "document_code": "911000",
+  "document_name": "Import licence"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea14"
+  },
+  "document_code": "911001",
+  "document_name": "FSSAI Import License"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea15"
+  },
+  "document_code": "XXX0FS",
+  "document_name": "Rejection Certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea16"
+  },
+  "document_code": "XXX001",
+  "document_name": "Narcotics Certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea17"
+  },
+  "document_code": "XXX003",
+  "document_name": "Radio Activity report"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea18"
+  },
+  "document_code": "6570FS",
+  "document_name": "Food grade certificate"
+},
+{
+  "_id": {
+    "$oid": "66a2527cfbb02bee28b2ea19"
+  },
+  "document_code": "2670PQ",
+  "document_name": "Fumigation certificate"
+}]

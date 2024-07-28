@@ -1,0 +1,16 @@
+{
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "watch": [
+    "index.mjs",
+    "app.mjs",
+    "readMail.mjs",
+    "routes",
+    "model",
+    "controllers",
+    ".env"
+  ],
+  "ext": "js,json,mjs",
+  "exec": "node app.mjs"
+}
