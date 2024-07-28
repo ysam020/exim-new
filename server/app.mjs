@@ -203,10 +203,6 @@ if (cluster.isPrimary) {
       maxPoolSize: 1000,
     })
     .then(async () => {
-      app.get("/", (req, res) => {
-        res.send("Hello World!");
-      });
-
       app.use(getAllUsers);
       app.use(getImporterList);
       app.use(getJobById);

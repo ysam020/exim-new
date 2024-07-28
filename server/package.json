@@ -13,7 +13,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.616.0",
     "aws-sdk": "^2.1659.0",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.0",
