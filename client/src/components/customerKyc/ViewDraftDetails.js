@@ -1149,6 +1149,26 @@ function ViewDraftDetails() {
         ) : null}
         <br />
 
+        <label style={{ marginRight: "10px" }}>GST Returns:</label>
+        <input
+          type="file"
+          multiple
+          onChange={(e) =>
+            handleFileUpload(
+              e,
+              "gst_returns",
+              "gst_returns",
+              formik,
+              setFileSnackbar
+            )
+          }
+        />
+        <br />
+        {formik.touched.gst_returns && formik.errors.gst_returns ? (
+          <div style={{ color: "red" }}>{formik.errors.gst_returns}</div>
+        ) : null}
+        <br />
+
         <button
           type="button"
           className="btn"

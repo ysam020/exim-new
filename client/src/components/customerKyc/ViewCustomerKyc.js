@@ -62,7 +62,12 @@ function ViewCustomerKyc() {
                   <a href={data.individual_ration_card_img}>View</a>
                 )}
               </Col>
-              <Col></Col>
+              <Col>
+                <strong>Aadhar Card:&nbsp;</strong>
+                {data.individual_aadhar_card && (
+                  <a href={data.individual_aadhar_card}>View</a>
+                )}
+              </Col>
             </Row>
           </>
         );
@@ -499,6 +504,18 @@ function ViewCustomerKyc() {
             <Col>
               <strong>SPCB Registration Certificate: </strong>
               {data.spcb_reg && <a href={data.spcb_reg}>View</a>}
+            </Col>
+            <Col>
+              <strong>KYC Verification Images: </strong>
+              {data.kyc_verification_images &&
+                data.kyc_verification_images.map((data, id) => (
+                  <a href={data}>View</a>
+                ))}
+            </Col>
+            <Col>
+              <strong>GST Returns: </strong>
+              {data.gst_returns &&
+                data.gst_returns.map((data, id) => <a href={data}>View</a>)}
             </Col>
           </Row>
           <br />

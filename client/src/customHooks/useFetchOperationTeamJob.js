@@ -28,9 +28,6 @@ function useFetchOperationTeamJob(params) {
       weighment_slip_images: "",
       pcv_date: "",
       out_of_charge: "",
-      processed_be_attachment: [],
-      ooc_copies: [],
-      gate_pass_copies: [],
       custodian_gate_pass: [],
     },
 
@@ -42,9 +39,6 @@ function useFetchOperationTeamJob(params) {
           examination_date: values.examination_date,
           pcv_date: values.pcv_date,
           out_of_charge: values.out_of_charge,
-          processed_be_attachment: values.processed_be_attachment,
-          ooc_copies: values.ooc_copies,
-          gate_pass_copies: values.gate_pass_copies,
           custodian_gate_pass: values.custodian_gate_pass,
         }
       );
@@ -107,10 +101,6 @@ function useFetchOperationTeamJob(params) {
         pcv_date: data.pcv_date === undefined ? "" : data.pcv_date,
         out_of_charge:
           data.out_of_charge === undefined ? "" : data.out_of_charge,
-        processed_be_attachment:
-          data === undefined ? [] : data.processed_be_attachment,
-        ooc_copies: data === undefined ? [] : data.ooc_copies,
-        gate_pass_copies: data === undefined ? [] : data.gate_pass_copies,
         custodian_gate_pass: data === undefined ? [] : data.custodian_gate_pass,
       });
     }

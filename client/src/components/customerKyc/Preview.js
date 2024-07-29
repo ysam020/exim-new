@@ -57,7 +57,12 @@ export default function Preview(props) {
                   <a href={props.data.individual_ration_card_img}>View</a>
                 )}
               </Col>
-              <Col></Col>
+              <Col>
+                <strong>Aadhar Card:&nbsp;</strong>
+                {props.data.individual_aadhar_card && (
+                  <a href={props.data.individual_aadhar_card}>View</a>
+                )}
+              </Col>
             </Row>
           </>
         );
@@ -511,6 +516,22 @@ export default function Preview(props) {
                   {props.data.spcb_reg && (
                     <a href={props.data.spcb_reg}>View</a>
                   )}
+                </Col>
+                <Col>
+                  <strong>KYC Verification Images: </strong>
+                  {props.data.kyc_verification_images?.map((doc, id) => (
+                    <a key={id} href={doc}>
+                      View
+                    </a>
+                  ))}
+                </Col>
+                <Col>
+                  <strong>GST Returns: </strong>
+                  {props.data.gst_returns?.map((doc, id) => (
+                    <a key={id} href={doc}>
+                      View
+                    </a>
+                  ))}
                 </Col>
               </Row>
               <br />

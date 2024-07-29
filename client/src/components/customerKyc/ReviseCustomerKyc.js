@@ -17,6 +17,7 @@ import { handleFileUpload } from "../../utils/awsFileUpload";
 import Checkbox from "@mui/material/Checkbox";
 import Preview from "./Preview";
 import { getCityAndStateByPinCode } from "../../utils/getCityAndStateByPinCode";
+import { saveAs } from "file-saver";
 
 function ReviseCustomerKyc() {
   const { _id } = useParams();
@@ -239,6 +240,15 @@ function ReviseCustomerKyc() {
         principle_address_email: "",
       });
     }
+  };
+
+  const downloadBase64File = (base64String, fileName) => {
+    const linkSource = base64String;
+    const downloadLink = document.createElement("a");
+    const fileType = base64String.split(";")[0].split(":")[1];
+    downloadLink.href = linkSource;
+    downloadLink.download = fileName;
+    downloadLink.click();
   };
 
   useEffect(() => {
@@ -803,6 +813,7 @@ function ReviseCustomerKyc() {
               </Col>
             </Row>
             <br />
+            <br />
             <label htmlFor="gst_reg">GST Registration</label>
             <br />
             <input
@@ -811,6 +822,17 @@ function ReviseCustomerKyc() {
               id=""
               onChange={(e) => handleGstRegUpload(e, index)}
             />
+            <a
+              href="#"
+              onClick={() =>
+                downloadBase64File(
+                  address.gst_reg,
+                  `GST_Registration_${index}.pdf`
+                )
+              }
+            >
+              View
+            </a>
             <br />
           </div>
         ))}
@@ -852,7 +874,9 @@ function ReviseCustomerKyc() {
             {formik.errors.authorised_signatories}
           </div>
         ) : null}
-
+        <br />
+        <a href={formik.values.authorised_signatories}>View</a>
+        <br />
         <br />
         <p>Upload Authorisation Letter</p>
         <input
@@ -876,7 +900,7 @@ function ReviseCustomerKyc() {
           </div>
         ) : null}
         <br />
-
+        <a href={formik.values.authorisation_letter}>View</a>
         <TextField
           fullWidth
           size="small"
@@ -911,6 +935,7 @@ function ReviseCustomerKyc() {
           <div style={{ color: "red" }}>{formik.errors.iec_copy}</div>
         ) : null}
         <br />
+        <a href={formik.values.iec_copy}>View</a>
 
         <TextField
           fullWidth
@@ -945,6 +970,8 @@ function ReviseCustomerKyc() {
         {formik.touched.pan_copy && formik.errors.pan_copy ? (
           <div style={{ color: "red" }}>{formik.errors.pan_copy}</div>
         ) : null}
+        <br />
+        <a href={formik.values.pan_copy}>View</a>
         <br />
 
         {formik.values.banks?.map((bank, index) => (
@@ -1070,6 +1097,17 @@ function ReviseCustomerKyc() {
               onChange={(e) => handleAdCodeFileUpload(e, index)}
             />
             <br />
+            <a
+              href="#"
+              onClick={() =>
+                downloadBase64File(
+                  bank.ad_code_file,
+                  `AD_Code_File_${index}.pdf`
+                )
+              }
+            >
+              View
+            </a>
           </div>
         ))}
 
@@ -1104,6 +1142,10 @@ function ReviseCustomerKyc() {
         {formik.touched.other_documents && formik.errors.other_documents ? (
           <div style={{ color: "red" }}>{formik.errors.other_documents}</div>
         ) : null}
+
+        {formik.values.other_documents?.map((doc, index) => (
+          <a href={doc}>View</a>
+        ))}
         <br />
 
         <label style={{ marginRight: "10px" }}>
@@ -1125,6 +1167,8 @@ function ReviseCustomerKyc() {
         {formik.touched.spcb_reg && formik.errors.spcb_reg ? (
           <div style={{ color: "red" }}>{formik.errors.spcb_reg}</div>
         ) : null}
+
+        <a href={formik.values.spcb_reg}>View</a>
         <br />
 
         <label style={{ marginRight: "10px" }}>KYC verification images:</label>
@@ -1148,6 +1192,36 @@ function ReviseCustomerKyc() {
             {formik.errors.kyc_verification_images}
           </div>
         ) : null}
+
+        {formik.values.kyc_verification_images?.map((doc, index) => (
+          <a href={doc}>View</a>
+        ))}
+        <br />
+
+        <label style={{ marginRight: "10px" }}>GST Returns:</label>
+        <input
+          type="file"
+          multiple
+          onChange={(e) =>
+            handleFileUpload(
+              e,
+              "gst_returns",
+              "gst_returns",
+              formik,
+              setFileSnackbar
+            )
+          }
+        />
+        <br />
+        {formik.touched.gst_returns && formik.errors.gst_returns ? (
+          <div style={{ color: "red" }}>{formik.errors.gst_returns}</div>
+        ) : null}
+
+        {formik.values.gst_returns?.map((doc, index) => (
+          <a key={index} href={doc}>
+            View
+          </a>
+        ))}
         <br />
 
         <button

@@ -573,42 +573,6 @@ function JobDetails() {
               </Col>
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
-                  <strong>DO Validity:&nbsp;</strong>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    type="date"
-                    margin="normal"
-                    variant="outlined"
-                    id="do_validity"
-                    name="do_validity"
-                    value={formik.values.do_validity}
-                    onChange={formik.handleChange}
-                  />
-                </div>
-              </Col>
-            </Row>
-
-            {/*************************** Row 13 ****************************/}
-            <Row>
-              <Col xs={12} lg={4}>
-                <div className="job-detail-input-container">
-                  <strong>Out of Charge Date:&nbsp;</strong>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    margin="normal"
-                    variant="outlined"
-                    type="date"
-                    id="out_of_charge"
-                    name="out_of_charge"
-                    value={formik.values.out_of_charge}
-                    onChange={formik.handleChange}
-                  />
-                </div>
-              </Col>
-              <Col xs={12} lg={4}>
-                <div className="job-detail-input-container">
                   <strong>Delivery Date:&nbsp;</strong>
                   <TextField
                     fullWidth
@@ -623,6 +587,10 @@ function JobDetails() {
                   />
                 </div>
               </Col>
+            </Row>
+
+            {/*************************** Row 13 ****************************/}
+            <Row>
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
                   <Checkbox
@@ -658,6 +626,8 @@ function JobDetails() {
                   )}
                 </div>
               </Col>
+              <Col xs={12} lg={4}></Col>
+              <Col xs={12} lg={4}></Col>
             </Row>
 
             <br />

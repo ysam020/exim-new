@@ -184,101 +184,6 @@ function ViewOperationsJob() {
             <br />
             <Row>
               <Col xs={6}>
-                <label htmlFor="processed_be_attachment" className="btn">
-                  Upload Processed BE Attachment
-                </label>
-                <input
-                  type="file"
-                  multiple
-                  id="processed_be_attachment"
-                  onChange={(e) =>
-                    handleFileUpload(
-                      e,
-                      "processed_be_attachment",
-                      "processed_be_attachment",
-                      formik,
-                      setFileSnackbar
-                    )
-                  }
-                  className="input-hidden"
-                  ref={processedBeAttachmentRef}
-                />
-
-                {formik.values.processed_be_attachment?.map((file, index) => {
-                  return (
-                    <div key={index}>
-                      <br />
-                      <a href={file}>View</a>
-                    </div>
-                  );
-                })}
-              </Col>
-
-              <Col xs={6}>
-                <label htmlFor="ooc_copies" className="btn">
-                  Upload OOC Copy
-                </label>
-                <input
-                  type="file"
-                  multiple
-                  name="ooc_copies"
-                  id="ooc_copies"
-                  onChange={(e) =>
-                    handleFileUpload(
-                      e,
-                      "ooc_copies",
-                      "ooc_copies",
-                      formik,
-                      setFileSnackbar
-                    )
-                  }
-                  ref={oocCopyRef}
-                  className="input-hidden"
-                />
-                <br />
-                {formik.values.ooc_copies?.map((file, index) => {
-                  return (
-                    <div key={index}>
-                      <br />
-                      <a href={file}>View</a>
-                    </div>
-                  );
-                })}
-              </Col>
-            </Row>
-            <Row>
-              <Col xs={6}>
-                <label htmlFor="gate_pass_copies" className="btn">
-                  Upload e-Gate Pass Copy
-                </label>
-                <input
-                  type="file"
-                  multiple
-                  id="gate_pass_copies"
-                  onChange={(e) =>
-                    handleFileUpload(
-                      e,
-                      "gate_pass_copies",
-                      "gate_pass_copies",
-                      formik,
-                      setFileSnackbar
-                    )
-                  }
-                  className="input-hidden"
-                  ref={gatePassCopyRef}
-                />
-
-                {formik.values.gate_pass_copies?.map((file, index) => {
-                  return (
-                    <div key={index}>
-                      <br />
-                      <a href={file}>View</a>
-                    </div>
-                  );
-                })}
-              </Col>
-
-              <Col xs={6}>
                 {data.custom_house === "KHODIYAR" && (
                   <>
                     <label htmlFor="custodian_gate_pass" className="btn">
@@ -312,6 +217,7 @@ function ViewOperationsJob() {
                   </>
                 )}
               </Col>
+              <Col xs={6}></Col>
             </Row>
           </div>
           {/*************************** Row 14 ****************************/}

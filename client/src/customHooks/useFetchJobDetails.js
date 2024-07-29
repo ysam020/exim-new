@@ -31,7 +31,6 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       detailed_status: "",
       free_time: "",
       arrival_date: "",
-      do_validity: "",
       checklist: [],
       remarks: "",
       description: "",
@@ -45,7 +44,6 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       assessment_date: "",
       examination_date: "",
       duty_paid_date: "",
-      out_of_charge: "",
       container_images: "",
       doPlanning: false,
       do_planning_date: "",
@@ -70,7 +68,6 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           detailed_status: values.detailed_status,
           container_nos: values.container_nos,
           arrival_date: values.arrival_date,
-          do_validity: values.do_validity,
           checklist: values.checklist,
           remarks: values.remarks,
           description: values.description,
@@ -85,7 +82,6 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           assessment_date: values.assessment_date,
           examination_date: values.examination_date,
           duty_paid_date: values.duty_paid_date,
-          out_of_charge: values.out_of_charge,
           doPlanning: values.doPlanning,
           do_planning_date: values.do_planning_date,
           examinationPlanning: values.examinationPlanning,
@@ -181,10 +177,6 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           data.detailed_status === undefined
             ? "Estimated Time of Arrival"
             : data.detailed_status,
-        do_validity:
-          data.do_validity === undefined
-            ? ""
-            : convertDateFormatForUI(data.do_validity),
         doPlanning: data.doPlanning === undefined ? false : data.doPlanning,
         do_planning_date:
           data.do_planning_date === undefined ? "" : data.do_planning_date,
@@ -216,8 +208,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           data.examination_date === undefined ? "" : data.examination_date,
         duty_paid_date:
           data.duty_paid_date === undefined ? "" : data.duty_paid_date,
-        out_of_charge:
-          data.out_of_charge === undefined ? "" : data.out_of_charge,
+
         do_copies: data.do_copies === undefined ? [] : data.do_copies,
         processed_be_attachment:
           data.processed_be_attachment === undefined

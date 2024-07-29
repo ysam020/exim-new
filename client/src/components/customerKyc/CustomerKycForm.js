@@ -76,6 +76,7 @@ function CutomerKycForm() {
       other_documents: [],
       spcb_reg: "",
       kyc_verification_images: [],
+      gst_returns: [],
 
       // individual
       individual_passport_img: "",
@@ -83,6 +84,7 @@ function CutomerKycForm() {
       individual_driving_license_img: "",
       individual_bank_statement_img: "",
       individual_ration_card_img: "",
+      individual_aadhar_card: "",
 
       // partnership
       partnership_registration_certificate_img: "",
@@ -115,7 +117,6 @@ function CutomerKycForm() {
     },
 
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
       try {
         validateBanks(values.banks);
 
@@ -1191,6 +1192,26 @@ function CutomerKycForm() {
         <div style={{ color: "red" }}>
           {formik.errors.kyc_verification_images}
         </div>
+      ) : null}
+      <br />
+
+      <label style={{ marginRight: "10px" }}>GST Returns:</label>
+      <input
+        type="file"
+        multiple
+        onChange={(e) =>
+          handleFileUpload(
+            e,
+            "gst_returns",
+            "gst_returns",
+            formik,
+            setFileSnackbar
+          )
+        }
+      />
+      <br />
+      {formik.touched.gst_returns && formik.errors.gst_returns ? (
+        <div style={{ color: "red" }}>{formik.errors.gst_returns}</div>
       ) : null}
       <br />
 
