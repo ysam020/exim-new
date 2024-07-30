@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -9,7 +8,6 @@ import { Link } from "react-router-dom";
 
 function DoPlanning() {
   const [rows, setRows] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function getData() {

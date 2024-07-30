@@ -9,9 +9,9 @@ function Locations() {
   useEffect(() => {
     async function getData() {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_STRING}/get-locations`
+        `${process.env.REACT_APP_API_STRING}/get-location-master`
       );
-      setRows(res.data.map((location) => ({ location: location })));
+      setRows(res.data);
     }
 
     getData();
@@ -21,6 +21,12 @@ function Locations() {
     {
       accessorKey: "location",
       header: "Location",
+      enableSorting: false,
+      size: 200,
+    },
+    {
+      accessorKey: "district",
+      header: "District",
       enableSorting: false,
       size: 200,
     },

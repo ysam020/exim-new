@@ -12,6 +12,7 @@ import getAllUsers from "./routes/getAllUsers.mjs";
 import getImporterList from "./routes/getImporterList.mjs";
 import getJobById from "./routes/getJobById.mjs";
 import getUser from "./routes/getUser.mjs";
+import getUserData from "./routes/getUserData.mjs";
 import getYears from "./routes/getYears.mjs";
 import login from "./routes/login.mjs";
 
@@ -127,6 +128,7 @@ import getVehicles from "./routes/lr/getVehicles.mjs";
 import deleteTr from "./routes/lr/deleteTr.mjs";
 import getTrs from "./routes/lr/getTrs.mjs";
 import getOrganisationData from "./routes/lr/getOrganisationData.mjs";
+import viewAllLr from "./routes/lr/viewAllLr.mjs";
 
 // SRCC Directories
 import addContainerType from "./routes/srcc-directories/addContainerType.mjs";
@@ -144,6 +146,7 @@ import addVehicle from "./routes/srcc-directories/addVehicle.mjs";
 import addVendor from "./routes/srcc-directories/addVendor.mjs";
 import getTyreBrand from "./routes/srcc-directories/getTyreBrand.mjs";
 import getDriverDetails from "./routes/srcc-directories/getDriverDetails.mjs";
+import getLocationMaster from "./routes/srcc-directories/getLocationMaster.mjs";
 
 // Tyre Maintenance
 import getPlyRatings from "./routes/tyre-maintenance/getPlyRatings.mjs";
@@ -207,6 +210,7 @@ if (cluster.isPrimary) {
       app.use(getImporterList);
       app.use(getJobById);
       app.use(getUser);
+      app.use(getUserData);
       app.use(getYears);
       app.use(login);
 
@@ -322,6 +326,7 @@ if (cluster.isPrimary) {
       app.use(deleteTr);
       app.use(getTrs);
       app.use(getOrganisationData);
+      app.use(viewAllLr);
 
       // SRCC Directories
       app.use(addContainerType);
@@ -340,6 +345,7 @@ if (cluster.isPrimary) {
       app.use(getTyreBrand);
       app.use(getVendors);
       app.use(getDriverDetails);
+      app.use(getLocationMaster);
 
       // Tyre Maintenance
       app.use(getPlyRatings);

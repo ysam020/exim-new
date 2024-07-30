@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post("/api/customer-kyc-approval/:_id", async (req, res) => {
   const { approval, remarks, approved_by } = req.body;
+
   const { _id } = req.params;
   try {
     // Find the document by ID
@@ -15,7 +16,11 @@ router.post("/api/customer-kyc-approval/:_id", async (req, res) => {
 
     // Update the approval field
     data.approval = approval;
-    data.approved_by = approved_by;
+
+    // Conditionally update the approved_by field
+    if (approval !== "Sent for revision") {
+      data.approved_by = approved_by;
+    }
 
     // Conditionally update the remarks field
     if (approval === "Approved") {

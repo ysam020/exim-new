@@ -10,7 +10,7 @@ function ViewIndividualKyc() {
   useEffect(() => {
     async function getUser() {
       const res = await axios(
-        `${process.env.REACT_APP_API_STRING}/get-user/${username}`
+        `${process.env.REACT_APP_API_STRING}/get-user-data/${username}`
       );
       setData(res.data);
     }

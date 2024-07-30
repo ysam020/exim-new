@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import useTableConfig from "../../customHooks/useTableConfig";
 import { Link } from "react-router-dom";
 
 function ViewOutwardRegisters() {
   const [rows, setRows] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function getData() {

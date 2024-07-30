@@ -7,7 +7,6 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import { UserContext } from "../../contexts/UserContext";
-import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 function ImportOperations() {
@@ -17,7 +16,6 @@ function ImportOperations() {
   const { user } = React.useContext(UserContext);
   const currentDate = new Date().toISOString().split("T")[0];
   const [date, setDate] = React.useState(currentDate);
-  const navigate = useNavigate();
 
   React.useEffect(() => {
     async function getYears() {
@@ -161,10 +159,6 @@ function ImportOperations() {
       },
     },
   });
-
-  const handleNavigateToJob = (jobNo, year) => {
-    navigate(`/import-operations/view-job/${jobNo}/${year}`);
-  };
 
   const getTableRowsClassname = (params) => {
     const pcv_date = params.original.pcv_date;

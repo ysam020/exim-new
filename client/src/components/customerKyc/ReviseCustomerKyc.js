@@ -17,7 +17,6 @@ import { handleFileUpload } from "../../utils/awsFileUpload";
 import Checkbox from "@mui/material/Checkbox";
 import Preview from "./Preview";
 import { getCityAndStateByPinCode } from "../../utils/getCityAndStateByPinCode";
-import { saveAs } from "file-saver";
 
 function ReviseCustomerKyc() {
   const { _id } = useParams();
@@ -245,7 +244,6 @@ function ReviseCustomerKyc() {
   const downloadBase64File = (base64String, fileName) => {
     const linkSource = base64String;
     const downloadLink = document.createElement("a");
-    const fileType = base64String.split(";")[0].split(":")[1];
     downloadLink.href = linkSource;
     downloadLink.download = fileName;
     downloadLink.click();
@@ -822,6 +820,7 @@ function ReviseCustomerKyc() {
               id=""
               onChange={(e) => handleGstRegUpload(e, index)}
             />
+            {/* eslint-disable-next-line */}
             <a
               href="#"
               onClick={() =>
@@ -1097,6 +1096,7 @@ function ReviseCustomerKyc() {
               onChange={(e) => handleAdCodeFileUpload(e, index)}
             />
             <br />
+            {/* eslint-disable-next-line */}
             <a
               href="#"
               onClick={() =>

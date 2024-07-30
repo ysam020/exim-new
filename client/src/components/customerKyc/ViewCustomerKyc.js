@@ -534,30 +534,23 @@ function ViewCustomerKyc() {
           />
           <br />
           <br />
-          {user.username === "manu_pillai" ? (
+
+          <>
             <button
               className="btn"
-              onClick={() => handleKycApproval("Approved")}
+              onClick={() => handleKycApproval("Approved by HOD")}
             >
               Approve
             </button>
-          ) : (
-            <>
-              <button
-                className="btn"
-                onClick={() => handleKycApproval("Approved by HOD")}
-              >
-                Approve
-              </button>
-              <button
-                className="btn"
-                style={{ marginLeft: "10px" }}
-                onClick={() => handleKycApproval("Sent for revision")}
-              >
-                Send for Revision
-              </button>
-            </>
-          )}
+            <button
+              className="btn"
+              style={{ marginLeft: "10px" }}
+              onClick={() => handleKycApproval("Sent for revision")}
+            >
+              Send for Revision
+            </button>
+          </>
+
           <br />
           <br />
         </>

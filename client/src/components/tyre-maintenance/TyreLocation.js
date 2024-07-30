@@ -1,5 +1,5 @@
 import React from "react";
-import fiveWheel from "../../assets/images/5-wheel.webp";
+// import fiveWheel from "../../assets/images/5-wheel.webp";
 import tenWheel from "../../assets/images/10-wheel.webp";
 import twelveWheel from "../../assets/images/12-wheel.webp";
 import forteenWheel from "../../assets/images/14-wheel.webp";

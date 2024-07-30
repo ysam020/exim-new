@@ -14,7 +14,7 @@ import DriverDetails from "./forms/DriverDetails";
 import TypeOfVehicle from "./forms/TypeOfVehicle";
 import ContainerType from "./forms/ContainerType";
 import LocationMaster from "./forms/LocationMaster";
-// import OrganisationMaster from "./forms/OrganisationMaster";
+import OrganisationMaster from "./forms/OrganisationMaster";
 
 function FormMaster() {
   const [masterType, setMasterType] = useState("Add a vendor");
@@ -50,8 +50,7 @@ function FormMaster() {
       case "Location master":
         return <LocationMaster />;
       case "Organisation master":
-        // return <OrganisationMaster />;
-        return null;
+        return <OrganisationMaster />;
       default:
         return null;
     }

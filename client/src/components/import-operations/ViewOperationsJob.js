@@ -23,8 +23,6 @@ function ViewOperationsJob() {
   const loose_material_ref = useRef([]);
   const container_pre_damage_images_ref = useRef([]);
   const examinationVideosRef = useRef();
-  const processedBeAttachmentRef = useRef();
-  const oocCopyRef = useRef();
   const gatePassCopyRef = useRef();
   const [snackbar, setSnackbar] = useState(false);
   const [fileSnackbar, setFileSnackbar] = useState(false);

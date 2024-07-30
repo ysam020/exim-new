@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { IconButton, TextField } from "@mui/material";
+import { IconButton, TextField, Autocomplete } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import "../../styles/job-details.scss";
 import useFetchJobDetails from "../../customHooks/useFetchJobDetails";
@@ -23,6 +23,8 @@ import { handleActualWeightChange } from "../../utils/handleActualWeightChange";
 import { handleNetWeightChange } from "../../utils/handleNetWeightChange";
 import { handleTareWeightChange } from "../../utils/handleTareWeightChange";
 import { handlePhysicalWeightChange } from "../../utils/handlePhysicalWeightChange";
+import { dsrDetailedStatus } from "../../assets/data/dsrDetailedStatus";
+import { dsrDisabledOptions } from "../../assets/data/dsrDetailedStatus";
 
 function JobDetails() {
   const params = useParams();
@@ -213,34 +215,36 @@ function JobDetails() {
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
                   <strong>Detailed Status:&nbsp;</strong>
-                  <TextField
-                    select
+                  <Autocomplete
                     fullWidth
                     size="small"
-                    margin="normal"
-                    variant="outlined"
                     id="detailed_status"
                     name="detailed_status"
-                    value={formik.values.detailed_status}
-                    onChange={formik.handleChange}
-                  >
-                    <MenuItem value="Estimated Time of Arrival">
-                      Estimated Time of Arrival
-                    </MenuItem>
-                    <MenuItem value="Gateway IGM Filed">
-                      Gateway IGM Filed
-                    </MenuItem>
-                    <MenuItem value="Discharged">Discharged</MenuItem>
-                    <MenuItem value="BE Noted, Arrival Pending">
-                      BE Noted, Arrival Pending
-                    </MenuItem>
-                    <MenuItem value="BE Noted, Clearance Pending">
-                      BE Noted, Clearance Pending
-                    </MenuItem>
-                    <MenuItem value="Custom Clearance Completed">
-                      Custom Clearance Completed
-                    </MenuItem>
-                  </TextField>
+                    options={dsrDetailedStatus}
+                    getOptionLabel={(option) => option.label}
+                    getOptionDisabled={(option) =>
+                      dsrDisabledOptions.includes(option.value)
+                    }
+                    value={
+                      dsrDetailedStatus.find(
+                        (option) =>
+                          option.value === formik.values.detailed_status
+                      ) || null
+                    }
+                    onChange={(event, newValue) => {
+                      formik.setFieldValue(
+                        "detailed_status",
+                        newValue ? newValue.value : ""
+                      );
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        margin="normal"
+                      />
+                    )}
+                  />
                 </div>
               </Col>
             </Row>
@@ -964,6 +968,7 @@ function JobDetails() {
                                 control={
                                   <Checkbox
                                     checked={container.transporter === "SRCC"}
+                                    disabled={!formik.values.out_of_charge}
                                   />
                                 }
                                 label="Transporter: SRCC"
@@ -988,6 +993,7 @@ function JobDetails() {
                                 name={`container_nos[${index}].transporter`}
                                 value={container.transporter}
                                 onChange={formik.handleChange}
+                                disabled={!formik.values.out_of_charge}
                               />
                             </div>
                           )}
