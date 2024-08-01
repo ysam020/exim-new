@@ -81,7 +81,7 @@ function useFileUpload(inputRef, alt, setAlt) {
           } else if (modifiedKey === "custom_house") {
             const customHouse = item[key].toLowerCase();
             if (customHouse.includes("sabarmati")) {
-              modifiedItem[modifiedKey] = "KHODIYAR";
+              modifiedItem[modifiedKey] = "ICD KHODIYAR";
             } else if (customHouse.includes("thar")) {
               modifiedItem[modifiedKey] = "ICD SANAND";
             } else if (customHouse.includes("mundra")) {

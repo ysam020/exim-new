@@ -1,10 +1,10 @@
 import express from "express";
-import OrganisationMaster from "../../model/srcc/OrganisationMaster.mjs";
+import CustomerKycModel from "../../model/customerKycModel.mjs";
 
 const router = express.Router();
 
 router.get("/api/get-organisations", async (req, res) => {
-  const data = await OrganisationMaster.find();
+  const data = await CustomerKycModel.find();
   res.status(200).json(data);
 });
 

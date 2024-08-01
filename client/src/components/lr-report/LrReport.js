@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import useTabs from "../../customHooks/useTabs";
 import FullTruckLoad from "./fullTruckLoad/FullTruckLoad";
 import LessThanTruckLoad from "./lessThanTruckLoad/LessThanTruckLoad";
-import ViewAllLr from "./ViewAllLr";
+import DSR from "./DSR";
 
 function SRCC() {
   const [value, setValue] = React.useState(0);
@@ -25,7 +25,7 @@ function SRCC() {
           >
             <Tab label="Full Truck Load" {...a11yProps(0)} key={0} />,
             <Tab label="Less Than Truck Load" {...a11yProps(1)} key={1} />,
-            <Tab label="View All LR" {...a11yProps(2)} key={2} />,
+            <Tab label="DSR" {...a11yProps(2)} key={2} />,
           </Tabs>
         </Box>
         <Box>
@@ -36,7 +36,7 @@ function SRCC() {
             <LessThanTruckLoad />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
-            <ViewAllLr />
+            <DSR />
           </CustomTabPanel>
         </Box>
       </>

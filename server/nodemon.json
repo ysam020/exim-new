@@ -2,15 +2,7 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "watch": [
-    "index.mjs",
-    "app.mjs",
-    "readMail.mjs",
-    "routes",
-    "model",
-    "controllers",
-    ".env"
-  ],
+  "watch": ["app.mjs", "routes", "model", ".env"],
   "ext": "js,json,mjs",
   "exec": "node app.mjs"
 }

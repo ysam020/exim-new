@@ -1,35 +1,28 @@
 import express from "express";
-import OrganisationMaster from "../../model/srcc/OrganisationMaster.mjs";
+import CustomerKycModel from "../../model/customerKycModel.mjs";
 
 const router = express.Router();
 
-router.post("/api/add-organisation", async (req, res) => {
+router.post("/api/add-srcc-organisation", async (req, res) => {
   try {
-    const { name, branch, addresses } = req.body;
+    const { pan_no, ...rest } = req.body;
 
-    // Find the document with the matching name
-    const organisation = await OrganisationMaster.findOne({ name });
+    // Find the document with the matching pan_no
+    const organisation = await CustomerKycModel.findOne({ pan_no });
 
-    if (!organisation) {
-      return res.status(404).json({ message: "Organisation not found" });
+    if (organisation) {
+      return res.status(200).json({ message: "Organisation already exists" });
     }
 
-    // Find the branch within the organisation
-    const branchIndex = organisation.branches.findIndex(
-      (b) => b.branch === branch
-    );
+    // Add the additional field 'module'
+    const newOrganisation = new CustomerKycModel({
+      ...rest,
+      pan_no,
+      module: "Transportation",
+    });
 
-    if (branchIndex === -1) {
-      return res.status(404).json({ message: "Branch not found" });
-    }
-
-    // Update the addresses for the matching branch
-    organisation.branches[branchIndex].addresses = addresses;
-
-    // Save the updated document
-    await organisation.save();
-
-    res.status(200).json({ message: "Addresses updated successfully" });
+    await newOrganisation.save();
+    res.status(201).json({ message: "Organisation created successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });

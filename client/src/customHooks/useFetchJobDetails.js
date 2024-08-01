@@ -55,6 +55,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       gate_pass_copies: [],
       do_revalidation: false,
       do_revalidation_date: "",
+      out_of_charge: "",
     },
 
     onSubmit: async (values, { resetForm }) => {
@@ -92,9 +93,9 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           gate_pass_copies: values.gate_pass_copies,
           do_revalidation: values.do_revalidation,
           do_revalidation_date: values.do_revalidation_date,
+          out_of_charge: values.out_of_charge,
         }
       );
-
       resetForm();
       localStorage.setItem("tab_value", 1);
       setTabValue(1);
@@ -223,6 +224,8 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           data.do_revalidation_date === undefined
             ? ""
             : data.do_revalidation_date,
+        out_of_charge:
+          data.out_of_charge === undefined ? "" : data.out_of_charge,
       });
     }
     // eslint-disable-next-line

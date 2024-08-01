@@ -6,6 +6,7 @@ import axios from "axios";
 import SaveIcon from "@mui/icons-material/Save";
 import Autocomplete from "@mui/material/Autocomplete";
 import { handleSaveLr } from "../utils/handleSaveLr";
+import { lrContainerPlanningStatus } from "../assets/data/dsrDetailedStatus";
 
 function useLrColumns(props) {
   const [rows, setRows] = useState([]);
@@ -423,6 +424,37 @@ function useLrColumns(props) {
             }
           />
         ),
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      enableSorting: false,
+      size: 200,
+      Cell: ({ cell, row }) => {
+        const currentValue = cell.getValue();
+        const options = lrContainerPlanningStatus.includes(currentValue)
+          ? lrContainerPlanningStatus
+          : [currentValue, ...lrContainerPlanningStatus];
+
+        return (
+          <TextField
+            select
+            fullWidth
+            label="Status"
+            size="small"
+            defaultValue={currentValue}
+            onBlur={(event) =>
+              handleInputChange(event, row.index, cell.column.id)
+            }
+          >
+            {options.map((item) => (
+              <MenuItem key={item} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </TextField>
+        );
+      },
     },
     {
       accessorKey: "action",

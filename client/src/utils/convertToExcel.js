@@ -45,27 +45,22 @@ export const convertToExcel = async (
   ];
 
   // Row headers
-  const dataWithHeaders = rowsWithoutBillNo?.map((item) => {
+  const dataWithHeaders = rowsWithoutBillNo.map((item) => {
     const arrivalDates = item.container_nos
-      ?.map((container) => container.arrival_date)
+      .map((container) => container.arrival_date)
       .join(",\n");
 
     const containerNumbers = item.container_nos
-      ?.map((container) => container.container_number)
+      .map((container) => container.container_number)
       .join(",\n");
 
     const detentionFrom = item.container_nos
-      ?.map((container) => container.detention_from)
+      .map((container) => container.detention_from)
       .join(",\n");
 
     const size = item.container_nos
-      ?.map((container) => container.size)
+      .map((container) => container.size)
       .join(",\n");
-
-    const netWeight = item.container_nos.reduce(
-      (sum, container) => sum + parseInt(container.net_weight),
-      0
-    );
 
     const inv_value = (item.cif_amount / parseInt(item.exrate)).toFixed(2);
     const invoice_value_and_unit_price = `${item.inv_currency} ${inv_value} | ${item.unit_price}`;
@@ -86,7 +81,6 @@ export const convertToExcel = async (
       "BE DATE": item.be_date,
       "TYPE OF BE": item.type_of_b_e,
       "NUMBER OF PACKAGES": item.no_of_pkgs,
-      "NET WEIGHT": netWeight,
       UNIT: item.unit,
       "GROSS WEIGHT": item.gross_weight,
       "GATEWAY IGM": item.gateway_igm,
@@ -128,7 +122,7 @@ export const convertToExcel = async (
     };
 
     // eslint-disable-next-line
-    const values = headers?.map((val) => {
+    const values = headers.map((val) => {
       if (valueMap[val]) {
         return valueMap[val];
       } else if (val === "CONTAINER NUMBER") {
@@ -277,7 +271,7 @@ export const convertToExcel = async (
       };
 
       // Add line breaks after commas in the containerNumbers cell
-      if (cell.value && cell.value?.toString().includes(",\n")) {
+      if (cell.value && cell.value.toString().includes(",\n")) {
         cell.value = cell.value.replace(/,\n/g, String.fromCharCode(10)); // Replace ",\n" with line break character
       }
     });
@@ -294,9 +288,7 @@ export const convertToExcel = async (
     let maxHeight = 0;
 
     row.eachCell({ includeEmpty: true }, (cell) => {
-      const lines = cell.value
-        ? cell.value?.toString().split(/\r\n|\r|\n/)
-        : [];
+      const lines = cell.value ? cell.value.toString().split(/\r\n|\r|\n/) : [];
       const lineCount = lines.length;
       cell.border = {
         top: { style: "thin" },
@@ -404,12 +396,12 @@ export const convertToExcel = async (
   // Define the content for the additional table
   const additionalTableData = [
     // { color: "FFFFFFFF", text: "" },
-    { color: "ffccffff", text: "CUSTOM CLEARANCE COMPLETED" },
-    { color: "ffc4a6ec", text: "BE NOTED, CLEARANCE PENDING" },
-    { color: "ff99ccff", text: "BE NOTED, ARRIVAL PENDING" },
-    { color: "ffffcc99", text: "DISCHARGED" },
-    { color: "ffffcc99", text: "SEA IGM FILED" },
-    { color: "ffffff99", text: "ESTIMATED TIME OF ARRIVAL" },
+    { color: "FFCCFFFF", text: "CUSTOM CLEARANCE COMPLETED" },
+    { color: "FF8EAADB", text: "BE NOTED, CLEARANCE PENDING" },
+    { color: "f4b083", text: "BE NOTED, ARRIVAL PENDING" },
+    { color: "ffff66", text: "SEA IGM FILED" },
+    { color: "FFFFFFFF", text: "ESTIMATED TIME OF ARRIVAL" },
+    // Add more rows as needed
   ];
 
   // Loop through the additional table data and add rows to the worksheet
@@ -598,8 +590,8 @@ export const convertToExcel = async (
   });
 
   // Sanitize the importer and detailedStatus for the filename
-  const sanitizedImporter = importer.replace(/\./g, "");
-  const sanitizedDetailedStatus = detailedStatus.replace(/\./g, "");
+  const sanitizedImporter = importer?.replace(/\./g, "");
+  const sanitizedDetailedStatus = detailedStatus?.replace(/\./g, "");
 
   const newFilename =
     sanitizedDetailedStatus === ""

@@ -102,6 +102,9 @@ const PrDataSchema = new mongoose.Schema({
       driver_phone: {
         type: String,
       },
+      status: {
+        type: String,
+      },
     },
   ],
 });

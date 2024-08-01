@@ -14,7 +14,7 @@ import DriverDetails from "./view-data/DriverDetails";
 import TypeOfVehicle from "./view-data/TypeOfVehicles";
 import ContainerType from "./view-data/ContainerTypes";
 import LocationMaster from "./view-data/Locations";
-// import OrganisationMaster from "./forms/OrganisationMaster";
+import Organisations from "./view-data/Organisations";
 
 function ViewData() {
   const [masterType, setMasterType] = useState("Vendors");
@@ -50,8 +50,7 @@ function ViewData() {
       case "Locations":
         return <LocationMaster />;
       case "Organisations":
-        // return <OrganisationMaster />;
-        return null;
+        return <Organisations />;
       default:
         return null;
     }

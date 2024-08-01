@@ -3,7 +3,7 @@ import PrData from "../../model/srcc/pr.mjs";
 
 const router = express.Router();
 
-router.get("/api/view-all-lr", async (req, res) => {
+router.get("/api/view-srcc-dsr", async (req, res) => {
   const data = await PrData.find({});
 
   const extractRelevantData = (data) => {
@@ -21,10 +21,15 @@ router.get("/api/view-all-lr", async (req, res) => {
         shipping_line: document.shipping_line,
         container_offloading: document.container_offloading,
         do_validity: document.do_validity,
+        status: container.status,
       }))
     );
   };
-  res.status(200).json(extractRelevantData(data));
+
+  const allContainers = extractRelevantData(data);
+  // Send only those jobs which have tr_no available
+  const trs = allContainers.filter((container) => container.tr_no);
+  res.status(200).json(trs);
 });
 
 export default router;

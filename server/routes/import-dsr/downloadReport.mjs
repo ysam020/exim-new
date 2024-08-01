@@ -7,18 +7,17 @@ router.get(
   async (req, res) => {
     try {
       const { year, importerURL, status } = req.params;
-      const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1);
+      console.log(year, importerURL, status);
 
       // Create a query object with year and importerURL criteria
       const query = {
         year,
         importerURL,
-        status: formattedStatus,
+        status,
       };
 
       // Query the database based on the criteria in the query object
       const jobs = await JobModel.find(query);
-
       // Sort jobs based on detailed_status priority or move empty detailed_status to the end
       jobs.sort((a, b) => {
         const statusPriority = {

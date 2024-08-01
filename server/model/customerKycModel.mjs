@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const customerKycSchema = new mongoose.Schema({
+  module: String,
   category: String,
   name_of_individual: String,
   status: String,

@@ -22,6 +22,7 @@ router.post("/api/update-container", async (req, res) => {
       gross_weight,
       vehicle_no,
       pr_no,
+      status,
     } = req.body;
 
     // Get the last TR document
@@ -71,6 +72,7 @@ router.post("/api/update-container", async (req, res) => {
         containerWithoutNumber.seal_no = seal_no;
         containerWithoutNumber.gross_weight = gross_weight;
         containerWithoutNumber.vehicle_no = vehicle_no;
+        containerWithoutNumber.status = status;
         containerWithoutNumber.tr_no = tr;
 
         // Create and save new Tr document
@@ -90,6 +92,7 @@ router.post("/api/update-container", async (req, res) => {
           seal_no,
           gross_weight,
           vehicle_no,
+          status,
           tr_no: tr,
         });
       }
@@ -117,6 +120,7 @@ router.post("/api/update-container", async (req, res) => {
       matchingContainer.seal_no = seal_no;
       matchingContainer.gross_weight = gross_weight;
       matchingContainer.vehicle_no = vehicle_no;
+      matchingContainer.status = status;
 
       // Check if tr_no is present, if not, update it
       if (!matchingContainer.tr_no) {

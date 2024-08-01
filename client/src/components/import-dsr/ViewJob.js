@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { IconButton, TextField, Autocomplete } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import "../../styles/job-details.scss";
 import useFetchJobDetails from "../../customHooks/useFetchJobDetails";
@@ -23,8 +23,6 @@ import { handleActualWeightChange } from "../../utils/handleActualWeightChange";
 import { handleNetWeightChange } from "../../utils/handleNetWeightChange";
 import { handleTareWeightChange } from "../../utils/handleTareWeightChange";
 import { handlePhysicalWeightChange } from "../../utils/handlePhysicalWeightChange";
-import { dsrDetailedStatus } from "../../assets/data/dsrDetailedStatus";
-import { dsrDisabledOptions } from "../../assets/data/dsrDetailedStatus";
 
 function JobDetails() {
   const params = useParams();
@@ -50,10 +48,24 @@ function JobDetails() {
   );
 
   const handleRadioChange = (event) => {
-    if (event.target.value === "clear") {
+    const selectedValue = event.target.value;
+
+    if (selectedValue === "clear") {
       setSelectedRegNo("");
+      formik.setFieldValue("sims_reg_no", "");
+      formik.setFieldValue("pims_reg_no", "");
+      formik.setFieldValue("nfmims_reg_no", "");
+      formik.setFieldValue("sims_date", "");
+      formik.setFieldValue("pims_date", "");
+      formik.setFieldValue("nfmims_date", "");
     } else {
-      setSelectedRegNo(event.target.value);
+      setSelectedRegNo(selectedValue);
+      formik.setFieldValue("sims_reg_no", "");
+      formik.setFieldValue("pims_reg_no", "");
+      formik.setFieldValue("nfmims_reg_no", "");
+      formik.setFieldValue("sims_date", "");
+      formik.setFieldValue("pims_date", "");
+      formik.setFieldValue("nfmims_date", "");
     }
   };
 
@@ -119,7 +131,6 @@ function JobDetails() {
   };
 
   const handleTransporterChange = (e, index) => {
-    console.log(e.target.checked);
     if (e.target.checked === true) {
       formik.setFieldValue(`container_nos[${index}].transporter`, "SRCC");
     } else {
@@ -215,36 +226,34 @@ function JobDetails() {
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
                   <strong>Detailed Status:&nbsp;</strong>
-                  <Autocomplete
+                  <TextField
+                    select
                     fullWidth
                     size="small"
+                    margin="normal"
+                    variant="outlined"
                     id="detailed_status"
                     name="detailed_status"
-                    options={dsrDetailedStatus}
-                    getOptionLabel={(option) => option.label}
-                    getOptionDisabled={(option) =>
-                      dsrDisabledOptions.includes(option.value)
-                    }
-                    value={
-                      dsrDetailedStatus.find(
-                        (option) =>
-                          option.value === formik.values.detailed_status
-                      ) || null
-                    }
-                    onChange={(event, newValue) => {
-                      formik.setFieldValue(
-                        "detailed_status",
-                        newValue ? newValue.value : ""
-                      );
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        margin="normal"
-                      />
-                    )}
-                  />
+                    value={formik.values.detailed_status}
+                    onChange={formik.handleChange}
+                  >
+                    <MenuItem value="Estimated Time of Arrival">
+                      Estimated Time of Arrival
+                    </MenuItem>
+                    <MenuItem value="Gateway IGM Filed">
+                      Gateway IGM Filed
+                    </MenuItem>
+                    <MenuItem value="Discharged">Discharged</MenuItem>
+                    <MenuItem value="BE Noted, Arrival Pending">
+                      BE Noted, Arrival Pending
+                    </MenuItem>
+                    <MenuItem value="BE Noted, Clearance Pending">
+                      BE Noted, Clearance Pending
+                    </MenuItem>
+                    <MenuItem value="Custom Clearance Completed">
+                      Custom Clearance Completed
+                    </MenuItem>
+                  </TextField>
                 </div>
               </Col>
             </Row>
@@ -577,6 +586,42 @@ function JobDetails() {
               </Col>
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
+                  <strong>DO Validity:&nbsp;</strong>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    type="date"
+                    margin="normal"
+                    variant="outlined"
+                    id="do_validity"
+                    name="do_validity"
+                    value={formik.values.do_validity}
+                    onChange={formik.handleChange}
+                  />
+                </div>
+              </Col>
+            </Row>
+
+            {/*************************** Row 13 ****************************/}
+            <Row>
+              <Col xs={12} lg={4}>
+                <div className="job-detail-input-container">
+                  <strong>Out of Charge Date:&nbsp;</strong>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    margin="normal"
+                    variant="outlined"
+                    type="date"
+                    id="out_of_charge"
+                    name="out_of_charge"
+                    value={formik.values.out_of_charge}
+                    onChange={formik.handleChange}
+                  />
+                </div>
+              </Col>
+              <Col xs={12} lg={4}>
+                <div className="job-detail-input-container">
                   <strong>Delivery Date:&nbsp;</strong>
                   <TextField
                     fullWidth
@@ -591,10 +636,6 @@ function JobDetails() {
                   />
                 </div>
               </Col>
-            </Row>
-
-            {/*************************** Row 13 ****************************/}
-            <Row>
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
                   <Checkbox
@@ -630,8 +671,6 @@ function JobDetails() {
                   )}
                 </div>
               </Col>
-              <Col xs={12} lg={4}></Col>
-              <Col xs={12} lg={4}></Col>
             </Row>
 
             <br />
@@ -993,7 +1032,6 @@ function JobDetails() {
                                 name={`container_nos[${index}].transporter`}
                                 value={container.transporter}
                                 onChange={formik.handleChange}
-                                disabled={!formik.values.out_of_charge}
                               />
                             </div>
                           )}

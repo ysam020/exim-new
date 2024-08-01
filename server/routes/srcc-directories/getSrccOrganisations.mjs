@@ -3,9 +3,8 @@ import CustomerKycModel from "../../model/customerKycModel.mjs";
 
 const router = express.Router();
 
-router.post("/api/get-organisation-data", async (req, res) => {
-  const { name_of_individual } = req.body;
-  const data = await CustomerKycModel.findOne({ name_of_individual });
+router.get("/api/get-srcc-organisations", async (req, res) => {
+  const data = await CustomerKycModel.find({ module: "Transportation" });
   if (!data) {
     return res.status(200).json({ message: "Data not found" });
   }

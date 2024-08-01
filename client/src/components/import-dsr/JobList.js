@@ -11,22 +11,17 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import DownloadIcon from "@mui/icons-material/Download";
-import axios from "axios";
-import { convertToExcel } from "../../utils/convertToExcel";
+import SelectImporterModal from "./SelectImporterModal";
 
 function JobList(props) {
   const { selectedYear } = useContext(SelectedYearContext);
   const [detailedStatus, setDetailedStatus] = useState("all");
   const columns = useJobColumns(detailedStatus);
   const { rows } = useFetchJobList(detailedStatus, selectedYear, props.status);
-
-  const handleReportDownload = async () => {
-    const res = await axios.get(
-      `${process.env.REACT_APP_API_STRING}/download-report/${selectedYear}/${props.status}`
-    );
-
-    convertToExcel(res.data, props.status, detailedStatus);
-  };
+  // Select importer modal
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const table = useMaterialReactTable({
     columns,
@@ -81,7 +76,7 @@ function JobList(props) {
               </MenuItem>
             ))}
           </TextField>
-          <IconButton onClick={handleReportDownload}>
+          <IconButton onClick={handleOpen}>
             <DownloadIcon />
           </IconButton>
         </div>
@@ -92,6 +87,13 @@ function JobList(props) {
   return (
     <div className="table-container">
       <MaterialReactTable table={table} />
+      <SelectImporterModal
+        open={open}
+        handleOpen={handleOpen}
+        handleClose={handleClose}
+        status={props.status}
+        detailedStatus={detailedStatus}
+      />
     </div>
   );
 }

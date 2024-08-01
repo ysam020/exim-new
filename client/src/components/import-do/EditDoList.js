@@ -12,6 +12,24 @@ function EditDoList() {
   const [fileSnackbar, setFileSnackbar] = React.useState(false);
   const kycDocsRef = React.useRef();
 
+  React.useEffect(() => {
+    async function getData() {
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_STRING}/get-kyc-and-bond-status/${_id}`
+      );
+      const { shipping_line_kyc_completed, shipping_line_bond_completed } =
+        res.data;
+      formik.setValues({
+        ...formik.values,
+        shipping_line_kyc_completed: shipping_line_kyc_completed || "No",
+        shipping_line_bond_completed: shipping_line_bond_completed || "No",
+      });
+    }
+
+    getData();
+    // eslint-disable-next-line
+  }, [_id]);
+
   const formik = useFormik({
     initialValues: {
       shipping_line_bond_completed: "Yes",
@@ -27,7 +45,7 @@ function EditDoList() {
       const data = { ...values, _id };
       const res = await axios.post(
         `${process.env.REACT_APP_API_STRING}/update-do-list`,
-        data,
+        data
       );
       alert(res.data.message);
       resetForm();

@@ -81,6 +81,7 @@ import getKycDocuments from "./routes/import-do/getKycDocuments.mjs";
 import getShippingLines from "./routes/getShippingLines.mjs";
 import getKycDocsByImporter from "./routes/import-do/getKycDocsByImporter.mjs";
 import getKycDocsByShippingLine from "./routes/import-do/getKycDocsByShippingLine.mjs";
+import getKycAndBondStatus from "./routes/import-do/getKycAndBondStatus.mjs";
 
 // Import DSR
 import addJobsFromExcel from "./routes/import-dsr/addJobsFromExcel.mjs";
@@ -128,7 +129,8 @@ import getVehicles from "./routes/lr/getVehicles.mjs";
 import deleteTr from "./routes/lr/deleteTr.mjs";
 import getTrs from "./routes/lr/getTrs.mjs";
 import getOrganisationData from "./routes/lr/getOrganisationData.mjs";
-import viewAllLr from "./routes/lr/viewAllLr.mjs";
+import viewSrccDsr from "./routes/lr/viewSrccDsr.mjs";
+import updateSrccDsr from "./routes/lr/updateSrccDsr.mjs";
 
 // SRCC Directories
 import addContainerType from "./routes/srcc-directories/addContainerType.mjs";
@@ -147,6 +149,7 @@ import addVendor from "./routes/srcc-directories/addVendor.mjs";
 import getTyreBrand from "./routes/srcc-directories/getTyreBrand.mjs";
 import getDriverDetails from "./routes/srcc-directories/getDriverDetails.mjs";
 import getLocationMaster from "./routes/srcc-directories/getLocationMaster.mjs";
+import getSrccOrganisations from "./routes/srcc-directories/getSrccOrganisations.mjs";
 
 // Tyre Maintenance
 import getPlyRatings from "./routes/tyre-maintenance/getPlyRatings.mjs";
@@ -279,6 +282,7 @@ if (cluster.isPrimary) {
       app.use(getShippingLines);
       app.use(getKycDocsByImporter);
       app.use(getKycDocsByShippingLine);
+      app.use(getKycAndBondStatus);
 
       // Import DSR
       app.use(addJobsFromExcel);
@@ -326,7 +330,8 @@ if (cluster.isPrimary) {
       app.use(deleteTr);
       app.use(getTrs);
       app.use(getOrganisationData);
-      app.use(viewAllLr);
+      app.use(viewSrccDsr);
+      app.use(updateSrccDsr);
 
       // SRCC Directories
       app.use(addContainerType);
@@ -346,6 +351,7 @@ if (cluster.isPrimary) {
       app.use(getVendors);
       app.use(getDriverDetails);
       app.use(getLocationMaster);
+      app.use(getSrccOrganisations);
 
       // Tyre Maintenance
       app.use(getPlyRatings);
