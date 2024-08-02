@@ -399,7 +399,7 @@ function ViewOperationsJob() {
                             htmlFor={`weighmentSlipImages_${index}`}
                             className="btn"
                           >
-                            Weighment Slip Images
+                            Upload Weighment Slip
                           </label>
                           <input
                             type="file"

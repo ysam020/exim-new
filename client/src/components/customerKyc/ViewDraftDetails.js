@@ -1103,8 +1103,16 @@ function ViewDraftDetails() {
         {formik.touched.other_documents && formik.errors.other_documents ? (
           <div style={{ color: "red" }}>{formik.errors.other_documents}</div>
         ) : null}
+        {formik.values.other_documents?.length > 0 &&
+          formik.values.other_documents.map((doc, index) => (
+            <>
+              <a key={index} href={doc}>
+                View
+              </a>
+              <br />
+            </>
+          ))}
         <br />
-
         <label style={{ marginRight: "10px" }}>
           SPCB registration certificate
         </label>
@@ -1124,8 +1132,13 @@ function ViewDraftDetails() {
         {formik.touched.spcb_reg && formik.errors.spcb_reg ? (
           <div style={{ color: "red" }}>{formik.errors.spcb_reg}</div>
         ) : null}
+        {formik.values.spcb_reg && (
+          <>
+            <a href={formik.values.spcb_reg}>View</a>
+            <br />
+          </>
+        )}
         <br />
-
         <label style={{ marginRight: "10px" }}>KYC verification images:</label>
         <input
           type="file"
@@ -1147,8 +1160,16 @@ function ViewDraftDetails() {
             {formik.errors.kyc_verification_images}
           </div>
         ) : null}
+        {formik.values.kyc_verification_images?.length > 0 &&
+          formik.values.kyc_verification_images.map((doc, index) => (
+            <>
+              <a key={index} href={doc}>
+                View
+              </a>
+              <br />
+            </>
+          ))}
         <br />
-
         <label style={{ marginRight: "10px" }}>GST Returns:</label>
         <input
           type="file"
@@ -1163,10 +1184,21 @@ function ViewDraftDetails() {
             )
           }
         />
-        <br />
         {formik.touched.gst_returns && formik.errors.gst_returns ? (
           <div style={{ color: "red" }}>{formik.errors.gst_returns}</div>
         ) : null}
+        <br />
+        {formik.values.gst_returns?.length > 0 &&
+          formik.values.gst_returns.map((doc, index) => (
+            <>
+              <a key={index} href={doc}>
+                View
+              </a>
+
+              <br />
+            </>
+          ))}
+        <br />
         <br />
 
         <button

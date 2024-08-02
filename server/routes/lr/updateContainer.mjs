@@ -37,8 +37,8 @@ router.post("/api/update-container", async (req, res) => {
 
     const paddedNo = lastTrNo.toString().padStart(5, "0");
     const fiveDigitNo = "0".repeat(5 - paddedNo.length) + paddedNo;
-    const tr = `TR/${pr_no.split("/")[1]}/${fiveDigitNo}/${
-      pr_no.split("/")[3]
+    const tr = `TR/${pr_no?.split("/")[1]}/${fiveDigitNo}/${
+      pr_no?.split("/")[3]
     }`;
 
     // Find the document with matching pr_no and is at the last index
@@ -99,7 +99,7 @@ router.post("/api/update-container", async (req, res) => {
     } else {
       // Update the fields of the matching container with the data sent in req.body
       const matchingContainer = prDocument.containers[containerIndex];
-      const trDigit = tr_no.split("/")[2];
+      const trDigit = tr_no?.split("/")[2];
 
       if (matchingContainer.tr_no !== tr_no) {
         // Check if tr_no exists in Tr model

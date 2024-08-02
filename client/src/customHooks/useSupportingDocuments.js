@@ -32,7 +32,9 @@ function useSupportingDocuments(formik) {
             </div>
           ) : null}
 
-          <a href={formik.values.individual_passport_img}>View</a>
+          {formik.values.individual_passport_img && (
+            <a href={formik.values.individual_passport_img}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>Voter Card:</label>
@@ -55,7 +57,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.individual_voter_card_img}
             </div>
           ) : null}
-          <a href={formik.values.individual_voter_card_img}>View</a>
+          {formik.values.individual_voter_card_img && (
+            <a href={formik.values.individual_voter_card_img}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>Driver's License:</label>
@@ -78,7 +82,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.individual_driving_license_img}
             </div>
           ) : null}
-          <a href={formik.values.individual_driving_license_img}>View</a>
+          {formik.values.individual_driving_license_img && (
+            <a href={formik.values.individual_driving_license_img}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>Bank Statement:</label>
@@ -101,7 +107,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.individual_bank_statement_img}
             </div>
           ) : null}
-          <a href={formik.values.individual_bank_statement_img}>View</a>
+          {formik.values.individual_bank_statement_img && (
+            <a href={formik.values.individual_bank_statement_img}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>Ration Card:</label>
@@ -124,7 +132,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.individual_ration_card_img}
             </div>
           ) : null}
-          <a href={formik.values.individual_ration_card_img}>View</a>
+          {formik.values.individual_ration_card_img && (
+            <a href={formik.values.individual_ration_card_img}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>Aadhar Card:</label>
@@ -180,9 +190,11 @@ function useSupportingDocuments(formik) {
               {formik.errors.partnership_registration_certificate_img}
             </div>
           ) : null}
-          <a href={formik.values.partnership_registration_certificate_img}>
-            View
-          </a>
+          {formik.values.partnership_registration_certificate_img && (
+            <a href={formik.values.partnership_registration_certificate_img}>
+              View
+            </a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>Partnership deed:</label>
@@ -204,7 +216,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.partnership_deed_img}
             </div>
           ) : null}
-          <a href={formik.values.partnership_deed_img}>View</a>
+          {formik.values.partnership_deed_img && (
+            <a href={formik.values.partnership_deed_img}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>
@@ -229,7 +243,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.partnership_power_of_attorney_img}
             </div>
           ) : null}
-          <a href={formik.values.partnership_power_of_attorney_img}>View</a>
+          {formik.values.partnership_power_of_attorney_img && (
+            <a href={formik.values.partnership_power_of_attorney_img}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>Aadhar Card Front Photo</label>
@@ -251,7 +267,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.partnership_aadhar_card_front_photo}
             </div>
           ) : null}
-          <a href={formik.values.partnership_aadhar_card_front_photo}>View</a>
+          {formik.values.partnership_aadhar_card_front_photo && (
+            <a href={formik.values.partnership_aadhar_card_front_photo}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>Aadhar Card Back Photo</label>
@@ -273,7 +291,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.partnership_aadhar_card_back_photo}
             </div>
           ) : null}
-          <a href={formik.values.partnership_aadhar_card_back_photo}>View</a>
+          {formik.values.partnership_aadhar_card_back_photo && (
+            <a href={formik.values.partnership_aadhar_card_back_photo}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>Valid Document Photo</label>
@@ -295,7 +315,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.partnership_valid_document}
             </div>
           ) : null}
-          <a href={formik.values.partnership_valid_document}>View</a>
+          {formik.values.partnership_valid_document && (
+            <a href={formik.values.partnership_valid_document}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>
@@ -319,7 +341,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.partnership_telephone_bill}
             </div>
           ) : null}
-          <a href={formik.values.iec_copy}>View</a>
+          {formik.values.partnership_telephone_bill && (
+            <a href={formik.values.partnership_telephone_bill}>View</a>
+          )}
           <br />
           <br />
         </>
@@ -351,9 +375,11 @@ function useSupportingDocuments(formik) {
               {formik.errors.company_certificate_of_incorporation_img}
             </div>
           ) : null}
-          <a href={formik.values.company_certificate_of_incorporation_img}>
-            View
-          </a>
+          {formik.values.company_certificate_of_incorporation_img && (
+            <a href={formik.values.company_certificate_of_incorporation_img}>
+              View
+            </a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>
@@ -378,7 +404,11 @@ function useSupportingDocuments(formik) {
               {formik.errors.company_memorandum_of_association_img}
             </div>
           ) : null}
-          <a href={formik.values.company_memorandum_of_association_img}>View</a>
+          {formik.values.company_memorandum_of_association_img && (
+            <a href={formik.values.company_memorandum_of_association_img}>
+              View
+            </a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>
@@ -403,7 +433,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.company_articles_of_association_img}
             </div>
           ) : null}
-          <a href={formik.values.company_articles_of_association_img}>View</a>
+          {formik.values.company_articles_of_association_img && (
+            <a href={formik.values.company_articles_of_association_img}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>
@@ -429,7 +461,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.company_power_of_attorney_img}
             </div>
           ) : null}
-          <a href={formik.values.company_power_of_attorney_img}>View</a>
+          {formik.values.company_power_of_attorney_img && (
+            <a href={formik.values.company_power_of_attorney_img}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>
@@ -454,7 +488,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.company_telephone_bill_img}
             </div>
           ) : null}
-          <a href={formik.values.company_telephone_bill_img}>View</a>
+          {formik.values.company_telephone_bill_img && (
+            <a href={formik.values.company_telephone_bill_img}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>PAN allotment letter:</label>
@@ -477,7 +513,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.company_pan_allotment_letter_img}
             </div>
           ) : null}
-          <a href={formik.values.company_pan_allotment_letter_img}>View</a>
+          {formik.values.company_pan_allotment_letter_img && (
+            <a href={formik.values.company_pan_allotment_letter_img}>View</a>
+          )}
         </>
       );
     } else if (formik.values.category === "Trust Foundations") {
@@ -507,7 +545,11 @@ function useSupportingDocuments(formik) {
               {formik.errors.trust_certificate_of_registration_img}
             </div>
           ) : null}
-          <a href={formik.values.trust_certificate_of_registration_img}>View</a>
+          {formik.values.trust_certificate_of_registration_img && (
+            <a href={formik.values.trust_certificate_of_registration_img}>
+              View
+            </a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>
@@ -533,7 +575,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.trust_power_of_attorney_img}
             </div>
           ) : null}
-          <a href={formik.values.trust_power_of_attorney_img}>View</a>
+          {formik.values.trust_power_of_attorney_img && (
+            <a href={formik.values.trust_power_of_attorney_img}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>
@@ -560,7 +604,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.trust_officially_valid_document_img}
             </div>
           ) : null}
-          <a href={formik.values.trust_officially_valid_document_img}>View</a>
+          {formik.values.trust_officially_valid_document_img && (
+            <a href={formik.values.trust_officially_valid_document_img}>View</a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>
@@ -585,7 +631,11 @@ function useSupportingDocuments(formik) {
               {formik.errors.trust_resolution_of_managing_body_img}
             </div>
           ) : null}
-          <a href={formik.values.trust_resolution_of_managing_body_img}>View</a>
+          {formik.values.trust_resolution_of_managing_body_img && (
+            <a href={formik.values.trust_resolution_of_managing_body_img}>
+              View
+            </a>
+          )}
           <br />
           <br />
           <label style={{ marginRight: "10px" }}>
@@ -610,7 +660,9 @@ function useSupportingDocuments(formik) {
               {formik.errors.trust_telephone_bill_img}
             </div>
           ) : null}
-          <a href={formik.values.trust_telephone_bill_img}>View</a>
+          {formik.values.trust_telephone_bill_img && (
+            <a href={formik.values.trust_telephone_bill_img}>View</a>
+          )}
           <br />
 
           <TextField

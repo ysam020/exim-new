@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { IconButton, TextField } from "@mui/material";
@@ -23,9 +23,11 @@ import { handleActualWeightChange } from "../../utils/handleActualWeightChange";
 import { handleNetWeightChange } from "../../utils/handleNetWeightChange";
 import { handleTareWeightChange } from "../../utils/handleTareWeightChange";
 import { handlePhysicalWeightChange } from "../../utils/handlePhysicalWeightChange";
+import { UserContext } from "../../contexts/UserContext";
 
 function JobDetails() {
   const params = useParams();
+  const { user } = useContext(UserContext);
   const { setTabValue } = React.useContext(TabValueContext);
   const options = Array.from({ length: 25 }, (_, index) => index);
   const [checked, setChecked] = useState(false);
@@ -69,7 +71,7 @@ function JobDetails() {
     }
   };
 
-  const handleWeighmentSlip = async (e, container_number) => {
+  const handleWeighmentSlip = async (e, container_number, fileType) => {
     if (e.target.files.length === 0) {
       alert("No file selected");
       return;
@@ -85,28 +87,27 @@ function JobDetails() {
       const updatedWeighmentSlips = await Promise.all(
         formik.values.container_nos?.map(async (container) => {
           if (container.container_number === container_number) {
-            // Upload the new images
-            const weighmentSlipUrls = [];
+            const fileUrls = [];
 
             for (let i = 0; i < e.target.files.length; i++) {
               const file = e.target.files[i];
               const params = {
-                Bucket: "exim-images-sameer",
-                Key: `weighment_slips/${container_number}/${file.name}`,
+                Bucket: "alvision-exim-images",
+                Key: `${fileType}/${container_number}/${file.name}`,
                 Body: file,
               };
 
               // Upload the file to S3 and wait for the promise to resolve
               const data = await s3.upload(params).promise();
 
-              // Store the S3 URL in the weighmentSlipUrls array
-              weighmentSlipUrls.push({ url: data.Location, container_number });
+              // Store the S3 URL in the fileUrls array
+              fileUrls.push({ url: data.Location, container_number });
             }
 
             // Update the container with the new images, replacing the old ones
             return {
               ...container,
-              weighment_slip_images: weighmentSlipUrls,
+              [fileType]: fileUrls,
             };
           }
 
@@ -137,7 +138,7 @@ function JobDetails() {
       formik.setFieldValue(`container_nos[${index}].transporter`, "");
     }
   };
-
+  console.log(formik.values);
   return (
     <>
       {data !== null && (
@@ -288,11 +289,15 @@ function JobDetails() {
                     name="do_planning_date"
                     value={formik.values.do_planning_date}
                     onChange={formik.handleChange}
-                    inputProps={{
-                      min: data.do_planning_date
-                        ? data.do_planning_date
-                        : today,
-                    }}
+                    inputProps={
+                      user.username === "manu_pillai"
+                        ? ""
+                        : {
+                            min: data.do_planning_date
+                              ? data.do_planning_date
+                              : today,
+                          }
+                    }
                   />
                 </div>
               </Col>
@@ -327,11 +332,15 @@ function JobDetails() {
                     name="do_revalidation_date"
                     value={formik.values.do_revalidation_date}
                     onChange={formik.handleChange}
-                    inputProps={{
-                      min: data.do_revalidation_date
-                        ? data.do_revalidation_date
-                        : today,
-                    }}
+                    inputProps={
+                      user.username === "manu_pillai"
+                        ? ""
+                        : {
+                            min: data.do_planning_date
+                              ? data.do_planning_date
+                              : today,
+                          }
+                    }
                   />
                 </div>
               </Col>
@@ -367,11 +376,15 @@ function JobDetails() {
                     name="examination_planning_date"
                     value={formik.values.examination_planning_date}
                     onChange={formik.handleChange}
-                    inputProps={{
-                      min: data.examination_planning_date
-                        ? data.examination_planning_date
-                        : today,
-                    }}
+                    inputProps={
+                      user.username === "manu_pillai"
+                        ? ""
+                        : {
+                            min: data.do_planning_date
+                              ? data.do_planning_date
+                              : today,
+                          }
+                    }
                   />
                 </div>
               </Col>
@@ -639,12 +652,13 @@ function JobDetails() {
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
                   <Checkbox
-                    value={checked}
+                    checked={formik.values.checked}
                     onChange={(e) => {
                       if (e.target.checked) {
                         setChecked(true);
+                        formik.setFieldValue("checked", true);
                       } else {
-                        setChecked(false);
+                        formik.setFieldValue("checked", false);
                       }
                     }}
                   />
@@ -1054,7 +1068,8 @@ function JobDetails() {
                             onChange={(e) => {
                               handleWeighmentSlip(
                                 e,
-                                container.container_number
+                                container.container_number,
+                                "weighment_slip_images"
                               );
                             }}
                             className="input-hidden"

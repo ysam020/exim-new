@@ -348,9 +348,7 @@ function CutomerKycForm() {
       {formik.touched.category && formik.errors.category ? (
         <div style={{ color: "red" }}>{formik.errors.category}</div>
       ) : null}
-
       <br />
-
       <TextField
         fullWidth
         size="small"
@@ -370,10 +368,8 @@ function CutomerKycForm() {
         }
         className="login-input"
       />
-
       <br />
       <br />
-
       <FormControl>
         <FormLabel id="demo-radio-buttons-group-label">
           <b>Status of Exporter/ Importer</b>
@@ -396,10 +392,8 @@ function CutomerKycForm() {
       {formik.touched.status && formik.errors.status ? (
         <div style={{ color: "red" }}>{formik.errors.status}</div>
       ) : null}
-
       <br />
       <br />
-
       <h4>Permanent Address</h4>
       <TextField
         fullWidth
@@ -549,7 +543,6 @@ function CutomerKycForm() {
         }
         className="login-input"
       />
-
       <br />
       <br />
       <h4>Principal Business Address</h4>
@@ -710,7 +703,6 @@ function CutomerKycForm() {
         }
         className="login-input"
       />
-
       <TextField
         fullWidth
         size="small"
@@ -731,7 +723,6 @@ function CutomerKycForm() {
         }
         className="login-input"
       />
-
       <TextField
         fullWidth
         size="small"
@@ -752,7 +743,6 @@ function CutomerKycForm() {
         }
         className="login-input"
       />
-
       <br />
       <br />
       <h4>Factory Address</h4>
@@ -871,7 +861,6 @@ function CutomerKycForm() {
       >
         Add Factory/ Branch Address
       </button>
-
       <br />
       <br />
       <p>
@@ -899,7 +888,6 @@ function CutomerKycForm() {
           {formik.errors.authorised_signatories}
         </div>
       ) : null}
-
       <br />
       <p>Upload Authorisation Letter</p>
       <input
@@ -921,7 +909,6 @@ function CutomerKycForm() {
         <div style={{ color: "red" }}>{formik.errors.authorisation_letter}</div>
       ) : null}
       <br />
-
       <TextField
         fullWidth
         size="small"
@@ -956,7 +943,6 @@ function CutomerKycForm() {
         <div style={{ color: "red" }}>{formik.errors.iec_copy}</div>
       ) : null}
       <br />
-
       <TextField
         fullWidth
         size="small"
@@ -991,7 +977,6 @@ function CutomerKycForm() {
         <div style={{ color: "red" }}>{formik.errors.pan_copy}</div>
       ) : null}
       <br />
-
       {formik.values.banks?.map((bank, index) => (
         <div key={index}>
           <TextField
@@ -1117,7 +1102,6 @@ function CutomerKycForm() {
           <br />
         </div>
       ))}
-
       <button
         type="button"
         className="btn"
@@ -1127,10 +1111,8 @@ function CutomerKycForm() {
       >
         Add AD Code
       </button>
-
       {getSupportingDocs()}
       <br />
-
       <label style={{ marginRight: "10px" }}>Other documents:</label>
       <input
         type="file"
@@ -1149,8 +1131,16 @@ function CutomerKycForm() {
       {formik.touched.other_documents && formik.errors.other_documents ? (
         <div style={{ color: "red" }}>{formik.errors.other_documents}</div>
       ) : null}
+      {formik.values.other_documents?.length > 0 &&
+        formik.values.other_documents.map((doc, index) => (
+          <>
+            <a key={index} href={doc}>
+              View
+            </a>
+            <br />
+          </>
+        ))}
       <br />
-
       <label style={{ marginRight: "10px" }}>
         SPCB registration certificate
       </label>
@@ -1170,8 +1160,13 @@ function CutomerKycForm() {
       {formik.touched.spcb_reg && formik.errors.spcb_reg ? (
         <div style={{ color: "red" }}>{formik.errors.spcb_reg}</div>
       ) : null}
+      {formik.values.spcb_reg && (
+        <>
+          <a href={formik.values.spcb_reg}>View</a>
+          <br />
+        </>
+      )}
       <br />
-
       <label style={{ marginRight: "10px" }}>KYC verification images:</label>
       <input
         type="file"
@@ -1193,8 +1188,16 @@ function CutomerKycForm() {
           {formik.errors.kyc_verification_images}
         </div>
       ) : null}
+      {formik.values.kyc_verification_images?.length > 0 &&
+        formik.values.kyc_verification_images.map((doc, index) => (
+          <>
+            <a key={index} href={doc}>
+              View
+            </a>
+            <br />
+          </>
+        ))}
       <br />
-
       <label style={{ marginRight: "10px" }}>GST Returns:</label>
       <input
         type="file"
@@ -1209,12 +1212,22 @@ function CutomerKycForm() {
           )
         }
       />
-      <br />
       {formik.touched.gst_returns && formik.errors.gst_returns ? (
         <div style={{ color: "red" }}>{formik.errors.gst_returns}</div>
       ) : null}
       <br />
+      {formik.values.gst_returns?.length > 0 &&
+        formik.values.gst_returns.map((doc, index) => (
+          <>
+            <a key={index} href={doc}>
+              View
+            </a>
 
+            <br />
+          </>
+        ))}
+      <br />
+      <br />
       <button
         type="button"
         className="btn"
@@ -1224,7 +1237,6 @@ function CutomerKycForm() {
       >
         Preview
       </button>
-
       <button
         type="submit"
         className="btn"
@@ -1234,7 +1246,6 @@ function CutomerKycForm() {
       >
         Save draft
       </button>
-
       <button
         type="submit"
         className="btn"
@@ -1244,13 +1255,11 @@ function CutomerKycForm() {
       >
         Submit
       </button>
-
       <Snackbar
         open={fileSnackbar}
         message="File uploaded successfully!"
         sx={{ left: "auto !important", right: "24px !important" }}
       />
-
       <Preview open={open} handleClose={handleClose} data={formik.values} />
     </form>
   );

@@ -103,7 +103,6 @@ const jobSchema = new mongoose.Schema({
   do_revalidation_date: { type: String },
   examinationPlanning: { type: Boolean },
   examination_planning_date: { type: String, trim: true },
-  examination_planning_time: { type: String, trim: true },
   processed_be_attachment: [{ type: String }],
   ooc_copies: [{ type: String }],
   gate_pass_copies: [{ type: String }],
@@ -150,6 +149,7 @@ const jobSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  containers_arrived_on_same_date: Boolean,
   // *******
   remarks: { type: String, trim: true },
   // *******

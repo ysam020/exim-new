@@ -56,6 +56,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       do_revalidation: false,
       do_revalidation_date: "",
       out_of_charge: "",
+      checked: false,
     },
 
     onSubmit: async (values, { resetForm }) => {
@@ -94,6 +95,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           do_revalidation: values.do_revalidation,
           do_revalidation_date: values.do_revalidation_date,
           out_of_charge: values.out_of_charge,
+          checked: values.checked,
         }
       );
       resetForm();
@@ -226,6 +228,10 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
             : data.do_revalidation_date,
         out_of_charge:
           data.out_of_charge === undefined ? "" : data.out_of_charge,
+        checked:
+          data.containers_arrived_on_same_date === undefined
+            ? false
+            : data.containers_arrived_on_same_date,
       });
     }
     // eslint-disable-next-line

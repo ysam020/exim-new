@@ -32,7 +32,7 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
       case "ICD SANAND":
         branch_code = "SND";
         break;
-      case "KHODIYAR":
+      case "ICD KHODIYAR":
         branch_code = "KHD";
         break;
       case "HAZIRA":
@@ -136,6 +136,7 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
         typeof do_revalidation === "string"
           ? do_revalidation === "true"
           : !!do_revalidation,
+      containers_arrived_on_same_date: checked,
     };
 
     Object.assign(matchingJob, updatedFields);
