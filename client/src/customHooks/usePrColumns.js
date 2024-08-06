@@ -94,7 +94,7 @@ function usePrColumns(organisations, containerTypes, locations, truckTypes) {
           >
             <MenuItem value="ICD SANAND">ICD SANAND</MenuItem>
             <MenuItem value="ICD SACHANA">ICD SACHANA</MenuItem>
-            <MenuItem value="KHODIYAR">KHODIYAR</MenuItem>
+            <MenuItem value="ICD KHODIYAR">ICD KHODIYAR</MenuItem>
             <MenuItem value="HAZIRA">HAZIRA</MenuItem>
             <MenuItem value="MUNDRA PORT">MUNDRA PORT</MenuItem>
             <MenuItem value="BARODA">BARODA</MenuItem>

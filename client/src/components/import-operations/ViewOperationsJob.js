@@ -119,14 +119,9 @@ function ViewOperationsJob() {
                     name="examination_date"
                     value={formik.values.examination_date}
                     onChange={formik.handleChange}
-                    error={
-                      formik.touched.examination_date &&
-                      Boolean(formik.errors.examination_date)
-                    }
-                    helperText={
-                      formik.touched.examination_date &&
-                      formik.errors.examination_date
-                    }
+                    inputProps={{
+                      min: data.examination_planning_date,
+                    }}
                   />
                 </div>
               </Col>
@@ -182,7 +177,7 @@ function ViewOperationsJob() {
             <br />
             <Row>
               <Col xs={6}>
-                {data.custom_house === "KHODIYAR" && (
+                {data.custom_house === "ICD KHODIYAR" && (
                   <>
                     <label htmlFor="custodian_gate_pass" className="btn">
                       Upload Custodian Gate Pass Copy

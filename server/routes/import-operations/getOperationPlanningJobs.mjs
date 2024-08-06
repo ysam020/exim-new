@@ -30,7 +30,7 @@ router.get(
         break;
       case "mahesh_patil":
       case "prakash_darji":
-        customHouseCondition = { custom_house: "KHODIYAR" };
+        customHouseCondition = { custom_house: "ICD KHODIYAR" };
         break;
       case "gaurav_singh":
         customHouseCondition = { custom_house: { $in: ["HAZIRA", "BARODA"] } };

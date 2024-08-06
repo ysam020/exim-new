@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get("/api/get-kyc-and-bond-status/:_id", async (req, res) => {
   const { _id } = req.params;
+
   const job = await JobModel.findOne({ _id });
   if (!job) {
     return res.status(200).json({ message: "Data not found" });
@@ -20,9 +21,9 @@ router.get("/api/get-kyc-and-bond-status/:_id", async (req, res) => {
   });
 
   const shipping_line_kyc_completed =
-    kycDocs.kyc_documents?.length > 0 ? "Yes" : "No";
+    kycDocs?.kyc_documents?.length > 0 ? "Yes" : "No";
   const shipping_line_bond_completed =
-    kycDocs.shipping_line_bond_docs?.length > 0 ? "Yes" : "No";
+    kycDocs?.shipping_line_bond_docs?.length > 0 ? "Yes" : "No";
   res.status(200).json({
     shipping_line_kyc_completed,
     shipping_line_bond_completed,

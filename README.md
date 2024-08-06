@@ -34,6 +34,8 @@ AlVision Exim is a comprehensive application designed to streamline export-impor
 8. Customer KYC
 9. Inward Register
 10. Outward Register
+11. LR Report
+12. Tyre maintenance
 
 ## Installation
 

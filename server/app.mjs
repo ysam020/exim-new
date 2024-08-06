@@ -36,11 +36,14 @@ import getRent from "./routes/accounts/getRent.mjs";
 
 // Customer KYC
 import addCustomerKyc from "./routes/customer-kyc/addCustomerKyc.mjs";
-import viewCustomerKyc from "./routes/customer-kyc/viewCustomerKyc.mjs";
+import viewCompletedKyc from "./routes/customer-kyc/viewCompletedKyc.mjs";
 import viewCustomerKycDetails from "./routes/customer-kyc/viewCustomerKycDetails.mjs";
 import customerKycApproval from "./routes/customer-kyc/customerKycApproval.mjs";
 import customerKycDraft from "./routes/customer-kyc/customerKycDraft.mjs";
 import ViewCustomerKycDrafts from "./routes/customer-kyc/viewCustomerKycDrafts.mjs";
+import hodApprovalPending from "./routes/customer-kyc/hodApprovalPending.mjs";
+import approvedByHod from "./routes/customer-kyc/approvedByHod.mjs";
+import viewRevisionList from "./routes/customer-kyc/viewRevisionList.mjs";
 
 // Employee KYC
 import completeKyc from "./routes/employee-kyc/completeKyc.mjs";
@@ -170,6 +173,7 @@ import getDrivers from "./routes/tyre-maintenance/getDrivers.mjs";
 import driverAssignment from "./routes/tyre-maintenance/driverAssignment.mjs";
 import getTyreDetails from "./routes/tyre-maintenance/getTyreDetails.mjs";
 import getTruckDetails from "./routes/tyre-maintenance/getTruckDetails.mjs";
+import JobModel from "./model/jobModel.mjs";
 
 dotenv.config();
 
@@ -237,11 +241,14 @@ if (cluster.isPrimary) {
 
       // Customer KYC
       app.use(addCustomerKyc);
-      app.use(viewCustomerKyc);
+      app.use(viewCompletedKyc);
       app.use(viewCustomerKycDetails);
       app.use(customerKycApproval);
       app.use(customerKycDraft);
       app.use(ViewCustomerKycDrafts);
+      app.use(hodApprovalPending);
+      app.use(approvedByHod);
+      app.use(viewRevisionList);
 
       // Employee KYC
       app.use(completeKyc);

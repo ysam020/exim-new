@@ -811,6 +811,7 @@ function ViewDraftDetails() {
               onChange={(e) => handleGstRegUpload(e, index)}
             />
             <br />
+            {address.gst_reg && <a href={address.gst_reg}>View</a>}
           </div>
         ))}
         <br />
@@ -851,8 +852,11 @@ function ViewDraftDetails() {
             {formik.errors.authorised_signatories}
           </div>
         ) : null}
-
         <br />
+        {formik.values.authorised_signatories && (
+          <a href={formik.values.authorised_signatories}>View</a>
+        )}
+
         <p>Upload Authorisation Letter</p>
         <input
           type="file"
@@ -874,6 +878,9 @@ function ViewDraftDetails() {
             {formik.errors.authorisation_letter}
           </div>
         ) : null}
+        {formik.values.authorisation_letter && (
+          <a href={formik.values.authorisation_letter}>View</a>
+        )}
         <br />
 
         <TextField
@@ -909,6 +916,7 @@ function ViewDraftDetails() {
         {formik.touched.iec_copy && formik.errors.iec_copy ? (
           <div style={{ color: "red" }}>{formik.errors.iec_copy}</div>
         ) : null}
+        {formik.values.iec_copy && <a href={formik.values.iec_copy}>View</a>}
         <br />
 
         <TextField
@@ -944,6 +952,7 @@ function ViewDraftDetails() {
         {formik.touched.pan_copy && formik.errors.pan_copy ? (
           <div style={{ color: "red" }}>{formik.errors.pan_copy}</div>
         ) : null}
+        {formik.values.pan_copy && <a href={formik.values.pan_copy}>View</a>}
         <br />
 
         {formik.values.banks?.map((bank, index) => (
@@ -1069,6 +1078,7 @@ function ViewDraftDetails() {
               onChange={(e) => handleAdCodeFileUpload(e, index)}
             />
             <br />
+            {bank.ad_code_file && <a href={bank.ad_code_file}>View</a>}
           </div>
         ))}
 

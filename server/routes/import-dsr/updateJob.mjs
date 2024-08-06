@@ -7,8 +7,15 @@ const router = express.Router();
 
 router.put("/api/update-job/:year/:jobNo", async (req, res) => {
   const { jobNo, year } = req.params;
-  const { container_nos, arrival_date, free_time, checked } = req.body;
-
+  const {
+    container_nos,
+    arrival_date,
+    free_time,
+    checked,
+    do_validity_upto_job_level,
+    do_revalidation_upto_job_level,
+  } = req.body;
+  console.log(req.body.arrival_date);
   function addDaysToDate(dateString, days) {
     var date = new Date(dateString);
     date.setDate(date.getDate() + days);
@@ -150,6 +157,8 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
             arrival_date === ""
               ? ""
               : addDaysToDate(arrival_date, parseInt(free_time)),
+          do_validity_upto_container_level: do_validity_upto_job_level,
+          do_revalidation_upto_container_level: do_revalidation_upto_job_level,
         };
       });
     } else {
@@ -161,6 +170,8 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
             container.arrival_date === ""
               ? ""
               : addDaysToDate(container.arrival_date, parseInt(free_time)),
+          do_validity_upto_container_level: do_validity_upto_job_level,
+          do_revalidation_upto_container_level: do_revalidation_upto_job_level,
         };
       });
     }

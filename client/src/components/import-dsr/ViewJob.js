@@ -138,7 +138,7 @@ function JobDetails() {
       formik.setFieldValue(`container_nos[${index}].transporter`, "");
     }
   };
-  console.log(formik.values);
+
   return (
     <>
       {data !== null && (
@@ -301,6 +301,22 @@ function JobDetails() {
                   />
                 </div>
               </Col>
+              <Col xs={12} lg={4}>
+                <div className="job-detail-input-container">
+                  <strong>DO Validity Upto&nbsp;</strong>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    margin="normal"
+                    variant="outlined"
+                    type="date"
+                    id="do_validity_upto_job_level"
+                    name="do_validity_upto_job_level"
+                    value={formik.values.do_validity_upto_job_level}
+                    onChange={formik.handleChange}
+                  />
+                </div>
+              </Col>
             </Row>
             <Row>
               <Col xs={12} lg={3}>
@@ -341,6 +357,22 @@ function JobDetails() {
                               : today,
                           }
                     }
+                  />
+                </div>
+              </Col>
+              <Col xs={12} lg={4}>
+                <div className="job-detail-input-container">
+                  <strong>DO Revalidation Upto&nbsp;</strong>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    margin="normal"
+                    variant="outlined"
+                    type="date"
+                    id="do_revalidation_upto_job_level"
+                    name="do_revalidation_upto_job_level"
+                    value={formik.values.do_revalidation_upto_job_level}
+                    onChange={formik.handleChange}
                   />
                 </div>
               </Col>
@@ -658,6 +690,7 @@ function JobDetails() {
                         setChecked(true);
                         formik.setFieldValue("checked", true);
                       } else {
+                        setChecked(false);
                         formik.setFieldValue("checked", false);
                       }
                     }}
@@ -688,7 +721,6 @@ function JobDetails() {
             </Row>
 
             <br />
-            <br />
             <Row>
               <Col xs={6}>
                 <strong>DO Copies:&nbsp;</strong>
@@ -703,6 +735,7 @@ function JobDetails() {
                   );
                 })}
               </Col>
+              <Col xs={12} lg={4}></Col>
               <Col xs={6}>
                 <label htmlFor="processed_be_attachment" className="btn">
                   Upload Processed BE Attachment
@@ -920,6 +953,43 @@ function JobDetails() {
                         {checked && <Col></Col>}
                       </Row>
 
+                      <Row>
+                        <Col xs={12} lg={3}>
+                          <div className="job-detail-input-container">
+                            <strong>DO Revalidation Date:&nbsp;</strong>
+                            <TextField
+                              fullWidth
+                              key={index}
+                              size="small"
+                              margin="normal"
+                              variant="outlined"
+                              type="date"
+                              id={`do_revalidation_date_${index}`}
+                              name={`container_nos[${index}].do_revalidation_date`}
+                              value={container.do_revalidation_date}
+                              onChange={formik.handleChange}
+                            />
+                          </div>
+                        </Col>
+                        <Col xs={12} lg={3}>
+                          <div className="job-detail-input-container">
+                            <strong>DO Validity Upto:&nbsp;</strong>
+                            <TextField
+                              fullWidth
+                              key={index}
+                              size="small"
+                              margin="normal"
+                              variant="outlined"
+                              type="date"
+                              id={`do_validity_upto_container_level_${index}`}
+                              name={`container_nos[${index}].do_validity_upto_container_level`}
+                              value={container.do_validity_upto_container_level}
+                              onChange={formik.handleChange}
+                            />
+                          </div>
+                        </Col>
+                      </Row>
+
                       <Row className="job-detail-row">
                         <Col xs={12} lg={3}>
                           <div className="job-detail-input-container">
@@ -960,7 +1030,7 @@ function JobDetails() {
 
                         <Col xs={12} lg={3}>
                           <div className="job-detail-input-container">
-                            <strong>Net Weight as per Document:&nbsp;</strong>
+                            <strong>Weight as per Document:&nbsp;</strong>
                             <TextField
                               fullWidth
                               key={index}

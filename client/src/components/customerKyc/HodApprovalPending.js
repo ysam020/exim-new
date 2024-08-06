@@ -5,13 +5,13 @@ import useTableConfig from "../../customHooks/useTableConfig";
 import { Link } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 
-function ViewCustomerKycList() {
+function HodApprovalPending() {
   const [data, setData] = useState([]);
   const { user } = useContext(UserContext);
   useEffect(() => {
     async function getData() {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_STRING}/view-customer-kyc`
+        `${process.env.REACT_APP_API_STRING}/hod-approval-pending`
       );
       setData(res.data);
     }
@@ -38,18 +38,6 @@ function ViewCustomerKycList() {
     },
     { accessorKey: "iec_no", header: "IEC", enableSorting: false, size: 120 },
     {
-      accessorKey: "approval",
-      header: "Approval Status",
-      enableSorting: false,
-      size: 120,
-    },
-    {
-      accessorKey: "approved_by",
-      header: "Approved By",
-      enableSorting: false,
-      size: 140,
-    },
-    {
       accessorKey: "remarks",
       header: "Remarks",
       enableSorting: false,
@@ -67,19 +55,6 @@ function ViewCustomerKycList() {
           ""
         ),
     },
-    {
-      accessorKey: "revision",
-      header: "Actions",
-      enableSorting: false,
-      size: 120,
-      Cell: ({ cell }) =>
-        cell.row.original.remarks &&
-        cell.row.original.remarks !== "" && (
-          <Link to={`/revise-customer-kyc/${cell.row.original._id}`}>
-            Revise
-          </Link>
-        ),
-    },
   ];
   const table = useTableConfig(data, columns);
   return (
@@ -89,4 +64,4 @@ function ViewCustomerKycList() {
     </div>
   );
 }
-export default React.memo(ViewCustomerKycList);
+export default React.memo(HodApprovalPending);

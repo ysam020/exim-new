@@ -13,6 +13,14 @@ export const convertToExcel = async (
     alert("No Data to export");
     return;
   }
+  const uniqueDetailedStatuses = [
+    ...new Set(
+      rowsWithoutBillNo
+        .map((row) => row.detailed_status)
+        .filter((status) => status !== undefined && status !== null)
+    ),
+  ];
+
   const dateOfReport = new Date().toLocaleDateString();
   const headers = [
     "JOB NO",
@@ -145,6 +153,65 @@ export const convertToExcel = async (
   // Add a worksheet
   const worksheet = workbook.addWorksheet("Sheet1");
 
+  ///////////////////////////////////////  Reference Row  //////////////////////////////////////
+
+  const referenceRow = ["REFERENCE", ...uniqueDetailedStatuses];
+  worksheet.insertRow(1, referenceRow); // Insert at the top
+
+  // Apply formatting to the reference row
+  const referenceRowExcel = worksheet.getRow(1);
+  referenceRowExcel.font = { size: 12, bold: true };
+  referenceRowExcel.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+    cell.alignment = {
+      horizontal: "center",
+      vertical: "middle",
+      indent: 1, // Adds padding to the left (simulates padding)
+      wrapText: true, // Wrap text within the cell
+    };
+    cell.border = {
+      top: { style: "thin" },
+      left: { style: "thin" },
+      bottom: { style: "thin" },
+      right: { style: "thin" },
+    };
+
+    if (colNumber === 1) {
+      // First cell with "REFERENCE"
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "4472c4" }, // Dark Blue background for REFERENCE
+      };
+      cell.font = { color: { argb: "FFFFFFFF" }, size: 12, bold: true }; // White text for REFERENCE
+    } else {
+      // Cells with detailed statuses
+      const detailedStatus = cell.value;
+      let bgColor = "FFFF99"; // Default color
+
+      // Apply the specific color based on the detailed status
+      if (detailedStatus === "Estimated Time of Arrival") {
+        bgColor = "ffffff99"; // Light Yellow
+      } else if (detailedStatus === "Custom Clearance Completed") {
+        bgColor = "ffccffff"; // Light Blue
+      } else if (detailedStatus === "Discharged") {
+        bgColor = "ffffcc99"; // Light Orange
+      } else if (detailedStatus === "BE Noted, Arrival Pending") {
+        bgColor = "ff99ccff"; // Light Purple
+      } else if (detailedStatus === "BE Noted, Clearance Pending") {
+        bgColor = "ff99ccff"; // Light Purple
+      } else if (detailedStatus === "Gateway IGM Filed") {
+        bgColor = "ffffcc99"; // Light Orange
+      }
+
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: bgColor },
+      };
+      cell.font = { color: { argb: "FF000000" }, size: 12, bold: true }; // Black text for statuses
+    }
+  });
+
   ///////////////////////////////////////  Title Row  //////////////////////////////////////
   // Merge cells for the title row
   const endColumnIndex = headers.length - 1;
@@ -153,10 +220,10 @@ export const convertToExcel = async (
       ? String.fromCharCode(65 + endColumnIndex)
       : String.fromCharCode(64 + Math.floor(endColumnIndex / 26)) +
         String.fromCharCode(65 + (endColumnIndex % 26));
-  worksheet.mergeCells(`A1:${endColumn}1`);
+  worksheet.mergeCells(`A3:${endColumn}3`);
 
   // Set the title for title row
-  const titleRow = worksheet.getRow(1);
+  const titleRow = worksheet.getRow(3);
   titleRow.getCell(1).value = `${importer}: Status as of ${dateOfReport}`;
 
   // Apply formatting to the title row
@@ -185,7 +252,7 @@ export const convertToExcel = async (
   worksheet.addRow(headers);
 
   // Apply formatting to the header row
-  const headerRow = worksheet.getRow(2);
+  const headerRow = worksheet.getRow(4);
   while (headerRow.cellCount > headers.length) {
     headerRow.getCell(headerRow.cellCount).value = undefined;
   }
@@ -245,7 +312,7 @@ export const convertToExcel = async (
       dataRow.fill = {
         type: "pattern",
         pattern: "solid",
-        fgColor: { argb: "ffc4a6ec" },
+        fgColor: { argb: "ff99ccff" },
       };
     } else if (detailedStatus === "Gateway IGM Filed") {
       dataRow.fill = {
@@ -341,7 +408,7 @@ export const convertToExcel = async (
       column.width = maxLength < 25 ? 25 : maxLength;
     }
     if (headers[id] === "JOB NO") {
-      column.width = 10;
+      column.width = 15;
     }
     if (headers[id] === "BE NUMBER") {
       column.width = 15;
@@ -384,57 +451,6 @@ export const convertToExcel = async (
     }
   });
 
-  ///////////////////////////////////////////
-  ///////////////////////////////////////////
-  ///////////////////////////////////////////
-  /////////////////////////////////////  Additional Table  //////////////////////////////////////
-  // Add a new section for the additional table
-  worksheet.addRow([]);
-  worksheet.addRow([]);
-  worksheet.addRows([]);
-
-  // Define the content for the additional table
-  const additionalTableData = [
-    // { color: "FFFFFFFF", text: "" },
-    { color: "FFCCFFFF", text: "CUSTOM CLEARANCE COMPLETED" },
-    { color: "FF8EAADB", text: "BE NOTED, CLEARANCE PENDING" },
-    { color: "f4b083", text: "BE NOTED, ARRIVAL PENDING" },
-    { color: "ffff66", text: "SEA IGM FILED" },
-    { color: "FFFFFFFF", text: "ESTIMATED TIME OF ARRIVAL" },
-    // Add more rows as needed
-  ];
-
-  // Loop through the additional table data and add rows to the worksheet
-  for (const row of additionalTableData) {
-    const additionalTableRow = worksheet.addRow([]);
-
-    // Add an empty cell to the first column
-    const firstCell = additionalTableRow.getCell(1);
-
-    // Set background color based on row color
-    firstCell.fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: row.color },
-    };
-
-    // Add text to the second column
-    additionalTableRow.getCell(2).value = row.text;
-
-    // Apply formatting to the entire row
-    additionalTableRow.eachCell({ includeEmpty: true }, (cell) => {
-      cell.alignment = { horizontal: "center", vertical: "middle" };
-      cell.border = {
-        top: { style: "thin" },
-        left: { style: "thin" },
-        bottom: { style: "thin" },
-        right: { style: "thin" },
-      };
-    });
-
-    // Set row height for the additional table rows
-    additionalTableRow.height = 20; // You can adjust the height as needed
-  }
   worksheet.addRow([]);
   worksheet.addRow([]);
 
@@ -578,10 +594,7 @@ export const convertToExcel = async (
     };
   }
 
-  ///////////////////////////////////////////
-  ///////////////////////////////////////////
-  ///////////////////////////////////////////
-
+  ///////////////////////////////////////////////////////////////////////
   // Generate Excel file
   const excelBuffer = await workbook.xlsx.writeBuffer();
 

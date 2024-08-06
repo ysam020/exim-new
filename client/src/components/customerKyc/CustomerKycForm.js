@@ -115,7 +115,6 @@ function CutomerKycForm() {
       trust_telephone_of_founder: "",
       trust_email_of_founder: "",
     },
-
     onSubmit: async (values, { resetForm }) => {
       try {
         validateBanks(values.banks);
@@ -142,6 +141,7 @@ function CutomerKycForm() {
           alert(res.data.message);
           resetForm();
         }
+        localStorage.removeItem("kycFormValues");
       } catch (error) {
         console.error("Error during submission", error);
       }
@@ -150,6 +150,24 @@ function CutomerKycForm() {
 
   const { getSupportingDocs, fileSnackbar, setFileSnackbar } =
     useSupportingDocuments(formik);
+
+  // Save form data to localStorage every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      localStorage.setItem("kycFormValues", JSON.stringify(formik.values));
+    }, 5000);
+
+    // Cleanup the interval on component unmount
+    return () => clearInterval(interval);
+  }, [formik.values]);
+
+  useEffect(() => {
+    // Load form values from localStorage
+    const storedValues = JSON.parse(localStorage.getItem("kycFormValues"));
+    if (storedValues) {
+      formik.setValues(storedValues);
+    }
+  }, []);
 
   const handleAddField = () => {
     formik.setValues({
@@ -185,6 +203,7 @@ function CutomerKycForm() {
       ],
     });
   };
+
   const handleGstRegUpload = (e, index) => {
     const file = e.target.files[0];
 
@@ -240,7 +259,7 @@ function CutomerKycForm() {
 
   useEffect(() => {
     const fetchCityAndState = async () => {
-      if (formik.values.permanent_address_pin_code.length === 6) {
+      if (formik.values.permanent_address_pin_code?.length === 6) {
         const data = await getCityAndStateByPinCode(
           formik.values.permanent_address_pin_code
         );
@@ -250,7 +269,7 @@ function CutomerKycForm() {
         }
       }
 
-      if (formik.values.principle_business_address_pin_code.length === 6) {
+      if (formik.values.principle_business_address_pin_code?.length === 6) {
         const data = await getCityAndStateByPinCode(
           formik.values.principle_business_address_pin_code
         );
@@ -273,7 +292,7 @@ function CutomerKycForm() {
     const errors = [];
 
     banks.forEach((bank, index) => {
-      if (bank.ad_code.length !== 7) {
+      if (bank.ad_code?.length !== 7) {
         errors.push("Invalid AD code");
       }
 
@@ -288,30 +307,30 @@ function CutomerKycForm() {
       }
     });
 
-    if (errors.length > 0) {
+    if (errors?.length > 0) {
       alert(errors.join("\n"));
     }
 
     return errors;
   };
 
-  const handleFieldChange = (event) => {
-    formik.handleChange(event);
-    // Only unset sameAsPermanentAddress if it was previously checked and user starts editing a principle business address field
-    if (
-      formik.values.sameAsPermanentAddress &&
-      event.target.name.startsWith("principle_business_address")
-    ) {
-      formik.setValues({
-        ...formik.values,
-        sameAsPermanentAddress: false,
-        [event.target.name]: event.target.value,
-      });
-    }
+  // Start a new form
+  const handleNewForm = () => {
+    formik.resetForm();
   };
 
   return (
     <form onSubmit={formik.handleSubmit} className="feedback-form">
+      <button
+        type="button"
+        className="btn"
+        style={{ marginTop: 0 }}
+        onClick={handleNewForm}
+      >
+        Start with a new form
+      </button>
+      <br />
+      <br />
       <FormControl>
         <FormLabel id="demo-radio-buttons-group-label">
           <b>Category</b>
@@ -404,7 +423,7 @@ function CutomerKycForm() {
         name="permanent_address_line_1"
         label="Permanent or Registered Office Address Line 1"
         value={formik.values.permanent_address_line_1}
-        onChange={handleFieldChange}
+        onChange={formik.handleChange}
         error={
           formik.touched.permanent_address_line_1 &&
           Boolean(formik.errors.permanent_address_line_1)
@@ -424,7 +443,7 @@ function CutomerKycForm() {
         name="permanent_address_line_2"
         label="Permanent or Registered Office Address Line 2"
         value={formik.values.permanent_address_line_2}
-        onChange={handleFieldChange}
+        onChange={formik.handleChange}
         error={
           formik.touched.permanent_address_line_2 &&
           Boolean(formik.errors.permanent_address_line_2)
@@ -446,7 +465,7 @@ function CutomerKycForm() {
             name="permanent_address_pin_code"
             label="PIN Code"
             value={formik.values.permanent_address_pin_code}
-            onChange={handleFieldChange}
+            onChange={formik.handleChange}
             error={
               formik.touched.permanent_address_pin_code &&
               Boolean(formik.errors.permanent_address_pin_code)
@@ -468,7 +487,7 @@ function CutomerKycForm() {
             name="permanent_address_city"
             label="City"
             value={formik.values.permanent_address_city}
-            onChange={handleFieldChange}
+            onChange={formik.handleChange}
             error={
               formik.touched.permanent_address_city &&
               Boolean(formik.errors.permanent_address_city)
@@ -490,7 +509,7 @@ function CutomerKycForm() {
             name="permanent_address_state"
             label="State"
             value={formik.values.permanent_address_state}
-            onChange={handleFieldChange}
+            onChange={formik.handleChange}
             error={
               formik.touched.permanent_address_state &&
               Boolean(formik.errors.permanent_address_state)
@@ -512,7 +531,7 @@ function CutomerKycForm() {
         name="permanent_address_telephone"
         label="Mobile"
         value={formik.values.permanent_address_telephone}
-        onChange={handleFieldChange}
+        onChange={formik.handleChange}
         error={
           formik.touched.permanent_address_telephone &&
           Boolean(formik.errors.permanent_address_telephone)
@@ -532,7 +551,7 @@ function CutomerKycForm() {
         name="permanent_address_email"
         label="Email"
         value={formik.values.permanent_address_email}
-        onChange={handleFieldChange}
+        onChange={formik.handleChange}
         error={
           formik.touched.permanent_address_email &&
           Boolean(formik.errors.permanent_address_email)
@@ -564,7 +583,7 @@ function CutomerKycForm() {
         name="principle_business_address_line_1"
         label="Principal Business Address/es from which business is transacted Line 1"
         value={formik.values.principle_business_address_line_1}
-        onChange={handleFieldChange}
+        onChange={formik.handleChange}
         error={
           formik.touched.principle_business_address_line_1 &&
           Boolean(formik.errors.principle_business_address_line_1)
@@ -584,7 +603,7 @@ function CutomerKycForm() {
         name="principle_business_address_line_2"
         label="Principal Business Address/es from which business is transacted Line 2"
         value={formik.values.principle_business_address_line_2}
-        onChange={handleFieldChange}
+        onChange={formik.handleChange}
         error={
           formik.touched.principle_business_address_line_2 &&
           Boolean(formik.errors.principle_business_address_line_2)
@@ -606,7 +625,7 @@ function CutomerKycForm() {
             name="principle_business_address_pin_code"
             label="PIN Code"
             value={formik.values.principle_business_address_pin_code}
-            onChange={handleFieldChange}
+            onChange={formik.handleChange}
             error={
               formik.touched.principle_business_address_pin_code &&
               Boolean(formik.errors.principle_business_address_pin_code)
@@ -628,7 +647,7 @@ function CutomerKycForm() {
             name="principle_business_address_city"
             label="City"
             value={formik.values.principle_business_address_city}
-            onChange={handleFieldChange}
+            onChange={formik.handleChange}
             error={
               formik.touched.principle_business_address_city &&
               Boolean(formik.errors.principle_business_address_city)
@@ -650,7 +669,7 @@ function CutomerKycForm() {
             name="principle_business_address_state"
             label="State"
             value={formik.values.principle_business_address_state}
-            onChange={handleFieldChange}
+            onChange={formik.handleChange}
             error={
               formik.touched.principle_business_address_state &&
               Boolean(formik.errors.principle_business_address_state)
@@ -672,7 +691,7 @@ function CutomerKycForm() {
         name="principle_business_telephone"
         label="Mobile"
         value={formik.values.principle_business_telephone}
-        onChange={handleFieldChange}
+        onChange={formik.handleChange}
         error={
           formik.touched.principle_business_telephone &&
           Boolean(formik.errors.principle_business_telephone)
@@ -692,7 +711,7 @@ function CutomerKycForm() {
         name="principle_address_email"
         label="Email"
         value={formik.values.principle_address_email}
-        onChange={handleFieldChange}
+        onChange={formik.handleChange}
         error={
           formik.touched.principle_address_email &&
           Boolean(formik.errors.principle_address_email)
@@ -700,26 +719,6 @@ function CutomerKycForm() {
         helperText={
           formik.touched.principle_address_email &&
           formik.errors.principle_address_email
-        }
-        className="login-input"
-      />
-      <TextField
-        fullWidth
-        size="small"
-        margin="dense"
-        variant="filled"
-        id="principle_business_telephone"
-        name="principle_business_telephone"
-        label="Mobile"
-        value={formik.values.principle_business_telephone}
-        onChange={formik.handleChange}
-        error={
-          formik.touched.principle_business_telephone &&
-          Boolean(formik.errors.principle_business_telephone)
-        }
-        helperText={
-          formik.touched.principle_business_telephone &&
-          formik.errors.principle_business_telephone
         }
         className="login-input"
       />
@@ -758,7 +757,7 @@ function CutomerKycForm() {
                 id={`factory_addresses[${index}].factory_address_line_1`}
                 name={`factory_addresses[${index}].factory_address_line_1`}
                 label={`Factory Address Line 1`}
-                value={address.address}
+                value={address.factory_address_line_1}
                 onChange={formik.handleChange}
                 className="login-input"
               />
@@ -772,7 +771,7 @@ function CutomerKycForm() {
                 id={`factory_addresses[${index}].factory_address_line_2`}
                 name={`factory_addresses[${index}].factory_address_line_2`}
                 label={`Factory Address Line 2`}
-                value={address.address}
+                value={address.factory_address_line_2}
                 onChange={formik.handleChange}
                 className="login-input"
               />
@@ -789,7 +788,7 @@ function CutomerKycForm() {
                 id={`factory_addresses[${index}].factory_address_city`}
                 name={`factory_addresses[${index}].factory_address_city`}
                 label={`City`}
-                value={address.address}
+                value={address.factory_address_city}
                 onChange={formik.handleChange}
                 className="login-input"
               />
@@ -803,7 +802,7 @@ function CutomerKycForm() {
                 id={`factory_addresses[${index}].factory_address_state`}
                 name={`factory_addresses[${index}].factory_address_state`}
                 label={`State`}
-                value={address.address}
+                value={address.factory_address_state}
                 onChange={formik.handleChange}
                 className="login-input"
               />
@@ -817,7 +816,7 @@ function CutomerKycForm() {
                 id={`factory_addresses[${index}].factory_address_pin_code`}
                 name={`factory_addresses[${index}].factory_address_pin_code`}
                 label="PIN Code"
-                value={address.address}
+                value={address.factory_address_pin_code}
                 onChange={formik.handleChange}
                 className="login-input"
               />
@@ -849,6 +848,7 @@ function CutomerKycForm() {
             onChange={(e) => handleGstRegUpload(e, index)}
           />
           <br />
+          {address.gst_reg && <a href={address.gst_reg}>View</a>}
         </div>
       ))}
       <br />
@@ -870,7 +870,6 @@ function CutomerKycForm() {
       </p>
       <input
         type="file"
-        multiple
         onChange={(e) =>
           handleSingleFileUpload(
             e,
@@ -889,10 +888,13 @@ function CutomerKycForm() {
         </div>
       ) : null}
       <br />
+      {formik.values.authorised_signatories && (
+        <a href={formik.values.authorised_signatories}>View</a>
+      )}
+
       <p>Upload Authorisation Letter</p>
       <input
         type="file"
-        multiple
         onChange={(e) =>
           handleSingleFileUpload(
             e,
@@ -908,6 +910,9 @@ function CutomerKycForm() {
       formik.errors.authorisation_letter ? (
         <div style={{ color: "red" }}>{formik.errors.authorisation_letter}</div>
       ) : null}
+      {formik.values.authorisation_letter && (
+        <a href={formik.values.authorisation_letter}>View</a>
+      )}
       <br />
       <TextField
         fullWidth
@@ -942,7 +947,9 @@ function CutomerKycForm() {
       {formik.touched.iec_copy && formik.errors.iec_copy ? (
         <div style={{ color: "red" }}>{formik.errors.iec_copy}</div>
       ) : null}
+      {formik.values.iec_copy && <a href={formik.values.iec_copy}>View</a>}
       <br />
+
       <TextField
         fullWidth
         size="small"
@@ -976,6 +983,7 @@ function CutomerKycForm() {
       {formik.touched.pan_copy && formik.errors.pan_copy ? (
         <div style={{ color: "red" }}>{formik.errors.pan_copy}</div>
       ) : null}
+      {formik.values.pan_copy && <a href={formik.values.pan_copy}>View</a>}
       <br />
       {formik.values.banks?.map((bank, index) => (
         <div key={index}>
@@ -1100,6 +1108,7 @@ function CutomerKycForm() {
             onChange={(e) => handleAdCodeFileUpload(e, index)}
           />
           <br />
+          {bank.ad_code_file && <a href={bank.ad_code_file}>View</a>}
         </div>
       ))}
       <button

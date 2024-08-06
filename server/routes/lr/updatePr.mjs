@@ -117,7 +117,7 @@ router.post("/api/update-pr", async (req, res) => {
         case "ICD SANAND":
           branch_code = "SND";
           break;
-        case "KHODIYAR":
+        case "ICD KHODIYAR":
           branch_code = "KHD";
           break;
         case "HAZIRA":

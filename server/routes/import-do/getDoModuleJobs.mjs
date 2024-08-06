@@ -8,7 +8,7 @@ router.get("/api/get-do-module-jobs", async (req, res) => {
     const jobs = await JobModel.find(
       {
         $and: [
-          { $or: [{ out_of_charge: "" }, { out_of_charge: "--" }] },
+          { $or: [{ out_of_charge: "" }] },
           {
             $or: [
               { do_processed_attachment: { $exists: false } },

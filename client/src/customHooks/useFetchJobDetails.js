@@ -8,7 +8,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
   const [data, setData] = useState(null);
   const [detentionFrom, setDetentionFrom] = useState([]);
   const navigate = useNavigate();
-
+  console.log(detentionFrom);
   // Fetch data
   useEffect(() => {
     async function getJobDetails() {
@@ -31,6 +31,8 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       detailed_status: "",
       free_time: "",
       arrival_date: "",
+      do_validity_upto_job_level: "",
+      do_revalidation_upto_job_level: "",
       checklist: [],
       remarks: "",
       description: "",
@@ -70,6 +72,8 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           detailed_status: values.detailed_status,
           container_nos: values.container_nos,
           arrival_date: values.arrival_date,
+          do_validity_upto_job_level: values.do_validity_upto_job_level,
+          do_revalidation_upto_job_level: values.do_revalidation_upto_job_level,
           checklist: values.checklist,
           remarks: values.remarks,
           description: values.description,
@@ -147,6 +151,18 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           container.physical_weight === undefined
             ? ""
             : container.physical_weight,
+        do_revalidation_date:
+          container.do_revalidation_date === undefined
+            ? ""
+            : container.do_revalidation_date,
+        do_validity_upto_container_level:
+          container.do_validity_upto_container_level === undefined
+            ? ""
+            : container.do_validity_upto_container_level,
+        do_revalidation_upto_container_level:
+          container.do_revalidation_upto_container_level === undefined
+            ? ""
+            : container.do_revalidation_upto_container_level,
         tare_weight:
           container.tare_weight === undefined ? "" : container.tare_weight,
         actual_weight:
@@ -191,6 +207,14 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           data.examination_planning_date === undefined
             ? ""
             : data.examination_planning_date,
+        do_validity_upto_job_level:
+          data.do_validity_upto_job_level === undefined
+            ? ""
+            : data.do_validity_upto_job_level,
+        do_revalidation_upto_job_level:
+          data.do_revalidation_upto_job_level === undefined
+            ? ""
+            : data.do_revalidation_upto_job_level,
         checklist: data.checklist === undefined ? [] : data.checklist,
         remarks: data.remarks === undefined ? "" : data.remarks,
         description: data.description === undefined ? "" : data.description,
@@ -237,7 +261,6 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     // eslint-disable-next-line
   }, [data]);
 
-  // Update detention-from date
   useEffect(() => {
     function addDaysToDate(dateString, days) {
       var date = new Date(dateString);
@@ -249,31 +272,35 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     }
 
     if (formik.values.container_nos !== "" && data !== null) {
+      let updatedDate = [];
+
       // If all containers do not arrive at the same time, use the arrival date of individual container
       if (!checked) {
-        const updatedDate = formik.values.container_nos?.map((container) =>
+        updatedDate = formik.values.container_nos?.map((container) =>
           addDaysToDate(
             container.arrival_date,
             parseInt(formik.values.free_time)
           )
-            .split("-")
-            .reverse()
-            .join("-")
         );
-        setDetentionFrom(updatedDate);
       } else {
         // If all containers arrive at the same time, use the common arrival date
-        const updatedDate = formik.values.container_nos?.map((container) =>
+        updatedDate = formik.values.container_nos?.map((container) =>
           addDaysToDate(
             formik.values.arrival_date,
             parseInt(formik.values.free_time)
           )
-            .split("-")
-            .reverse()
-            .join("-")
         );
-        setDetentionFrom(updatedDate);
       }
+
+      setDetentionFrom(updatedDate);
+
+      // Find the earliest date from updatedDate
+      const earliestDate = updatedDate.reduce((earliest, current) => {
+        return current < earliest ? current : earliest;
+      });
+
+      // Set do_validity_upto_job_level to the earliest date
+      formik.setFieldValue("do_validity_upto_job_level", earliestDate);
     }
     // eslint-disable-next-line
   }, [

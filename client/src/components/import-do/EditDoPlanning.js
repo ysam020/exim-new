@@ -115,21 +115,7 @@ function EditDoPlanning() {
             onChange={formik.handleChange}
           />
         )}
-        {/* Upload UTR */}
-        <label htmlFor="utr" className="btn">
-          Upload UTR
-        </label>
-        <input
-          type="file"
-          multiple
-          name="utr"
-          id="utr"
-          onChange={(e) =>
-            handleFileUpload(e, "utr", "utr", formik, setFileSnackbar)
-          }
-          style={{ display: "none" }}
-        />
-        <br />
+        <strong>UTR:&nbsp;</strong>
         {formik.values.utr?.map((file, index) => {
           return (
             <div key={index}>
@@ -138,6 +124,7 @@ function EditDoPlanning() {
             </div>
           );
         })}
+        <br />
         {/* Upload Shipping Line Attachment */}
         <label htmlFor="shipping_line_attachment" className="btn">
           Upload Shipping Line Attachment
