@@ -71,6 +71,16 @@ function JobDetails() {
     }
   };
 
+  const handleBlStatusChange = (event) => {
+    const selectedValue = event.target.value;
+
+    if (selectedValue === "clear") {
+      formik.setFieldValue("obl_telex_bl", "");
+    } else {
+      formik.setFieldValue("obl_telex_bl", selectedValue);
+    }
+  };
+
   const handleWeighmentSlip = async (e, container_number, fileType) => {
     if (e.target.files.length === 0) {
       alert("No file selected");
@@ -256,6 +266,52 @@ function JobDetails() {
                     </MenuItem>
                   </TextField>
                 </div>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <FormControl>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    name="radio-buttons-group"
+                    value={formik.values.obl_telex_bl}
+                    onChange={handleBlStatusChange}
+                  >
+                    <FormControlLabel
+                      value="OBL"
+                      control={
+                        <Radio checked={formik.values.obl_telex_bl === "OBL"} />
+                      }
+                      label="OBL"
+                    />
+                    <FormControlLabel
+                      value="Telex"
+                      control={
+                        <Radio
+                          checked={formik.values.obl_telex_bl === "Telex"}
+                        />
+                      }
+                      label="Telex"
+                    />
+                    <FormControlLabel
+                      value="Surrender BL"
+                      control={
+                        <Radio
+                          checked={
+                            formik.values.obl_telex_bl === "Surrender BL"
+                          }
+                        />
+                      }
+                      label="Surrender BL"
+                    />
+                    <FormControlLabel
+                      value="clear"
+                      control={<Radio />}
+                      label="Clear"
+                    />
+                  </RadioGroup>
+                </FormControl>
               </Col>
             </Row>
             <Row>

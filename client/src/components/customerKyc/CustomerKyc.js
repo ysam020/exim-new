@@ -46,16 +46,16 @@ function CustomerKyc() {
               <ViewDrafts />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-              <HodApprovalPending />
+              <RevisionList />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
-              <ApprovedByHod />
+              <HodApprovalPending />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={4}>
-              <CompletedKyc />
+              <ApprovedByHod />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={5}>
-              <RevisionList />
+              <CompletedKyc />
             </CustomTabPanel>
           </Box>
         </Box>

@@ -15,7 +15,7 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
     do_validity_upto_job_level,
     do_revalidation_upto_job_level,
   } = req.body;
-  console.log(req.body.arrival_date);
+
   function addDaysToDate(dateString, days) {
     var date = new Date(dateString);
     date.setDate(date.getDate() + days);

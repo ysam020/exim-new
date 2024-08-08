@@ -15,5 +15,6 @@ export const moduleCategories = {
   "Exit Feedback": "HR & Management",
   "Tyre Maintenance": "SRCC",
   "SRCC Directories": "SRCC",
+  RTO: "SRCC",
   Export: "Export",
 };

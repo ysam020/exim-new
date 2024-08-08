@@ -45,6 +45,12 @@ function ApprovedByHod() {
       size: 120,
     },
     {
+      accessorKey: "approved_by",
+      header: "Approved By",
+      enableSorting: false,
+      size: 250,
+    },
+    {
       accessorKey: "action",
       header: "View",
       enableSorting: false,

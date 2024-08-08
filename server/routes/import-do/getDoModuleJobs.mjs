@@ -10,10 +10,7 @@ router.get("/api/get-do-module-jobs", async (req, res) => {
         $and: [
           { $or: [{ out_of_charge: "" }] },
           {
-            $or: [
-              { do_processed_attachment: { $exists: false } },
-              { do_processed_attachment: [] },
-            ],
+            $or: [{ do_documents: { $exists: false } }, { do_documents: [] }],
           },
           { $or: [{ doPlanning: true }, { doPlanning: "true" }] },
         ],

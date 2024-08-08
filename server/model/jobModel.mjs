@@ -100,6 +100,7 @@ const jobSchema = new mongoose.Schema({
   status: { type: String, trim: true },
   detailed_status: { type: String, trim: true },
   // *******
+  obl_telex_bl: { type: String },
   doPlanning: { type: Boolean },
   do_planning_date: { type: String, trim: true },
   do_validity_upto_job_level: { type: String, trim: true },
@@ -170,7 +171,7 @@ const jobSchema = new mongoose.Schema({
   shipping_line_invoice_received_date: { type: String, trim: true },
   // *******
   security_deposit: { type: String },
-  shipping_line_amount: { type: String },
+  security_amount: { type: String },
   utr: [
     {
       type: String,
@@ -189,9 +190,8 @@ const jobSchema = new mongoose.Schema({
   payment_made: { type: String, trim: true },
   payment_made_date: { type: String, trim: true },
   do_processed: { type: String, trim: true },
-  do_processed_attachment: [{ type: String, trim: true }],
+  do_documents: [{ type: String, trim: true }],
   do_processed_date: { type: String, trim: true },
-  obl_telex_bl: { type: String },
   do_copies: [{ type: String }],
   shipping_line_invoice: { type: String, trim: true },
   shipping_line_invoice_date: { type: String },
