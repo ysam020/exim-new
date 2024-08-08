@@ -5,7 +5,7 @@ import {
 } from "material-react-table";
 import { useFormik } from "formik";
 import axios from "axios";
-import { uploadFileToS3 } from "../../utils/uploadFileToS3";
+import { uploadFileToS3 } from "../../utils/awsFileUpload";
 import * as Yup from "yup";
 import {
   Button,

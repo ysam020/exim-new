@@ -4,7 +4,7 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import axios from "axios";
-import { uploadFileToS3 } from "../../utils/uploadFileToS3";
+import { uploadFileToS3 } from "../../utils/awsFileUpload";
 import {
   Button,
   TextField,
@@ -617,21 +617,6 @@ const RtoDetails = () => {
         <DialogTitle>Edit Vehicle</DialogTitle>
         <form onSubmit={formik.handleSubmit}>
           <DialogContent>
-            {/* <TextField
-              margin="dense"
-              label="Truck Number"
-              type="text"
-              fullWidth
-              name="truck_no"
-              value={formik.values.truck_no}
-              onChange={formik.handleChange}
-              error={formik.touched.truck_no && Boolean(formik.errors.truck_no)}
-              helperText={formik.touched.truck_no && formik.errors.truck_no}
-              InputProps={{
-                readOnly: true,
-              }}
-            /> */}
-
             <Typography
               variant="body1"
               sx={{
@@ -755,6 +740,7 @@ const RtoDetails = () => {
                 id="number_plate"
                 name="number_plate"
                 value={formik.values.number_plate}
+                InputLabelProps={{ shrink: true }}
                 onChange={formik.handleChange}
                 error={
                   formik.touched.number_plate &&

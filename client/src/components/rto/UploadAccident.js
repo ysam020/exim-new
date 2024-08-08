@@ -5,7 +5,7 @@ import {
 } from "material-react-table";
 import { useFormik } from "formik";
 import axios from "axios";
-import { uploadFileToS3 } from "../../utils/uploadFileToS3";
+import { uploadFileToS3 } from "../../utils/awsFileUpload";
 import * as Yup from "yup";
 
 import {
@@ -41,26 +41,31 @@ function UploadAccident() {
   const [isAddMode, setIsAddMode] = useState(false);
   const [confirmOverride, setConfirmOverride] = useState(false);
   const [currentField, setCurrentField] = useState(null);
+  const [vehicleTypeOptions, setVehicleTypeOptions] = useState([]);
 
   const apiBaseURL = `${process.env.REACT_APP_API_STRING}`;
   const addrtoAccidents = `${apiBaseURL}/vehicle/${selectedTruckNo}/add-accident`;
   const getTruckNumberAPI = `${apiBaseURL}/get-vehicles`;
+  const getTypeOfVehiclesAPI = `${apiBaseURL}/get-type-of-vehicles`;
   const deleteRtoAccident = `${apiBaseURL}/vehicle/${selectedTruckNo}/delete-accident`;
+  console.log(vehicleTypeOptions);
 
-  const vehicleTypeOptions = [
-    "20 Feet 10 Wheels",
-    "20 Feet 12 Wheels",
-    "20 Feet 2-Axle Trailer",
-    "20 Feet 2-Axle Tipper Trailer",
-    "40 Feet 2-Axle Trailer",
-    "40 Feet 3-Axle Trailer",
-    "40 Feet 2-Axle Tipper Trailer",
-  ];
   const now = new Date();
   const todayDate = now.toISOString().split("T")[0]; // Local date in YYYY-MM-DD
   const todayTime = now.toISOString().split("T")[1].slice(0, 5); // Local time in HH:MM
   console.log(todayDate, todayTime);
+  useEffect(() => {
+    const fetchVehicleTypes = async () => {
+      try {
+        const response = await axios.get(getTypeOfVehiclesAPI);
+        setVehicleTypeOptions(response.data);
+      } catch (error) {
+        console.error("Error fetching vehicle types:", error);
+      }
+    };
 
+    fetchVehicleTypes();
+  }, [getTypeOfVehiclesAPI]);
   useEffect(() => {
     async function getTruckNumber() {
       try {
@@ -579,33 +584,7 @@ function UploadAccident() {
               helperText={formik.touched.time && formik.errors.time}
               inputProps={{ max: todayTime }}
             />
-            {/* <TextField
-  fullWidth
-  margin="normal"
-  label="Date"
-  name="date"
-  type="date"
-  InputLabelProps={{ shrink: true }}
-  value={formik.values.date}
-  onChange={formik.handleChange}
-  error={formik.touched.date && Boolean(formik.errors.date)}
-  helperText={formik.touched.date && formik.errors.date}
-  max={new Date().toISOString().split('T')[0]}
-/>
-
-<TextField
-  fullWidth
-  margin="normal"
-  label="Time"
-  name="time"
-  type="time"
-  InputLabelProps={{ shrink: true }}
-  value={formik.values.time}
-  onChange={formik.handleChange}
-  error={formik.touched.time && Boolean(formik.errors.time)}
-  helperText={formik.touched.time && formik.errors.time}
-  max={new Date().toISOString().split('T')[1].slice(0, 5)}
-/> */}
+            
             <TextField
               fullWidth
               margin="normal"
