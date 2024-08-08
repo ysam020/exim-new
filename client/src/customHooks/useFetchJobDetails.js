@@ -8,7 +8,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
   const [data, setData] = useState(null);
   const [detentionFrom, setDetentionFrom] = useState([]);
   const navigate = useNavigate();
-  console.log(detentionFrom);
+
   // Fetch data
   useEffect(() => {
     async function getJobDetails() {
@@ -25,6 +25,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
   const formik = useFormik({
     initialValues: {
       container_nos: "",
+      obl_telex_bl: "",
       vessel_berthing: "",
       discharge_date: "",
       status: "",
@@ -100,6 +101,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           do_revalidation_date: values.do_revalidation_date,
           out_of_charge: values.out_of_charge,
           checked: values.checked,
+          obl_telex_bl: values.obl_telex_bl,
         }
       );
       resetForm();
@@ -121,6 +123,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           ? "nfmims"
           : ""
       );
+
       const container_nos = data.container_nos?.map((container) => ({
         arrival_date:
           container.arrival_date === undefined
@@ -181,6 +184,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
 
       formik.setValues({
         ...{ container_nos },
+        obl_telex_bl: data.obl_telex_bl ? data.obl_telex_bl : "",
         arrival_date: container_nos[0]?.arrival_date,
         vessel_berthing:
           data.vessel_berthing === undefined
