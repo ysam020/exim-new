@@ -53,6 +53,8 @@ import SrccDirectories from "../components/srcc-directories/SrccDirectories.js";
 import ViewSrccOrganisationData from "../components/srcc-directories/view-data/ViewSrccOrganisationData.js";
 // Tyre Maintenance
 import TyreMaintenance from "../components/tyre-maintenance/TyreMaintenance.js";
+// RTO
+import RTO from "../components/rto/RTO.js";
 
 const drawerWidth = 60;
 
@@ -186,6 +188,8 @@ function HomePage() {
 
             {/* Tyre Maintenance */}
             <Route path="/tyre-maintenance" element={<TyreMaintenance />} />
+            {/* RTO */}
+            <Route path="/rto" element={<RTO />} />
           </Routes>
         </Box>
       </Box>

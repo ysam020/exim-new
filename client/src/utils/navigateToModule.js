@@ -28,6 +28,8 @@ export const navigateToModule = (module, navigate) => {
       return navigate("/tyre-maintenance");
     case "SRCC Directories":
       return navigate("/srcc-directories");
+    case "RTO":
+      return navigate("/rto");
     default:
       return navigate("/home");
   }
