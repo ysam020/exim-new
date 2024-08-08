@@ -39,8 +39,6 @@ const imapConfig = {
   },
 };
 
-console.log(imapConfig);
-
 const watchEmailAddresses = process.env.WATCH_EMAIL_ADDRESSES.split(",");
 
 const processMessages = async (messages, connection) => {

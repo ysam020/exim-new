@@ -1,11 +1,11 @@
 import * as React from "react";
-import MenuItem from "@mui/material/MenuItem";
-import { TextField } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
 import { handleFileUpload } from "../../utils/awsFileUpload";
 import { useParams } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
+import { Checkbox, FormControlLabel, TextField } from "@mui/material";
+import { Row, Col } from "react-bootstrap";
 
 function EditDoPlanning() {
   const [data, setData] = React.useState();
@@ -18,7 +18,14 @@ function EditDoPlanning() {
       const res = await axios.get(
         `${process.env.REACT_APP_API_STRING}/get-job-by-id/${_id}`
       );
-      setData(res.data);
+      setData({
+        ...res.data,
+        shipping_line_invoice: res.data.shipping_line_invoice === "Yes",
+        payment_made: res.data.payment_made === "Yes",
+        do_processed: res.data.do_processed === "Yes",
+        other_invoices: res.data.other_invoices === "Yes",
+        security_deposit: res.data.security_deposit === "Yes",
+      });
     }
 
     getData();
@@ -26,23 +33,32 @@ function EditDoPlanning() {
 
   const formik = useFormik({
     initialValues: {
-      security_deposit: "",
+      security_deposit: false,
       security_amount: "",
       utr: [],
-      other_invoices: "",
+      other_invoices: false,
       other_invoices_img: [],
-      payment_made: "",
-      do_processed: "",
+      payment_made: false,
+      do_processed: false,
       do_documents: [],
       do_validity: "",
       do_copies: [],
-      shipping_line_invoice: "",
+      shipping_line_invoice: false,
       shipping_line_invoice_date: "",
       shipping_line_invoice_imgs: [],
     },
 
     onSubmit: async (values, { resetForm }) => {
-      const data = { ...values, _id };
+      // Convert booleans back to "Yes" or "No"
+      const data = {
+        ...values,
+        _id,
+        shipping_line_invoice: values.shipping_line_invoice ? "Yes" : "No",
+        payment_made: values.payment_made ? "Yes" : "No",
+        do_processed: values.do_processed ? "Yes" : "No",
+        other_invoices: values.other_invoices ? "Yes" : "No",
+        security_deposit: values.security_deposit ? "Yes" : "No",
+      };
       const res = await axios.post(
         `${process.env.REACT_APP_API_STRING}/update-do-planning`,
         data
@@ -90,21 +106,76 @@ function EditDoPlanning() {
         {data?.obl_telex_bl}
         <br />
 
-        <TextField
-          select
-          fullWidth
-          size="small"
-          margin="normal"
-          variant="outlined"
-          id="shipping_line_invoice"
-          name="shipping_line_invoice"
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={formik.values.shipping_line_invoice}
+              onChange={(e) =>
+                formik.setFieldValue("shipping_line_invoice", e.target.checked)
+              }
+              name="shipping_line_invoice"
+              color="primary"
+            />
+          }
           label="Shipping line invoice"
-          value={formik.values.shipping_line_invoice}
-          onChange={formik.handleChange}
-        >
-          <MenuItem value="No">No</MenuItem>
-          <MenuItem value="Yes">Yes</MenuItem>
-        </TextField>
+        />
+
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={formik.values.payment_made}
+              onChange={(e) =>
+                formik.setFieldValue("payment_made", e.target.checked)
+              }
+              name="payment_made"
+              color="primary"
+            />
+          }
+          label="Payment Made"
+        />
+
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={formik.values.do_processed}
+              onChange={(e) =>
+                formik.setFieldValue("do_processed", e.target.checked)
+              }
+              name="do_processed"
+              color="primary"
+            />
+          }
+          label="DO processed"
+        />
+
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={formik.values.other_invoices}
+              onChange={(e) =>
+                formik.setFieldValue("other_invoices", e.target.checked)
+              }
+              name="other_invoices"
+              color="primary"
+            />
+          }
+          label="Other invoices"
+        />
+
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={formik.values.security_deposit}
+              onChange={(e) =>
+                formik.setFieldValue("security_deposit", e.target.checked)
+              }
+              name="security_deposit"
+              color="primary"
+            />
+          }
+          label="Security Deposit"
+        />
+
         <TextField
           date
           fullWidth
@@ -119,156 +190,107 @@ function EditDoPlanning() {
           onChange={formik.handleChange}
           InputLabelProps={{ shrink: true }}
         />
-        {/* Upload Shipping Line Invoices */}
-        <label htmlFor="shipping_line_invoice_imgs" className="btn">
-          Upload Shipping Line Invoices
-        </label>
-        <input
-          type="file"
-          multiple
-          name="shipping_line_invoice_imgs"
-          id="shipping_line_invoice_imgs"
-          onChange={(e) =>
-            handleFileUpload(
-              e,
-              "shipping_line_invoice_imgs",
-              "shipping_line_invoice_imgs",
-              formik,
-              setFileSnackbar
-            )
-          }
-          style={{ display: "none" }}
-        />
+
+        <Row>
+          <Col>
+            {/* Upload Shipping Line Invoices */}
+            <label htmlFor="shipping_line_invoice_imgs" className="btn">
+              Upload Shipping Line Invoices
+            </label>
+            <input
+              type="file"
+              multiple
+              name="shipping_line_invoice_imgs"
+              id="shipping_line_invoice_imgs"
+              onChange={(e) =>
+                handleFileUpload(
+                  e,
+                  "shipping_line_invoice_imgs",
+                  "shipping_line_invoice_imgs",
+                  formik,
+                  setFileSnackbar
+                )
+              }
+              style={{ display: "none" }}
+            />
+            <br />
+            <br />
+            {formik.values.shipping_line_invoice_imgs?.map((file, index) => {
+              return (
+                <div key={index}>
+                  <a href={file}>{file}</a>
+                  <br />
+                </div>
+              );
+            })}
+          </Col>
+          <Col>
+            {/* Upload DO Processed Attachment */}
+            <label htmlFor="do_documents" className="btn">
+              DO Documents
+            </label>
+            <input
+              type="file"
+              multiple
+              name="do_documents"
+              id="do_documents"
+              onChange={(e) =>
+                handleFileUpload(
+                  e,
+                  "do_documentss",
+                  "do_documents",
+                  formik,
+                  setFileSnackbar
+                )
+              }
+              style={{ display: "none" }}
+            />
+            <br />
+            <br />
+            {formik.values.do_documents?.map((file, index) => {
+              return (
+                <div key={index}>
+                  <a href={file}>{file}</a>
+                  <br />
+                </div>
+              );
+            })}
+          </Col>
+          <Col>
+            {/* Upload Other Invoices */}
+            <label htmlFor="other_invoices_img" className="btn">
+              Upload Other Invoices
+            </label>
+            <input
+              type="file"
+              multiple
+              name="other_invoices_img"
+              id="other_invoices_img"
+              onChange={(e) =>
+                handleFileUpload(
+                  e,
+                  "other_invoices_img",
+                  "other_invoices_img",
+                  formik,
+                  setFileSnackbar
+                )
+              }
+              style={{ display: "none" }}
+            />
+            <br />
+            <br />
+            {formik.values.other_invoices_img?.map((file, index) => {
+              return (
+                <div key={index}>
+                  <a href={file}>{file}</a>
+                  <br />
+                </div>
+              );
+            })}
+          </Col>
+        </Row>
+
         <br />
-        {formik.values.shipping_line_invoice_imgs?.map((file, index) => {
-          return (
-            <div key={index}>
-              <a href={file}>{file}</a>
-              <br />
-            </div>
-          );
-        })}
-        <br />
-
-        <TextField
-          select
-          fullWidth
-          size="small"
-          margin="normal"
-          variant="outlined"
-          id="payment_made"
-          name="payment_made"
-          label="Payment made"
-          value={formik.values.payment_made}
-          onChange={formik.handleChange}
-        >
-          <MenuItem value="No">No</MenuItem>
-          <MenuItem value="Yes">Yes</MenuItem>
-        </TextField>
-
-        <TextField
-          select
-          fullWidth
-          size="small"
-          margin="normal"
-          variant="outlined"
-          id="do_processed"
-          name="do_processed"
-          label="DO processed"
-          value={formik.values.do_processed}
-          onChange={formik.handleChange}
-        >
-          <MenuItem value="No">No</MenuItem>
-          <MenuItem value="Yes">Yes</MenuItem>
-        </TextField>
-        {/* Upload DO Processed Attachment */}
-        <label htmlFor="do_documents" className="btn">
-          DO Documents
-        </label>
-        <input
-          type="file"
-          multiple
-          name="do_documents"
-          id="do_documents"
-          onChange={(e) =>
-            handleFileUpload(
-              e,
-              "do_documentss",
-              "do_documents",
-              formik,
-              setFileSnackbar
-            )
-          }
-          style={{ display: "none" }}
-        />
-        {formik.values.do_documents?.map((file, index) => {
-          return (
-            <div key={index}>
-              <a href={file}>{file}</a>
-              <br />
-            </div>
-          );
-        })}
-
-        <TextField
-          select
-          fullWidth
-          size="small"
-          margin="normal"
-          variant="outlined"
-          id="other_invoices"
-          name="other_invoices"
-          label="Other invoices"
-          value={formik.values.other_invoices}
-          onChange={formik.handleChange}
-        >
-          <MenuItem value="No">No</MenuItem>
-          <MenuItem value="Yes">Yes</MenuItem>
-        </TextField>
-        {/* Upload Other Invoices */}
-        <label htmlFor="other_invoices_img" className="btn">
-          Upload Other Invoices
-        </label>
-        <input
-          type="file"
-          multiple
-          name="other_invoices_img"
-          id="other_invoices_img"
-          onChange={(e) =>
-            handleFileUpload(
-              e,
-              "other_invoices_img",
-              "other_invoices_img",
-              formik,
-              setFileSnackbar
-            )
-          }
-          style={{ display: "none" }}
-        />
-        {formik.values.other_invoices_img?.map((file, index) => {
-          return (
-            <div key={index}>
-              <a href={file}>{file}</a>
-              <br />
-            </div>
-          );
-        })}
-
-        <TextField
-          select
-          fullWidth
-          size="small"
-          margin="normal"
-          variant="outlined"
-          id="security_deposit"
-          name="security_deposit"
-          label="Security deposit"
-          value={formik.values.security_deposit}
-          onChange={formik.handleChange}
-        >
-          <MenuItem value="No">No</MenuItem>
-          <MenuItem value="Yes">Yes</MenuItem>
-        </TextField>
         {formik.values.security_deposit === "Yes" && (
           <TextField
             fullWidth
@@ -291,6 +313,7 @@ function EditDoPlanning() {
             </div>
           );
         })}
+        <br />
         <br />
 
         <TextField
@@ -327,15 +350,16 @@ function EditDoPlanning() {
           style={{ display: "none" }}
         />
         <br />
+        <br />
         {formik.values.do_copies?.map((file, index) => {
           return (
             <div key={index}>
               <a href={file}>{file}</a>
-              <br />
             </div>
           );
         })}
 
+        <br />
         <button type="submit" className="btn">
           Submit
         </button>

@@ -1,0 +1,166 @@
+[
+  {
+    "_id": {
+      "$oid": "655dd5b9900842bb54ff1c01"
+    },
+    "truck_no": "GJ01CV4935",
+    "max_tyres": "11",
+    "units": "1",
+    "__v": 0
+  },
+
+  {
+    "_id": {
+      "$oid": "655dd6cf900842bb54ff1c25"
+    },
+    "truck_no": "GJ18AZ4229",
+    "max_tyres": "19",
+    "units": "2",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "655dd669900842bb54ff1c10"
+    },
+    "truck_no": "GJ18AX6955",
+    "max_tyres": "15",
+    "units": "2",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "66a08e36e3d5af608158eac9"
+    },
+    "truck_no": "AA00AA0000",
+    "max_tyres": "5 Wheel",
+    "units": "a",
+    "drivers": [],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "655dd6de900842bb54ff1c28"
+    },
+    "truck_no": "GJ18AX6284",
+    "max_tyres": "19",
+    "units": "2",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "656849fc482e9b3773fc0251"
+    },
+    "truck_no": "GJ12Z3234",
+    "max_tyres": "15",
+    "units": "1",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "659e66c761d8fc2903d88a84"
+    },
+    "truck_no": "GJ18AU8480",
+    "max_tyres": "12",
+    "units": "1",
+    "_date": "10/01/2024",
+    "__v": 0
+  },
+
+  {
+    "_id": {
+      "$oid": "655dd6b3900842bb54ff1c1f"
+    },
+    "truck_no": "GJ18AV7468",
+    "max_tyres": "19",
+    "units": "2",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "656849c5482e9b3773fc024b"
+    },
+    "truck_no": "GJ12Z2989",
+    "max_tyres": "15",
+    "units": "1",
+    "__v": 0
+  },
+
+  {
+    "_id": {
+      "$oid": "655dd6ec900842bb54ff1c2b"
+    },
+    "truck_no": "GJ01CX2097",
+    "max_tyres": "19",
+    "units": "2",
+    "__v": 0
+  },
+
+  {
+    "_id": {
+      "$oid": "655dd650900842bb54ff1c0a"
+    },
+    "truck_no": "GJ18AZ0849",
+    "max_tyres": "15",
+    "units": "2",
+    "__v": 0
+  },
+
+  {
+    "_id": {
+      "$oid": "655dd67c900842bb54ff1c16"
+    },
+    "truck_no": "GJ18AZ5588",
+    "max_tyres": "15",
+    "units": "2",
+    "__v": 0
+  },
+
+  {
+    "_id": {
+      "$oid": "655dd671900842bb54ff1c13"
+    },
+    "truck_no": "GJ18AX0063",
+    "max_tyres": "15",
+    "units": "2",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "655dcd89900842bb54ff1bea"
+    },
+    "truck_no": "GJ18AZ4495",
+    "max_tyres": "5",
+    "units": "1",
+    "__v": 0
+  },
+
+  {
+    "_id": {
+      "$oid": "65684a21482e9b3773fc0254"
+    },
+    "truck_no": "GJ20U7188",
+    "max_tyres": "11",
+    "units": "1",
+    "__v": 0
+  },
+
+  {
+    "_id": {
+      "$oid": "655dd65e900842bb54ff1c0d"
+    },
+    "truck_no": "GJ18BT5220",
+    "max_tyres": "15",
+    "units": "2",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "659e8c4c61d8fc2903d88b0c"
+    },
+    "truck_no": "TN48PO4226",
+    "max_tyres": "18",
+    "units": "AA",
+    "_date": "10/01/2024",
+    "__v": 0
+  }
+]
