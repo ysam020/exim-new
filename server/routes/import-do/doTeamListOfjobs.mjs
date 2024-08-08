@@ -11,7 +11,6 @@ router.get("/api/do-team-list-of-jobs", async (req, res) => {
       $or: [
         { shipping_line_bond_completed_date: { $exists: false } },
         { shipping_line_bond_completed_date: "" },
-        { shipping_line_bond_completed_date: { $ne: "" } },
       ],
       $or: [
         { shipping_line_kyc_completed_date: { $exists: false } },
