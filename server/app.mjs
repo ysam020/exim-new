@@ -185,7 +185,7 @@ const MONGODB_URI =
     : process.env.DEV_MONGODB_URI;
 
 const numOfCPU = os.availableParallelism();
-
+console.log(MONGODB_URI);
 if (cluster.isPrimary) {
   for (let i = 0; i < numOfCPU; i++) {
     cluster.fork();
