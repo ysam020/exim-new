@@ -9,6 +9,7 @@ router.post("/api/update-do-list", async (req, res) => {
     shipping_line_bond_completed,
     shipping_line_kyc_completed,
     shipping_line_invoice_received,
+    shipping_line_insurance,
     kyc_documents,
     kyc_valid_upto,
     shipping_line_bond_valid_upto,
@@ -34,7 +35,7 @@ router.post("/api/update-do-list", async (req, res) => {
       existingJob.shipping_line_invoice_received !== "Yes";
 
     // Create an object to hold the fields to update
-    const updateFields = {};
+    const updateFields = { shipping_line_insurance: shipping_line_insurance };
 
     // Update date fields based on conditions
     if (shouldUpdateBondDate && shipping_line_bond_completed === "Yes") {

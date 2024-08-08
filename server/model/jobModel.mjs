@@ -169,6 +169,7 @@ const jobSchema = new mongoose.Schema({
   shipping_line_kyc_completed_date: { type: String, trim: true },
   shipping_line_invoice_received: { type: String, trim: true },
   shipping_line_invoice_received_date: { type: String, trim: true },
+  shipping_line_insurance: [{ type: String, trim: true }],
   // *******
   security_deposit: { type: String },
   security_amount: { type: String },
