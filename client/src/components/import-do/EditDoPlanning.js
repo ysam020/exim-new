@@ -1,10 +1,30 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
-import { handleFileUpload } from "../../utils/awsFileUpload";
+// import { handleFileUpload } from "../../utils/awsFileUpload";
+import { uploadFileToS3 } from "../../utils/awsFileUpload";
 import { useParams } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
-import { Checkbox, FormControlLabel, TextField } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+// import { Checkbox, FormControlLabel, TextField } from "@mui/material";
+import {
+  Checkbox,
+  FormControlLabel,
+  TextField,
+  Button,
+  Box,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  DialogContentText,
+} from "@mui/material";
 import { Row, Col } from "react-bootstrap";
 
 function EditDoPlanning() {
@@ -12,6 +32,10 @@ function EditDoPlanning() {
   const [kycData, setKycData] = React.useState("");
   const [fileSnackbar, setFileSnackbar] = React.useState(false);
   const { _id } = useParams();
+  //
+  const [deleteIndex, setDeleteIndex] = useState(null);
+  const [currentField, setCurrentField] = useState(null);
+  const [openImageDeleteModal, setOpenImageDeleteModal] = useState(false);
 
   React.useEffect(() => {
     async function getData() {
@@ -87,6 +111,114 @@ function EditDoPlanning() {
 
     // eslint-disable-next-line
   }, [data]);
+
+  //
+  const handleFileUpload = async (event, fieldName) => {
+    const files = event.target.files;
+    const uploadedFiles = [...(formik.values[fieldName] || [])];
+    for (const file of files) {
+      try {
+        const result = await uploadFileToS3(file, fieldName);
+        uploadedFiles.push(result.Location);
+      } catch (error) {
+        // toast.error(`Failed to upload ${file.name}. Please try again.`);
+      }
+    }
+    formik.setFieldValue(fieldName, uploadedFiles);
+  };
+
+  const handleDeleteImage = (fieldName, index) => {
+    const currentFieldValue = formik.values[fieldName] || [];
+    const newImages = [...currentFieldValue];
+    newImages.splice(index, 1);
+    formik.setFieldValue(fieldName, newImages);
+    // toast.success("Image deleted successfully.");
+  };
+
+  const ConfirmDialog = ({ open, handleClose, handleConfirm, message }) => (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{"Are you sure?"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          {message}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleConfirm} color="primary" autoFocus>
+          Confirm
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+  const renderImagePreview = (fieldName) => {
+    const links = (formik.values[fieldName] || []).filter(
+      (link) => link.trim() !== ""
+    );
+    if (links.length === 0) return null;
+    const handleClickOpen = (index, fieldName) => {
+      setDeleteIndex(index);
+      setCurrentField(fieldName);
+      setOpenImageDeleteModal(true);
+    };
+    const handleClose = () => {
+      setOpenImageDeleteModal(false);
+    };
+    const handleConfirm = () => {
+      handleDeleteImage(currentField, deleteIndex);
+      setOpenImageDeleteModal(false);
+    };
+    return (
+      <Box mt={1} style={{ maxHeight: "150px", overflowY: "auto" }}>
+        <Table size="small" stickyHeader>
+          <TableHead>
+            <TableRow>
+              <TableCell>Link</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {links.map((link, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  <a
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: "none", color: "blue" }}
+                  >
+                    {link}
+                  </a>
+                </TableCell>
+                <TableCell>
+                  <IconButton
+                    onClick={() => handleClickOpen(index, fieldName)}
+                    color="error"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <ConfirmDialog
+          open={openImageDeleteModal}
+          handleClose={handleClose}
+          handleConfirm={handleConfirm}
+          message={`Are you sure you want to delete this image from the server as well?`}
+        />
+      </Box>
+    );
+  };
+  //
 
   return (
     <div>
@@ -223,6 +355,7 @@ function EditDoPlanning() {
                 </div>
               );
             })}
+            {renderImagePreview("shipping_line_invoice_imgs")}
           </Col>
           <Col>
             {/* Upload DO Processed Attachment */}
@@ -255,6 +388,7 @@ function EditDoPlanning() {
                 </div>
               );
             })}
+            {renderImagePreview("do_documents")}
           </Col>
           <Col>
             {/* Upload Other Invoices */}
@@ -287,6 +421,8 @@ function EditDoPlanning() {
                 </div>
               );
             })}
+
+            {renderImagePreview("other_invoices_img")}
           </Col>
         </Row>
 
@@ -358,6 +494,7 @@ function EditDoPlanning() {
             </div>
           );
         })}
+        {renderImagePreview("do_copies")}
 
         <br />
         <button type="submit" className="btn">
