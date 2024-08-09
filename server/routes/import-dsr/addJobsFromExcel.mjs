@@ -167,7 +167,10 @@ router.post("/api/jobs/add-job", async (req, res) => {
 });
 
 function computeStatus(billDate) {
-  return billDate === "" || billDate === "--" ? "Pending" : "Completed";
+  if (!billDate || billDate.trim() === "" || billDate === "--") {
+    return "Pending";
+  }
+  return "Completed";
 }
 
 export default router;

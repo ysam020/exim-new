@@ -5,6 +5,7 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import { Link } from "react-router-dom";
+import DoPlanningContainerTable from "./DoPlanningContainerTable";
 
 function DoPlanning() {
   const [rows, setRows] = useState([]);
@@ -84,14 +85,24 @@ function DoPlanning() {
     enableDensityToggle: false, // Disable density toggle
     initialState: {
       density: "compact",
-      columnPinning: { left: ["job_no"] },
     }, // Set initial table density to compact
     enableGrouping: true, // Enable row grouping
     enableColumnFilters: false, // Disable column filters
     enableColumnActions: false,
+    enableExpandAll: false,
     muiTableBodyRowProps: ({ row }) => ({
       className: getTableRowsClassname(row),
     }),
+    renderDetailPanel: ({ row }) => {
+      return (
+        <div style={{ padding: "0 !important" }}>
+          <DoPlanningContainerTable
+            job_no={row.original.job_no}
+            year={row.original.year}
+          />
+        </div>
+      );
+    },
   });
 
   const getTableRowsClassname = (params) => {

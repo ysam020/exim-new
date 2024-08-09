@@ -213,6 +213,23 @@ if (cluster.isPrimary) {
       maxPoolSize: 1000,
     })
     .then(async () => {
+      app.get("/", async (req, res) => {
+        try {
+          // Update all documents where bill_no is "--" and set bill_no to an empty string
+          const result = await JobModel.updateMany(
+            { bill_no: "--" },
+            { $set: { bill_no: "" } }
+          );
+
+          // Find and return the updated documents
+          const updatedJobs = await JobModel.find({ bill_no: "" });
+
+          res.send(updatedJobs);
+        } catch (error) {
+          res.status(500).send("An error occurred while updating the jobs");
+        }
+      });
+
       app.use(getAllUsers);
       app.use(getImporterList);
       app.use(getJobById);

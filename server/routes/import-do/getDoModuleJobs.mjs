@@ -15,7 +15,7 @@ router.get("/api/get-do-module-jobs", async (req, res) => {
           { $or: [{ doPlanning: true }, { doPlanning: "true" }] },
         ],
       },
-      "job_no importer awb_bl_no shipping_line_airline custom_house obl_telex_bl payment_made"
+      "job_no year importer awb_bl_no shipping_line_airline custom_house obl_telex_bl payment_made"
     );
 
     res.status(200).send(jobs);

@@ -1,6 +1,24 @@
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
+const formatDate = (dateStr) => {
+  return dateStr ? new Date(dateStr).toLocaleDateString("en-GB") : "";
+};
+
+const formatContainerDates = (containers, dateField) => {
+  // Filter out null or empty date strings and map using formatDate
+  const validDates = containers
+    .map((container) => container[dateField])
+    .filter((date) => date) // Removes null and empty strings
+    .map((date) => formatDate(date)); // Convert each date to the local format
+
+  if (validDates.length === 0) return ""; // If no valid dates, return empty string
+
+  // Check if all valid dates are the same
+  const allDatesSame = validDates.every((date) => date === validDates[0]);
+  return allDatesSame ? validDates[0] : validDates.join(",\n");
+};
+
 export const convertToExcel = async (
   rows,
   importer,
@@ -54,16 +72,17 @@ export const convertToExcel = async (
 
   // Row headers
   const dataWithHeaders = rowsWithoutBillNo.map((item) => {
-    const arrivalDates = item.container_nos
-      .map((container) => container.arrival_date)
-      .join(",\n");
+    const arrivalDates = formatContainerDates(
+      item.container_nos,
+      "arrival_date"
+    );
+    const detentionFrom = formatContainerDates(
+      item.container_nos,
+      "detention_from"
+    );
 
     const containerNumbers = item.container_nos
       .map((container) => container.container_number)
-      .join(",\n");
-
-    const detentionFrom = item.container_nos
-      .map((container) => container.detention_from)
       .join(",\n");
 
     const size = item.container_nos
@@ -77,24 +96,24 @@ export const convertToExcel = async (
       "JOB NO": item.job_no,
       "CUSTOM HOUSE": item.custom_house,
       "SIMS REG NO": item.sims_reg_no,
-      "JOB DATE": item.job_date,
+      "JOB DATE": formatDate(item.job_date),
       IMPORTER: item.importer,
       "SUPPLIER/ EXPORTER": item.supplier_exporter,
       "INVOICE NUMBER": item.invoice_number,
       "INVOICE DATE": item.invoice_date,
       "AWB/ BL NUMBER": item.awb_bl_no,
-      "AWB/ BL DATE": item.awb_bl_date,
+      "AWB/ BL DATE": formatDate(item.awb_bl_date),
       COMMODITY: item.description,
       "BE NUMBER": item.be_no,
-      "BE DATE": item.be_date,
+      "BE DATE": formatDate(item.be_date),
       "TYPE OF BE": item.type_of_b_e,
       "NUMBER OF PACKAGES": item.no_of_pkgs,
       UNIT: item.unit,
       "GROSS WEIGHT": item.gross_weight,
       "GATEWAY IGM": item.gateway_igm,
-      "GATEWAY IGM DATE": item.gateway_igm_date,
+      "GATEWAY IGM DATE": formatDate(item.gateway_igm_date),
       "IGM NUMBER": item.igm_no,
-      "IGM DATE": item.igm_date,
+      "IGM DATE": formatDate(item.igm_date),
       "LOADING PORT": item.loading_port,
       "ORIGIN COUNTRY": item.origin_country,
       "PORT OF REPORTING": item.port_of_reporting,
@@ -113,20 +132,20 @@ export const convertToExcel = async (
       "OUT OF CHARGE": item.out_of_charge,
       "CONSIGNMENT TYPE": item.consignment_type,
       "BILL NUMBER": item.bill_no,
-      "BILL DATE": item.bill_date,
+      "BILL DATE": formatDate(item.bill_date),
       "CTH NUMBER": item.cth_no,
       STATUS: item.status,
       "DETAILED STATUS": item.detailed_status,
       CHECKLIST: item.checklist,
       "DO VALIDITY": item.do_validity,
-      vessel_berthing_date: item.vessel_berthing_date,
+      vessel_berthing_date: formatDate(item.vessel_berthing_date),
       "FREE TIME": item.free_time,
       "INVOICE VALUE AND UNIT PRICE": invoice_value_and_unit_price,
       REMARKS: item.remarks,
-      "ASSESSMENT DATE": item.assessment_date,
-      "EXAMINATION DATE": item.examination_date,
-      "DUTY PAID DATE": item.duty_paid_date,
-      "OUT OF CHARGE DATE": item.out_of_charge_date,
+      "ASSESSMENT DATE": formatDate(item.assessment_date),
+      "EXAMINATION DATE": formatDate(item.examination_date),
+      "DUTY PAID DATE": formatDate(item.duty_paid_date),
+      "OUT OF CHARGE DATE": formatDate(item.out_of_charge),
     };
 
     // eslint-disable-next-line
@@ -468,29 +487,24 @@ export const convertToExcel = async (
 
   worksheet.mergeCells(`A${summaryRow.number}:E${summaryRow.number}`); // Merge cells for the "Summary" row
 
-  const containersWithSize20AndArrival = rowsWithoutBillNo.filter((item) => {
-    return item.container_nos.some(
-      (container) => container.size === "20" && container.arrival_date
-    );
-  }).length;
+  let containersWithSize20AndArrival = 0;
+  let containersWithSize40AndArrival = 0;
+  let containersWithSize20AndNoArrival = 0;
+  let containersWithSize40AndNoArrival = 0;
 
-  const containersWithSize40AndArrival = rowsWithoutBillNo.filter((item) => {
-    return item.container_nos.some(
-      (container) => container.size === "40" && container.arrival_date
-    );
-  }).length;
-
-  const containersWithSize20AndNoArrival = rowsWithoutBillNo.filter((item) => {
-    return item.container_nos.some(
-      (container) => container.size === "20" && !container.arrival_date
-    );
-  }).length;
-
-  const containersWithSize40AndNoArrival = rowsWithoutBillNo.filter((item) => {
-    return item.container_nos.some(
-      (container) => container.size === "40" && !container.arrival_date
-    );
-  }).length;
+  rowsWithoutBillNo.forEach((item) => {
+    item.container_nos.forEach((container) => {
+      if (container.size === "20" && container.arrival_date) {
+        containersWithSize20AndArrival++;
+      } else if (container.size === "40" && container.arrival_date) {
+        containersWithSize40AndArrival++;
+      } else if (container.size === "20" && !container.arrival_date) {
+        containersWithSize20AndNoArrival++;
+      } else if (container.size === "40" && !container.arrival_date) {
+        containersWithSize40AndNoArrival++;
+      }
+    });
+  });
 
   const totalContainers =
     containersWithSize20AndArrival +
