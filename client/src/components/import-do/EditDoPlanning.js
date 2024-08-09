@@ -335,26 +335,12 @@ function EditDoPlanning() {
               name="shipping_line_invoice_imgs"
               id="shipping_line_invoice_imgs"
               onChange={(e) =>
-                handleFileUpload(
-                  e,
-                  "shipping_line_invoice_imgs",
-                  "shipping_line_invoice_imgs",
-                  formik,
-                  setFileSnackbar
-                )
+                handleFileUpload(e, "shipping_line_invoice_imgs")
               }
               style={{ display: "none" }}
             />
             <br />
             <br />
-            {formik.values.shipping_line_invoice_imgs?.map((file, index) => {
-              return (
-                <div key={index}>
-                  <a href={file}>{file}</a>
-                  <br />
-                </div>
-              );
-            })}
             {renderImagePreview("shipping_line_invoice_imgs")}
           </Col>
           <Col>
@@ -367,27 +353,12 @@ function EditDoPlanning() {
               multiple
               name="do_documents"
               id="do_documents"
-              onChange={(e) =>
-                handleFileUpload(
-                  e,
-                  "do_documentss",
-                  "do_documents",
-                  formik,
-                  setFileSnackbar
-                )
-              }
+              onChange={(e) => handleFileUpload(e, "do_documents")}
               style={{ display: "none" }}
             />
             <br />
             <br />
-            {formik.values.do_documents?.map((file, index) => {
-              return (
-                <div key={index}>
-                  <a href={file}>{file}</a>
-                  <br />
-                </div>
-              );
-            })}
+
             {renderImagePreview("do_documents")}
           </Col>
           <Col>
@@ -400,27 +371,11 @@ function EditDoPlanning() {
               multiple
               name="other_invoices_img"
               id="other_invoices_img"
-              onChange={(e) =>
-                handleFileUpload(
-                  e,
-                  "other_invoices_img",
-                  "other_invoices_img",
-                  formik,
-                  setFileSnackbar
-                )
-              }
+              onChange={(e) => handleFileUpload(e, "other_invoices_img")}
               style={{ display: "none" }}
             />
             <br />
             <br />
-            {formik.values.other_invoices_img?.map((file, index) => {
-              return (
-                <div key={index}>
-                  <a href={file}>{file}</a>
-                  <br />
-                </div>
-              );
-            })}
 
             {renderImagePreview("other_invoices_img")}
           </Col>
@@ -474,26 +429,12 @@ function EditDoPlanning() {
           multiple
           name="do_copies"
           id="do_copies"
-          onChange={(e) =>
-            handleFileUpload(
-              e,
-              "do_copies",
-              "do_copies",
-              formik,
-              setFileSnackbar
-            )
-          }
+          onChange={(e) => handleFileUpload(e, "do_copies")}
           style={{ display: "none" }}
         />
         <br />
         <br />
-        {formik.values.do_copies?.map((file, index) => {
-          return (
-            <div key={index}>
-              <a href={file}>{file}</a>
-            </div>
-          );
-        })}
+
         {renderImagePreview("do_copies")}
 
         <br />
