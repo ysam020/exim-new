@@ -19,10 +19,7 @@ import JobDetailsStaticData from "./JobDetailsStaticData";
 import JobDetailsRowHeading from "./JobDetailsRowHeading";
 import FormGroup from "@mui/material/FormGroup";
 import { TabValueContext } from "../../contexts/TabValueContext";
-import { handleActualWeightChange } from "../../utils/handleActualWeightChange";
 import { handleNetWeightChange } from "../../utils/handleNetWeightChange";
-import { handleTareWeightChange } from "../../utils/handleTareWeightChange";
-import { handlePhysicalWeightChange } from "../../utils/handlePhysicalWeightChange";
 import { UserContext } from "../../contexts/UserContext";
 
 function JobDetails() {
@@ -148,6 +145,8 @@ function JobDetails() {
       formik.setFieldValue(`container_nos[${index}].transporter`, "");
     }
   };
+
+  console.log(formik.values.checked);
 
   return (
     <>
@@ -688,17 +687,7 @@ function JobDetails() {
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
                   <strong>DO Validity:&nbsp;</strong>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    type="date"
-                    margin="normal"
-                    variant="outlined"
-                    id="do_validity"
-                    name="do_validity"
-                    value={formik.values.do_validity}
-                    onChange={formik.handleChange}
-                  />
+                  {formik.values.do_validity}
                 </div>
               </Col>
             </Row>
@@ -752,11 +741,11 @@ function JobDetails() {
                     }}
                   />
 
-                  {!checked && (
+                  {!formik.values.checked && (
                     <strong>All containers arrived at same date</strong>
                   )}
 
-                  {checked && (
+                  {formik.values.checked && (
                     <>
                       <strong>Arrival Date:&nbsp;</strong>
                       <TextField
@@ -1050,37 +1039,13 @@ function JobDetails() {
                         <Col xs={12} lg={3}>
                           <div className="job-detail-input-container">
                             <strong>Physical Weight:&nbsp;</strong>
-                            <TextField
-                              fullWidth
-                              key={index}
-                              size="small"
-                              margin="normal"
-                              variant="outlined"
-                              id={`physical_weight_${index}`}
-                              name={`container_nos[${index}].physical_weight`}
-                              value={container.physical_weight}
-                              onChange={(e) =>
-                                handlePhysicalWeightChange(e, index, formik)
-                              }
-                            />
+                            {container.physical_weight}
                           </div>
                         </Col>
                         <Col xs={12} lg={3}>
                           <div className="job-detail-input-container">
                             <strong>Tare Weight:&nbsp;</strong>
-                            <TextField
-                              fullWidth
-                              key={index}
-                              size="small"
-                              margin="normal"
-                              variant="outlined"
-                              id={`tare_weight_${index}`}
-                              name={`container_nos[${index}].tare_weight`}
-                              value={container.tare_weight}
-                              onChange={(e) =>
-                                handleTareWeightChange(e, index, formik)
-                              }
-                            />
+                            {container.tare_weight}
                           </div>
                         </Col>
 
@@ -1106,19 +1071,7 @@ function JobDetails() {
                         <Col xs={12} lg={3}>
                           <div className="job-detail-input-container">
                             <strong>Actual Weight:&nbsp;</strong>
-                            <TextField
-                              fullWidth
-                              key={index}
-                              size="small"
-                              margin="normal"
-                              variant="outlined"
-                              id={`actual_weight_${index}`}
-                              name={`container_nos[${index}].actual_weight`}
-                              value={container.actual_weight}
-                              onChange={(e) =>
-                                handleActualWeightChange(e, index, formik)
-                              }
-                            />
+                            {container.actual_weight}
                           </div>
                         </Col>
                       </Row>
@@ -1127,17 +1080,7 @@ function JobDetails() {
                         <Col xs={12} lg={3}>
                           <div className="job-detail-input-container">
                             <strong>Weight Excess/Shortage:&nbsp;</strong>
-                            <TextField
-                              fullWidth
-                              key={index}
-                              size="small"
-                              margin="normal"
-                              variant="outlined"
-                              id={`weight_shortage_${index}`}
-                              name={`container_nos[${index}].weight_shortage`}
-                              value={container.weight_shortage}
-                              onChange={formik.handleChange}
-                            />
+                            {container.weight_shortage}
                           </div>
                         </Col>
                         <Col xs={12} lg={3}>

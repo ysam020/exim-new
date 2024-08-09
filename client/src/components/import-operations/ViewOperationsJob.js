@@ -283,21 +283,8 @@ function ViewOperationsJob() {
 
                         <Col xs={12} md={3}>
                           <div className="job-detail-input-container">
-                            <strong>Net Weight as per Document:&nbsp;</strong>
-                            <TextField
-                              fullWidth
-                              key={index}
-                              size="small"
-                              margin="normal"
-                              variant="outlined"
-                              id={`net_weight_${index}`}
-                              name={`container_nos[${index}].net_weight`}
-                              label=""
-                              value={container.net_weight}
-                              onChange={(e) =>
-                                handleNetWeightChange(e, index, formik)
-                              }
-                            />
+                            <strong>Weight as per Document:&nbsp;</strong>
+                            {container.net_weight}
                           </div>
                         </Col>
 
@@ -308,20 +295,7 @@ function ViewOperationsJob() {
                         >
                           <div className="job-detail-input-container">
                             <strong>Actual Weight:&nbsp;</strong>
-                            <TextField
-                              fullWidth
-                              key={index}
-                              size="small"
-                              margin="normal"
-                              variant="outlined"
-                              id={`actual_weight_${index}`}
-                              name={`container_nos[${index}].actual_weight`}
-                              label=""
-                              value={container.actual_weight}
-                              onChange={(e) =>
-                                handleActualWeightChange(e, index, formik)
-                              }
-                            />
+                            {container.actual_weight}
                           </div>
                         </Col>
 
@@ -332,18 +306,7 @@ function ViewOperationsJob() {
                         >
                           <div className="job-detail-input-container">
                             <strong>Weight Excess/Shortage:&nbsp;</strong>
-                            <TextField
-                              fullWidth
-                              key={index}
-                              size="small"
-                              margin="normal"
-                              variant="outlined"
-                              id={`weight_shortage_${index}`}
-                              name={`container_nos[${index}].weight_shortage`}
-                              label=""
-                              value={container.weight_shortage}
-                              onChange={formik.handleChange}
-                            />
+                            {container.weight_shortage}
                           </div>
                         </Col>
                       </Row>
