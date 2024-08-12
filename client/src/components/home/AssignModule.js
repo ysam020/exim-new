@@ -69,7 +69,7 @@ function AssignModule(props) {
     setChecked(newChecked);
   };
 
-  const numberOfChecked = (items) => intersection(checked, items).length;
+  const numberOfChecked = (items) => intersection(checked, items)?.length;
 
   const handleToggleAll = (items) => () => {
     if (numberOfChecked(items) === items.length) {
@@ -110,14 +110,13 @@ function AssignModule(props) {
         const res = await axios(
           `${process.env.REACT_APP_API_STRING}/get-user/${props.selectedUser}`
         );
-        setRight(res.data.modules.sort());
+
+        setRight(res.data.modules?.sort());
         setLeft(
           allModules
             .sort()
-            .filter((module) => !res.data.modules.includes(module))
+            .filter((module) => !res.data.modules?.includes(module))
         );
-
-        localStorage.setItem("exim_user", JSON.stringify(res.data));
       } else {
         setLeft([]);
         setRight([]);
@@ -136,20 +135,20 @@ function AssignModule(props) {
           <Checkbox
             onClick={handleToggleAll(items)}
             checked={
-              numberOfChecked(items) === items.length && items.length !== 0
+              numberOfChecked(items) === items?.length && items?.length !== 0
             }
             indeterminate={
-              numberOfChecked(items) !== items.length &&
+              numberOfChecked(items) !== items?.length &&
               numberOfChecked(items) !== 0
             }
-            disabled={items.length === 0}
+            disabled={items?.length === 0}
             inputProps={{
               "aria-label": "all items selected",
             }}
           />
         }
         title={title}
-        subheader={`${numberOfChecked(items)}/${items.length} selected`}
+        subheader={`${numberOfChecked(items)}/${items?.length} selected`}
       />
       <Divider />
       <List
@@ -201,7 +200,7 @@ function AssignModule(props) {
               variant="outlined"
               size="small"
               onClick={handleAssignModule}
-              disabled={leftChecked.length === 0}
+              disabled={leftChecked?.length === 0}
               aria-label="move selected right"
             >
               &gt;
@@ -211,7 +210,7 @@ function AssignModule(props) {
               variant="outlined"
               size="small"
               onClick={handleUnassignModule}
-              disabled={rightChecked.length === 0}
+              disabled={rightChecked?.length === 0}
               aria-label="move selected left"
             >
               &lt;

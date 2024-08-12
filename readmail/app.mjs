@@ -114,17 +114,39 @@ const processMessages = async (messages, connection) => {
                         "awb_bl_date",
                       ].includes(modifiedKey)
                     ) {
-                      const date = new Date(item[key]);
-                      if (!isNaN(date.getTime())) {
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(
+                      let value = item[key];
+
+                      // Check if the value is a number (Excel serial date)
+                      if (!isNaN(value) && typeof value === "number") {
+                        // Convert Excel serial date to JavaScript date
+                        const excelEpoch = new Date(1899, 11, 30);
+                        const jsDate = new Date(
+                          excelEpoch.getTime() + value * 86400000
+                        );
+
+                        // Format the date to yyyy-mm-dd
+                        const year = jsDate.getFullYear();
+                        const month = String(jsDate.getMonth() + 1).padStart(
                           2,
                           "0"
                         );
-                        const day = String(date.getDate()).padStart(2, "0");
+                        const day = String(jsDate.getDate()).padStart(2, "0");
                         modifiedItem[modifiedKey] = `${year}-${month}-${day}`;
+                      } else if (typeof value === "string") {
+                        // Handle date formats like "15/3/2024 12:00:00 AM"
+                        const dateParts = value.split(" ")[0].split("/");
+                        if (dateParts.length === 3) {
+                          const day = String(dateParts[0]).padStart(2, "0");
+                          const month = String(dateParts[1]).padStart(2, "0");
+                          const year = String(dateParts[2]);
+                          modifiedItem[modifiedKey] = `${year}-${month}-${day}`;
+                        } else {
+                          // Fallback if the date cannot be parsed
+                          modifiedItem[modifiedKey] = value;
+                        }
                       } else {
-                        modifiedItem[modifiedKey] = item[key];
+                        // Fallback for other types
+                        modifiedItem[modifiedKey] = value;
                       }
                     } else if (modifiedKey === "job_no") {
                       const match = item[key].split("/");
@@ -209,14 +231,53 @@ const processMessages = async (messages, connection) => {
                 });
 
                 mergedData.forEach((item) => {
-                  if (item.container_nos) {
-                    if (typeof item.container_nos === "string") {
-                      item.container_nos = item.container_nos
-                        .split(",")
-                        .map((container) => ({
+                  if (
+                    item.container_nos &&
+                    typeof item.container_nos === "string"
+                  ) {
+                    const containerNumbers = item.container_nos.split(",");
+
+                    // Parse the "No Of Container" field to get quantities and sizes
+                    const noOfContainer = item.no_of_container; // Assuming this field contains "3x40HC,1x20"
+                    let sizes = {};
+
+                    if (noOfContainer) {
+                      const sizeEntries = noOfContainer.split(","); // Split by comma
+                      sizeEntries.forEach((entry) => {
+                        const [count, size] = entry.split("x"); // Split each entry by "x"
+                        const sizeKey = size.includes("40")
+                          ? "40"
+                          : size.includes("20")
+                          ? "20"
+                          : null;
+                        if (sizeKey) {
+                          sizes[sizeKey] = parseInt(count, 10); // Parse the count as integer
+                        }
+                      });
+
+                      // Determine the predominant size
+                      const predominantSize =
+                        sizes["40"] > sizes["20"] ? "40" : "20";
+
+                      // Assign the size to each container
+                      const containers = containerNumbers.map((container) => ({
+                        container_number: container.trim(),
+                        size: predominantSize,
+                      }));
+
+                      // Replace container_nos with the array of objects
+                      item.container_nos = containers;
+                    } else {
+                      // Handle cases where no_of_container is missing or empty
+                      item.container_nos = containerNumbers.map(
+                        (container) => ({
                           container_number: container.trim(),
-                        }));
+                        })
+                      );
                     }
+                  } else {
+                    // Handle cases where container_nos is missing or not a string
+                    item.container_nos = []; // Set as an empty array or handle it accordingly
                   }
                 });
 

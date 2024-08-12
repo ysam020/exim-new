@@ -6,8 +6,8 @@ const router = express.Router();
 router.get("/api/do-team-list-of-jobs", async (req, res) => {
   const jobs = await JobModel.find(
     {
-      be_no: { $ne: "" },
-      bill_date: "",
+      $or: [{ be_no: { $exists: true } }, { be_no: { $ne: "" } }],
+      $or: [{ bill_date: { $exists: false } }, { bill_date: "" }],
       $or: [
         { shipping_line_bond_completed_date: { $exists: false } },
         { shipping_line_bond_completed_date: "" },
