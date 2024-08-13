@@ -96,11 +96,13 @@ const jobSchema = new mongoose.Schema({
   ////////////////////////////////////////////////// DSR
   importerURL: { type: String, trim: true },
   checklist: [{ type: String }],
+  checkedDocs: [{ type: String }],
   // *******
   status: { type: String, trim: true },
   detailed_status: { type: String, trim: true },
   // *******
   obl_telex_bl: { type: String },
+  document_received_date: { type: String, trim: true },
   doPlanning: { type: Boolean },
   do_planning_date: { type: String, trim: true },
   do_validity_upto_job_level: { type: String, trim: true },

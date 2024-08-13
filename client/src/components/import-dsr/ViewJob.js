@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { IconButton, TextField } from "@mui/material";
@@ -146,6 +146,17 @@ function JobDetails() {
     }
   };
 
+  const handleCheckboxChange = (event) => {
+    const { checked, name } = event.target;
+
+    formik.setFieldValue(
+      "checkedDocs",
+      checked
+        ? [...formik.values.checkedDocs, name] // Add document if checked
+        : formik.values.checkedDocs.filter((doc) => doc !== name) // Remove document if unchecked
+    );
+  };
+
   return (
     <>
       {data !== null && (
@@ -166,7 +177,13 @@ function JobDetails() {
                   {documents.map((document, id) => (
                     <FormControlLabel
                       key={id}
-                      control={<Checkbox />}
+                      control={
+                        <Checkbox
+                          checked={formik.values.checkedDocs.includes(document)}
+                          onChange={handleCheckboxChange}
+                          name={document}
+                        />
+                      }
                       label={document}
                     />
                   ))}
@@ -327,6 +344,31 @@ function JobDetails() {
                     />
                   </RadioGroup>
                 </FormControl>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12} lg={4}>
+                <div
+                  className="job-detail-input-container"
+                  style={{ justifyContent: "flex-start" }}
+                >
+                  <strong>
+                    {formik.values.obl_telex_bl === "OBL"
+                      ? "Original Document Received Date"
+                      : "Document Received Date"}
+                  </strong>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    margin="normal"
+                    variant="outlined"
+                    type="date"
+                    id="document_received_date"
+                    name="document_received_date"
+                    value={formik.values.document_received_date}
+                    onChange={formik.handleChange}
+                  />
+                </div>
               </Col>
             </Row>
             <Row>
@@ -640,7 +682,17 @@ function JobDetails() {
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
                   <strong>Gateway IGM Date:&nbsp;</strong>
-                  {data.gateway_igm_date}
+                  <TextField
+                    fullWidth
+                    size="small"
+                    margin="normal"
+                    variant="outlined"
+                    type="date"
+                    id="gateway_igm_date"
+                    name="gateway_igm_date"
+                    value={formik.values.gateway_igm_date}
+                    onChange={formik.handleChange}
+                  />
                 </div>
               </Col>
               <Col xs={12} lg={4}>
@@ -665,7 +717,17 @@ function JobDetails() {
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
                   <strong>Local IGM Date:&nbsp;</strong>
-                  {data.igm_date}
+                  <TextField
+                    fullWidth
+                    size="small"
+                    margin="normal"
+                    variant="outlined"
+                    type="date"
+                    id="igm_date"
+                    name="igm_date"
+                    value={formik.values.igm_date}
+                    onChange={formik.handleChange}
+                  />
                 </div>
               </Col>
               <Col xs={12} lg={4}>

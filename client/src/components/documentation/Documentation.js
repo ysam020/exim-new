@@ -4,9 +4,23 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
+import {
+  IconButton,
+  Checkbox,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+} from "@mui/material";
+
+import SaveIcon from "@mui/icons-material/Save";
 
 function Documentation() {
   const [rows, setRows] = React.useState([]);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [currentRowIndex, setCurrentRowIndex] = React.useState(null);
+  const [remark, setRemark] = React.useState("");
 
   React.useEffect(() => {
     async function getData() {
@@ -18,6 +32,41 @@ function Documentation() {
 
     getData();
   }, []);
+
+  const handleSave = (row) => {
+    // Implement save logic here
+    console.log("Save row:", row);
+  };
+
+  const handleCheckboxChange = (event, rowIndex, field) => {
+    const newValue = event.target.checked;
+    if (field === "revision" && newValue) {
+      setCurrentRowIndex(rowIndex);
+      setOpenDialog(true);
+    } else {
+      setRows((prevRows) =>
+        prevRows.map((row, index) =>
+          index === rowIndex ? { ...row, [field]: newValue } : row
+        )
+      );
+    }
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+    setRemark("");
+  };
+
+  const handleSubmit = () => {
+    setRows((prevRows) =>
+      prevRows.map((row, index) =>
+        index === currentRowIndex
+          ? { ...row, revision: true, remark: remark }
+          : row
+      )
+    );
+    handleDialogClose();
+  };
 
   const columns = [
     {
@@ -32,7 +81,6 @@ function Documentation() {
       enableSorting: false,
       size: 250,
     },
-
     {
       accessorKey: "custom_house",
       header: "Custom House",
@@ -87,12 +135,45 @@ function Documentation() {
       header: "Document Entry Completed",
       enableSorting: false,
       size: 230,
+      Cell: ({ row }) => (
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Checkbox
+            checked={row.original.document_entry_completed === true}
+            onChange={(event) =>
+              handleCheckboxChange(event, row.index, "document_entry_completed")
+            }
+          />
+        </Box>
+      ),
     },
     {
-      accessorKey: "query",
-      header: "Queries",
+      accessorKey: "revision",
+      header: "Revise",
       enableSorting: false,
       size: 130,
+      Cell: ({ row }) => (
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Checkbox
+            checked={row.original.revision === true}
+            onChange={(event) =>
+              handleCheckboxChange(event, row.index, "revision")
+            }
+          />
+        </Box>
+      ),
+    },
+    {
+      accessorKey: "save",
+      header: "Save",
+      enableSorting: false,
+      size: 100,
+      Cell: ({ row }) => (
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <IconButton onClick={() => handleSave(row.original)}>
+            <SaveIcon sx={{ color: "#015C4B" }} />
+          </IconButton>
+        </Box>
+      ),
     },
   ];
 
@@ -101,13 +182,13 @@ function Documentation() {
     data: rows,
     enableColumnResizing: true,
     enableColumnOrdering: true,
-    enableDensityToggle: false, // Disable density toggle
-    initialState: { density: "compact", pagination: { pageSize: 20 } }, // Set initial table density to compact
-    enableGrouping: true, // Enable row grouping
-    enableColumnFilters: false, // Disable column filters
+    enableDensityToggle: false,
+    initialState: { density: "compact", pagination: { pageSize: 20 } },
+    enableGrouping: true,
+    enableColumnFilters: false,
     enableColumnActions: false,
-    enableStickyHeader: true, // Enable sticky header
-    enablePinning: true, // Enable pinning for sticky columns
+    enableStickyHeader: true,
+    enablePinning: true,
     muiTableContainerProps: {
       sx: { maxHeight: "650px", overflowY: "auto" },
     },
@@ -123,6 +204,49 @@ function Documentation() {
   return (
     <div className="table-container">
       <MaterialReactTable table={table} />
+      <Dialog
+        open={openDialog}
+        onClose={handleDialogClose}
+        maxWidth="sm"
+        fullWidth
+        sx={{
+          "& .MuiDialog-paper": {
+            width: "500px", // Adjust this value to your desired width
+          },
+        }}
+      >
+        <DialogTitle>Add Remark</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Remark"
+            type="text"
+            fullWidth
+            value={remark}
+            onChange={(e) => setRemark(e.target.value)}
+          />
+
+          <button
+            type="button"
+            className="btn"
+            aria-label="cancel-btn"
+            style={{ marginBottom: "20px", marginRight: "10px" }}
+            onClick={handleDialogClose}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="btn"
+            aria-label="submit-btn"
+            style={{ marginBottom: "20px" }}
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

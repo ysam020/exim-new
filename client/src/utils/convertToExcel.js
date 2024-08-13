@@ -25,7 +25,9 @@ export const convertToExcel = async (
   status,
   detailedStatus
 ) => {
-  const rowsWithoutBillNo = rows.filter((row) => row.bill_no === "");
+  const rowsWithoutBillNo = rows.filter(
+    (row) => row.bill_no === "" || row.bill_no === undefined
+  );
 
   if (rowsWithoutBillNo.length === 0) {
     alert("No Data to export");
@@ -91,6 +93,10 @@ export const convertToExcel = async (
 
     const inv_value = (item.cif_amount / parseInt(item.exrate)).toFixed(2);
     const invoice_value_and_unit_price = `${item.inv_currency} ${inv_value} | ${item.unit_price}`;
+    const net_weight = item.container_nos?.reduce((sum, container) => {
+      const weight = parseFloat(container.net_weight);
+      return sum + (isNaN(weight) ? 0 : weight);
+    }, 0);
 
     const valueMap = {
       "JOB NO": item.job_no,
@@ -108,6 +114,7 @@ export const convertToExcel = async (
       "BE DATE": formatDate(item.be_date),
       "TYPE OF BE": item.type_of_b_e,
       "NUMBER OF PACKAGES": item.no_of_pkgs,
+      "NET WEIGHT": net_weight,
       UNIT: item.unit,
       "GROSS WEIGHT": item.gross_weight,
       "GATEWAY IGM": item.gateway_igm,

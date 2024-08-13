@@ -13,6 +13,8 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     "Packing List",
     "Bill of Lading",
     "Certificate of Origin",
+    "Contract",
+    "Insurance",
   ]);
 
   // Fetch CTH documents
@@ -52,10 +54,14 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
   // Formik
   const formik = useFormik({
     initialValues: {
+      checkedDocs: [],
       container_nos: "",
       obl_telex_bl: "",
+      document_received_date: "",
       vessel_berthing: "",
+      gateway_igm_date: "",
       discharge_date: "",
+      igm_date: "",
       status: "",
       detailed_status: "",
       free_time: "",
@@ -94,8 +100,8 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       await axios.put(
         `${process.env.REACT_APP_API_STRING}/update-job/${params.selected_year}/${params.job_no}`,
         {
+          checkedDocs: values.checkedDocs,
           vessel_berthing: values.vessel_berthing,
-          checked,
           free_time: values.free_time,
           status: values.status,
           detailed_status: values.detailed_status,
@@ -113,7 +119,9 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           pims_date: values.pims_date,
           nfmims_date: values.nfmims_date,
           delivery_date: values.delivery_date,
+          gateway_igm_date: values.gateway_igm_date,
           discharge_date: values.discharge_date,
+          igm_date: values.igm_date,
           assessment_date: values.assessment_date,
           examination_date: values.examination_date,
           duty_paid_date: values.duty_paid_date,
@@ -130,6 +138,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           out_of_charge: values.out_of_charge,
           checked: values.checked,
           obl_telex_bl: values.obl_telex_bl,
+          document_received_date: values.document_received_date,
         }
       );
       resetForm();
@@ -212,7 +221,11 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
 
       formik.setValues({
         ...{ container_nos },
+        checkedDocs: data.checkedDocs === undefined ? [] : data.checkedDocs,
         obl_telex_bl: data.obl_telex_bl ? data.obl_telex_bl : "",
+        document_received_date: data.document_received_date
+          ? data.document_received_date
+          : "",
         arrival_date: container_nos[0]?.arrival_date,
         vessel_berthing:
           data.vessel_berthing === undefined
@@ -259,8 +272,11 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
         nfmims_date: data.nfmims_date === undefined ? "" : data.nfmims_date,
         delivery_date:
           data.delivery_date === undefined ? "" : data.delivery_date,
+        gateway_igm_date:
+          data.gateway_igm_date === undefined ? "" : data.gateway_igm_date,
         discharge_date:
           data.discharge_date === undefined ? "" : data.discharge_date,
+        igm_date: data.igm_date === undefined ? "" : data.igm_date,
         assessment_date:
           data.assessment_date === undefined ? "" : data.assessment_date,
         examination_date:
@@ -343,7 +359,12 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     checked,
   ]);
 
-  return { data, detentionFrom, formik, documents };
+  return {
+    data,
+    detentionFrom,
+    formik,
+    documents,
+  };
 }
 
 export default useFetchJobDetails;
