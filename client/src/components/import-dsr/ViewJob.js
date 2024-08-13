@@ -157,6 +157,7 @@ function JobDetails() {
             params={params}
             bl_no_ref={bl_no_ref}
             setSnackbar={setSnackbar}
+            container_nos={formik.values.container_nos}
           />
 
           {/*************************** Row 8 ****************************/}
