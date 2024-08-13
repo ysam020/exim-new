@@ -2,7 +2,6 @@ import React from "react";
 import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Import the back icon
 import Toolbar from "@mui/material/Toolbar";
 import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -24,15 +23,7 @@ function AppbarComponent(props) {
       }}
     >
       <Toolbar>
-        <IconButton
-          color="inherit"
-          aria-label="go back"
-          edge="start"
-          onClick={() => window.history.back()} // Use window.history.back() for back navigation
-          sx={{ mr: 2 }}
-        >
-          <ArrowBackIcon sx={{ color: "#000" }} /> {/* Back button icon */}
-        </IconButton>
+       
         <IconButton
           color="inherit"
           aria-label="open drawer"
