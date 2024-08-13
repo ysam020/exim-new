@@ -11,9 +11,11 @@ import {
   TextField,
   Button,
   Box,
+  Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 function Submission() {
   const [rows, setRows] = React.useState([]);
@@ -46,6 +48,23 @@ function Submission() {
     setQueries([...queries, { query: "", reply: "" }]);
   };
 
+  const handleDateChange = (event, rowIndex, field) => {
+    const updatedRows = [...rows];
+    updatedRows[rowIndex][field] = event.target.value;
+    setRows(updatedRows);
+  };
+
+  const handleSubmissionDateChange = (event, rowIndex) => {
+    const updatedRows = [...rows];
+    if (event.target.checked) {
+      updatedRows[rowIndex].submission_date = new Date()
+        .toISOString()
+        .split("T")[0];
+    } else {
+      updatedRows[rowIndex].submission_date = null;
+    }
+    setRows(updatedRows);
+  };
   const handleQueryChange = (index, field, value) => {
     const newQueries = [...queries];
     newQueries[index][field] = value;
@@ -136,16 +155,48 @@ function Submission() {
       size: 130,
     },
     {
-      accessorKey: "document_entry_completed",
-      header: "Document Entry Completed",
+      accessorKey: "checklist_verified_on",
+      header: "Checklist Verified On",
       enableSorting: false,
       size: 230,
       Cell: ({ row }) => (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Checkbox
-            checked={row.original.document_entry_completed === true}
-            onChange={(event) => handleCheckboxChange(event, row.index)}
+          <TextField
+            type="date"
+            size="small"
+            value={row.original.checklist_verified_on || ""}
+            onChange={(event) =>
+              handleDateChange(event, row.index, "checklist_verified_on")
+            }
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
+        </Box>
+      ),
+    },
+    {
+      accessorKey: "submission_date",
+      header: "Submission Date",
+      enableSorting: false,
+      size: 230,
+      Cell: ({ row }) => (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Checkbox
+            checked={!!row.original.submission_date}
+            onChange={(event) => handleSubmissionDateChange(event, row.index)}
+          />
+          {row.original.submission_date && (
+            <Typography sx={{ ml: 2, mt: 3 }}>
+              {new Date(row.original.submission_date).toLocaleDateString()}
+            </Typography>
+          )}
         </Box>
       ),
     },
@@ -156,9 +207,15 @@ function Submission() {
       size: 130,
       Cell: ({ row }) => (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <IconButton onClick={() => handleEditClick(row.original)}>
-            <EditIcon />
-          </IconButton>
+          <Typography
+            onClick={() => handleEditClick(row.original)}
+            style={{ cursor: "pointer", color: "blue" }}
+          >
+            Add Queries
+          </Typography>
+          {/* <IconButton onClick={() => handleEditClick(row.original)}>
+            <HelpOutlineIcon />
+          </IconButton> */}
         </Box>
       ),
     },
@@ -210,18 +267,21 @@ function Submission() {
             position: "absolute",
             top: "50%",
             left: "50%",
+            height: 400, // Set a fixed height for the Box
             transform: "translate(-50%, -50%)",
             width: 400,
             bgcolor: "background.paper",
-            border: "2px solid #000",
             boxShadow: 24,
             p: 4,
+            overflowY: "auto", // Enable vertical scrolling
           }}
         >
           {queries.map((query, index) => (
-            <div key={index} style={{ display: "flex" }}>
+            <div key={index}>
               <TextField
                 label="Query"
+                multiline
+                rows={4}
                 value={query.query}
                 onChange={(e) =>
                   handleQueryChange(index, "query", e.target.value)
@@ -230,8 +290,11 @@ function Submission() {
                 margin="normal"
                 style={{ marginRight: 10 }}
               />
+              <br />
               <TextField
                 label="Reply"
+                rows={4}
+                multiline
                 value={query.reply}
                 onChange={(e) =>
                   handleQueryChange(index, "reply", e.target.value)
@@ -241,16 +304,16 @@ function Submission() {
               />
             </div>
           ))}
-          <Button onClick={handleAddQuery} variant="outlined" sx={{ mt: 2 }}>
-            Add Queries
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
-            sx={{ mt: 2, ml: 2 }}
+          <button
+            onClick={handleAddQuery}
+            className="btn"
+            style={{ marginRight: "10px" }}
           >
+            Add Queries
+          </button>
+          <button className="btn" onClick={handleSubmit}>
             Submit
-          </Button>
+          </button>
         </Box>
       </Modal>
     </div>

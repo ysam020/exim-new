@@ -20,6 +20,7 @@ import ReviseCustomerKyc from "../components/customerKyc/ReviseCustomerKyc.js";
 import ViewCompletedKycDetails from "../components/customerKyc/ViewCompletedKycDetails.js";
 // Documentation
 import Documentation from "../components/documentation/Documentation.js";
+import Submission from "../components/submission/Submission.js";
 // Employee KYC
 import EmployeeKYC from "../components/employeeKyc/EmployeeKYC.js";
 import ViewIndividualKyc from "../components/employeeKyc/ViewIndividualKyc.js";
@@ -128,6 +129,7 @@ function HomePage() {
 
             {/* Documentation */}
             <Route path="/documentation" element={<Documentation />} />
+            <Route path="/submission" element={<Submission />} />
 
             {/* Employee KYC */}
             <Route path="/employee-kyc" element={<EmployeeKYC />} />
