@@ -18,6 +18,8 @@ import ViewCustomerKyc from "../components/customerKyc/ViewCustomerKyc.js";
 import ViewDraftDetails from "../components/customerKyc/ViewDraftDetails.js";
 import ReviseCustomerKyc from "../components/customerKyc/ReviseCustomerKyc.js";
 import ViewCompletedKycDetails from "../components/customerKyc/ViewCompletedKycDetails.js";
+// Documentation
+import Documentation from "../components/documentation/Documentation.js";
 // Employee KYC
 import EmployeeKYC from "../components/employeeKyc/EmployeeKYC.js";
 import ViewIndividualKyc from "../components/employeeKyc/ViewIndividualKyc.js";
@@ -123,6 +125,9 @@ function HomePage() {
               path="/view-completed-kyc/:_id"
               element={<ViewCompletedKycDetails />}
             />
+
+            {/* Documentation */}
+            <Route path="/documentation" element={<Documentation />} />
 
             {/* Employee KYC */}
             <Route path="/employee-kyc" element={<EmployeeKYC />} />

@@ -8,8 +8,10 @@ function JobDetailsStaticData(props) {
   if (props.data) {
     const inv_value = (props.data.cif_amount / props.data.exrate).toFixed(2);
     var invoice_value_and_unit_price = `${props.data.inv_currency} ${inv_value} | ${props.data.unit_price}`;
+  }
 
-    var net_weight = props.data.container_nos?.reduce((sum, container) => {
+  if (props.container_nos) {
+    var net_weight = props.container_nos?.reduce((sum, container) => {
       const weight = parseFloat(container.net_weight);
       return sum + (isNaN(weight) ? 0 : weight);
     }, 0);

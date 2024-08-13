@@ -4,6 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import { useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const drawerWidth = 60;
 
@@ -31,12 +32,22 @@ function AppbarComponent(props) {
         >
           <MenuIcon sx={{ color: "#000" }} />
         </IconButton>
+
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={() => window.history.back()}
+          sx={{ mr: 1 }}
+        >
+          <ArrowBackIcon sx={{ color: "#000" }} />
+        </IconButton>
+
         <div>
           <img
             src={require("../../assets/images/logo.webp")}
             alt="logo"
             height="50px"
-            // width="150px"
             onClick={() => navigate("/")}
             style={{ cursor: "pointer" }}
           />

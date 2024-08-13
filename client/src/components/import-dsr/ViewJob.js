@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { IconButton, TextField } from "@mui/material";
@@ -39,7 +39,7 @@ function JobDetails() {
   const weighmentSlipRef = useRef();
   const container_number_ref = useRef([]);
   const today = new Date().toISOString().split("T")[0];
-  const { data, detentionFrom, formik } = useFetchJobDetails(
+  const { data, detentionFrom, formik, documents } = useFetchJobDetails(
     params,
     checked,
     setSelectedRegNo,
@@ -146,8 +146,6 @@ function JobDetails() {
     }
   };
 
-  console.log(formik.values.checked);
-
   return (
     <>
       {data !== null && (
@@ -157,7 +155,25 @@ function JobDetails() {
             params={params}
             bl_no_ref={bl_no_ref}
             setSnackbar={setSnackbar}
+            container_nos={formik.values.container_nos}
           />
+
+          <div className="job-details-container">
+            <JobDetailsRowHeading heading="Documents" />
+            <Row className="job-detail-row">
+              <div className="job-detail-input-container">
+                <FormGroup row>
+                  {documents.map((document, id) => (
+                    <FormControlLabel
+                      key={id}
+                      control={<Checkbox />}
+                      label={document}
+                    />
+                  ))}
+                </FormGroup>
+              </div>
+            </Row>
+          </div>
 
           {/*************************** Row 8 ****************************/}
           <div className="job-details-container">
@@ -623,6 +639,12 @@ function JobDetails() {
               </Col>
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
+                  <strong>Gateway IGM Date:&nbsp;</strong>
+                  {data.gateway_igm_date}
+                </div>
+              </Col>
+              <Col xs={12} lg={4}>
+                <div className="job-detail-input-container">
                   <strong>Discharge Date:&nbsp;</strong>
                   <TextField
                     fullWidth
@@ -635,6 +657,15 @@ function JobDetails() {
                     value={formik.values.discharge_date}
                     onChange={formik.handleChange}
                   />
+                </div>
+              </Col>
+            </Row>
+            {/*************************** Row 12 ****************************/}
+            <Row>
+              <Col xs={12} lg={4}>
+                <div className="job-detail-input-container">
+                  <strong>Local IGM Date:&nbsp;</strong>
+                  {data.igm_date}
                 </div>
               </Col>
               <Col xs={12} lg={4}>
@@ -653,9 +684,6 @@ function JobDetails() {
                   />
                 </div>
               </Col>
-            </Row>
-            {/*************************** Row 12 ****************************/}
-            <Row>
               <Col xs={12} lg={4}>
                 <div
                   style={{
@@ -668,6 +696,10 @@ function JobDetails() {
                   {data.examination_date ? data.examination_date : ""}
                 </div>
               </Col>
+            </Row>
+
+            {/*************************** Row 13 ****************************/}
+            <Row>
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
                   <strong>Duty Paid Date:&nbsp;</strong>
@@ -690,10 +722,6 @@ function JobDetails() {
                   {formik.values.do_validity}
                 </div>
               </Col>
-            </Row>
-
-            {/*************************** Row 13 ****************************/}
-            <Row>
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
                   <strong>Out of Charge Date:&nbsp;</strong>
@@ -710,6 +738,9 @@ function JobDetails() {
                   />
                 </div>
               </Col>
+            </Row>
+
+            <Row>
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
                   <strong>Delivery Date:&nbsp;</strong>
@@ -780,7 +811,6 @@ function JobDetails() {
                   );
                 })}
               </Col>
-              <Col xs={12} lg={4}></Col>
               <Col xs={6}>
                 <label htmlFor="processed_be_attachment" className="btn">
                   Upload Processed BE Attachment
