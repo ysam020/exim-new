@@ -6,19 +6,29 @@ const router = express.Router();
 router.get("/api/do-team-list-of-jobs", async (req, res) => {
   const jobs = await JobModel.find(
     {
-      be_no: { $ne: "" },
-      bill_date: "",
-      $or: [
-        { shipping_line_bond_completed_date: { $exists: false } },
-        { shipping_line_bond_completed_date: "" },
-      ],
-      $or: [
-        { shipping_line_kyc_completed_date: { $exists: false } },
-        { shipping_line_kyc_completed_date: "" },
-      ],
-      $or: [
-        { shipping_line_invoice_received_date: { $exists: false } },
-        { shipping_line_invoice_received_date: "" },
+      $or: [{ be_no: { $exists: true } }, { be_no: { $ne: "" } }],
+      $and: [
+        {
+          $or: [
+            { shipping_line_bond_completed_date: { $exists: false } },
+            { shipping_line_bond_completed_date: "" },
+          ],
+        },
+        {
+          $or: [
+            { shipping_line_kyc_completed_date: { $exists: false } },
+            { shipping_line_kyc_completed_date: "" },
+          ],
+        },
+        {
+          $or: [
+            { shipping_line_invoice_received_date: { $exists: false } },
+            { shipping_line_invoice_received_date: "" },
+          ],
+        },
+        {
+          $or: [{ bill_date: { $exists: false } }, { bill_date: "" }],
+        },
       ],
     },
     "job_no awb_bl_no shipping_line_airline custom_house obl_telex_bl importer"

@@ -6,14 +6,14 @@ function usePrData() {
   const [containerTypes, setContainerTypes] = useState([]);
   const [locations, setLocations] = useState([]);
   const [truckTypes, setTruckTypes] = useState([]);
-
+  console.log(organisations);
   useEffect(() => {
     async function fetchData() {
       const res = await axios.get(
         `${process.env.REACT_APP_API_STRING}/get-organisations`
       );
 
-      setOrganisations(res.data.map((org) => org.name));
+      setOrganisations(res.data);
     }
 
     async function getContainerTypes() {

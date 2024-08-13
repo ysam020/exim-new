@@ -10,7 +10,7 @@ router.get("/api/get-user-data/:username", async (req, res) => {
     const user = await UserModel.findOne({ username });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(200).json({ message: "User not found" });
     }
 
     res.status(200).json(user);

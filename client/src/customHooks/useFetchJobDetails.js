@@ -8,6 +8,34 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
   const [data, setData] = useState(null);
   const [detentionFrom, setDetentionFrom] = useState([]);
   const navigate = useNavigate();
+  const [documents, setDocuments] = useState([
+    "Commercial Invoice",
+    "Packing List",
+    "Bill of Lading",
+    "Certificate of Origin",
+  ]);
+
+  // Fetch CTH documents
+  useEffect(() => {
+    async function getCthDocument() {
+      if (data && data.cth_no) {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_STRING}/get-cth-docs/${data.cth_no}`
+        );
+        const additionalDocs = res.data.map((doc) => doc.document_name); // Extract document names
+
+        setDocuments((currentDocs) => {
+          // Filter out any documents that are already in the currentDocs
+          const newDocs = additionalDocs.filter(
+            (doc) => !currentDocs.includes(doc)
+          );
+          return [...currentDocs, ...newDocs]; // Only append new documents
+        });
+      }
+    }
+
+    getCthDocument();
+  }, [data]); // Dependency on data object
 
   // Fetch data
   useEffect(() => {
@@ -315,7 +343,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     checked,
   ]);
 
-  return { data, detentionFrom, formik };
+  return { data, detentionFrom, formik, documents };
 }
 
 export default useFetchJobDetails;
