@@ -7,22 +7,19 @@ import {
 import {
   IconButton,
   Checkbox,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
+  Modal,
   TextField,
   Button,
+  Box,
 } from "@mui/material";
-
+import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 
-function Documentation() {
+function Submission() {
   const [rows, setRows] = React.useState([]);
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [currentRowIndex, setCurrentRowIndex] = React.useState(null);
-  const [remark, setRemark] = React.useState("");
+  const [openModal, setOpenModal] = React.useState(false);
+  const [currentRow, setCurrentRow] = React.useState(null);
+  const [queries, setQueries] = React.useState([{ query: "", reply: "" }]);
 
   React.useEffect(() => {
     async function getData() {
@@ -40,34 +37,40 @@ function Documentation() {
     console.log("Save row:", row);
   };
 
-  const handleCheckboxChange = (event, rowIndex, field) => {
-    const newValue = event.target.checked;
-    if (field === "revision" && newValue) {
-      setCurrentRowIndex(rowIndex);
-      setOpenDialog(true);
-    } else {
-      setRows((prevRows) =>
-        prevRows.map((row, index) =>
-          index === rowIndex ? { ...row, [field]: newValue } : row
-        )
-      );
-    }
+  const handleEditClick = (row) => {
+    setCurrentRow(row);
+    setOpenModal(true);
   };
 
-  const handleDialogClose = () => {
-    setOpenDialog(false);
-    setRemark("");
+  const handleAddQuery = () => {
+    setQueries([...queries, { query: "", reply: "" }]);
+  };
+
+  const handleQueryChange = (index, field, value) => {
+    const newQueries = [...queries];
+    newQueries[index][field] = value;
+    setQueries(newQueries);
+  };
+
+  const handleModalClose = () => {
+    setOpenModal(false);
+    setQueries([{ query: "", reply: "" }]); // Reset queries on close
   };
 
   const handleSubmit = () => {
+    // Implement submission logic for queries here
+    console.log("Submitted queries:", queries);
+    handleModalClose();
+  };
+  const handleCheckboxChange = (event, rowIndex) => {
+    const newValue = event.target.checked;
     setRows((prevRows) =>
       prevRows.map((row, index) =>
-        index === currentRowIndex
-          ? { ...row, revision: true, remark: remark }
+        index === rowIndex
+          ? { ...row, document_entry_completed: newValue }
           : row
       )
     );
-    handleDialogClose();
   };
 
   const columns = [
@@ -141,26 +144,21 @@ function Documentation() {
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Checkbox
             checked={row.original.document_entry_completed === true}
-            onChange={(event) =>
-              handleCheckboxChange(event, row.index, "document_entry_completed")
-            }
+            onChange={(event) => handleCheckboxChange(event, row.index)}
           />
         </Box>
       ),
     },
     {
-      accessorKey: "revision",
-      header: "Revise",
+      accessorKey: "query",
+      header: "Queries",
       enableSorting: false,
       size: 130,
       Cell: ({ row }) => (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Checkbox
-            checked={row.original.revision === true}
-            onChange={(event) =>
-              handleCheckboxChange(event, row.index, "revision")
-            }
-          />
+          <IconButton onClick={() => handleEditClick(row.original)}>
+            <EditIcon />
+          </IconButton>
         </Box>
       ),
     },
@@ -168,7 +166,7 @@ function Documentation() {
       accessorKey: "save",
       header: "Save",
       enableSorting: false,
-      size: 100,
+      size: 130,
       Cell: ({ row }) => (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <IconButton onClick={() => handleSave(row.original)}>
@@ -206,51 +204,57 @@ function Documentation() {
   return (
     <div className="table-container">
       <MaterialReactTable table={table} />
-      <Dialog
-        open={openDialog}
-        onClose={handleDialogClose}
-        maxWidth="sm"
-        fullWidth
-        sx={{
-          "& .MuiDialog-paper": {
-            width: "500px", // Adjust this value to your desired width
-          },
-        }}
-      >
-        <DialogTitle>Add Remark</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Remark"
-            type="text"
-            fullWidth
-            value={remark}
-            onChange={(e) => setRemark(e.target.value)}
-          />
-
-          <button
-            type="button"
-            className="btn"
-            aria-label="cancel-btn"
-            style={{ marginBottom: "20px", marginRight: "10px" }}
-            onClick={handleDialogClose}
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            className="btn"
-            aria-label="submit-btn"
-            style={{ marginBottom: "20px" }}
+      <Modal open={openModal} onClose={handleModalClose}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          {queries.map((query, index) => (
+            <div key={index} style={{ display: "flex" }}>
+              <TextField
+                label="Query"
+                value={query.query}
+                onChange={(e) =>
+                  handleQueryChange(index, "query", e.target.value)
+                }
+                fullWidth
+                margin="normal"
+                style={{ marginRight: 10 }}
+              />
+              <TextField
+                label="Reply"
+                value={query.reply}
+                onChange={(e) =>
+                  handleQueryChange(index, "reply", e.target.value)
+                }
+                fullWidth
+                margin="normal"
+              />
+            </div>
+          ))}
+          <Button onClick={handleAddQuery} variant="outlined" sx={{ mt: 2 }}>
+            Add Queries
+          </Button>
+          <Button
             onClick={handleSubmit}
+            variant="contained"
+            sx={{ mt: 2, ml: 2 }}
           >
             Submit
-          </button>
-        </DialogContent>
-      </Dialog>
+          </Button>
+        </Box>
+      </Modal>
     </div>
   );
 }
 
-export default React.memo(Documentation);
+export default React.memo(Submission);
