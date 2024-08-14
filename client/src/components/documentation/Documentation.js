@@ -13,14 +13,14 @@ import {
   DialogContent,
   TextField,
 } from "@mui/material";
-
+import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 
 function Documentation() {
   const [rows, setRows] = React.useState([]);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [currentRowIndex, setCurrentRowIndex] = React.useState(null);
-  const [remark, setRemark] = React.useState("");
+  const [documentationRemarks, setDocumentationRemarks] = React.useState("");
 
   React.useEffect(() => {
     async function getData() {
@@ -33,35 +33,46 @@ function Documentation() {
     getData();
   }, []);
 
-  const handleSave = (row) => {
-    // Implement save logic here
-    console.log("Save row:", row);
+  const handleSave = async (row) => {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_STRING}/update-documentation-job`,
+      row
+    );
+    alert(res.data.message);
   };
 
-  const handleCheckboxChange = (event, rowIndex, field) => {
+  const handleCheckboxChange = async (event, rowIndex, field) => {
     const newValue = event.target.checked;
-    if (field === "revision" && newValue) {
-      setCurrentRowIndex(rowIndex);
-      setOpenDialog(true);
-    } else {
-      setRows((prevRows) =>
-        prevRows.map((row, index) =>
-          index === rowIndex ? { ...row, [field]: newValue } : row
-        )
-      );
-    }
+
+    // Update the state immediately for a responsive UI
+    setRows((prevRows) =>
+      prevRows.map((row, index) =>
+        index === rowIndex
+          ? { ...row, document_entry_completed: newValue }
+          : row
+      )
+    );
+  };
+
+  const handleOpenModal = (event, rowIndex) => {
+    setCurrentRowIndex(rowIndex);
+    setDocumentationRemarks(rows[rowIndex].documentationRemarks || "");
+    setOpenDialog(true);
   };
 
   const handleDialogClose = () => {
     setOpenDialog(false);
-    setRemark("");
   };
 
   const handleSubmit = () => {
     setRows((prevRows) =>
       prevRows.map((row, index) =>
         index === currentRowIndex
-          ? { ...row, revision: true, remark: remark }
+          ? {
+              ...row,
+              revision: true,
+              documentationRemarks: documentationRemarks,
+            }
           : row
       )
     );
@@ -73,13 +84,13 @@ function Documentation() {
       accessorKey: "job_no",
       header: "Job No",
       enableSorting: false,
-      size: 100,
+      size: 70,
     },
     {
       accessorKey: "importer",
       header: "Importer",
       enableSorting: false,
-      size: 250,
+      size: 150,
     },
     {
       accessorKey: "custom_house",
@@ -116,25 +127,25 @@ function Documentation() {
       accessorKey: "gateway_igm_date",
       header: "Gateway IGM Date",
       enableSorting: false,
-      size: 180,
+      size: 110,
     },
     {
       accessorKey: "discharge_date",
       header: "Discharge Date",
       enableSorting: false,
-      size: 160,
+      size: 110,
     },
     {
       accessorKey: "igm_date",
       header: "IGM Date",
       enableSorting: false,
-      size: 130,
+      size: 110,
     },
     {
       accessorKey: "document_entry_completed",
       header: "Document Entry Completed",
       enableSorting: false,
-      size: 230,
+      size: 130,
       Cell: ({ row }) => (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Checkbox
@@ -146,20 +157,16 @@ function Documentation() {
         </Box>
       ),
     },
+
     {
-      accessorKey: "revision",
-      header: "Revise",
+      accessorKey: "documentationRemarks",
+      header: "Remarks",
       enableSorting: false,
-      size: 130,
+      size: 110,
       Cell: ({ row }) => (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Checkbox
-            checked={row.original.revision === true}
-            onChange={(event) =>
-              handleCheckboxChange(event, row.index, "revision")
-            }
-          />
-        </Box>
+        <IconButton onClick={(event) => handleOpenModal(event, row.index)}>
+          <EditIcon />
+        </IconButton>
       ),
     },
     {
@@ -211,20 +218,22 @@ function Documentation() {
         fullWidth
         sx={{
           "& .MuiDialog-paper": {
-            width: "500px", // Adjust this value to your desired width
+            width: "500px",
           },
         }}
       >
-        <DialogTitle>Add Remark</DialogTitle>
+        <DialogTitle>Add Remarks</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="Remark"
+            label="Remarks"
             type="text"
             fullWidth
-            value={remark}
-            onChange={(e) => setRemark(e.target.value)}
+            multiline
+            rows={4}
+            value={documentationRemarks}
+            onChange={(e) => setDocumentationRemarks(e.target.value)}
           />
 
           <button

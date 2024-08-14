@@ -32,6 +32,8 @@ export const navigateToModule = (module, navigate) => {
       return navigate("/rto");
     case "Documentation":
       return navigate("/documentation");
+    case "Submission":
+      return navigate("/submission");
     default:
       return navigate("/home");
   }

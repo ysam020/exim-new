@@ -45,6 +45,9 @@ import hodApprovalPending from "./routes/customer-kyc/hodApprovalPending.mjs";
 import approvedByHod from "./routes/customer-kyc/approvedByHod.mjs";
 import viewRevisionList from "./routes/customer-kyc/viewRevisionList.mjs";
 
+// Documentation
+import updateDocumentationJob from "./routes/documentation/updateDocumentationJob.mjs";
+
 // Employee KYC
 import completeKyc from "./routes/employee-kyc/completeKyc.mjs";
 import kycApproval from "./routes/employee-kyc/kycApproval.mjs";
@@ -153,6 +156,9 @@ import getTyreBrand from "./routes/srcc-directories/getTyreBrand.mjs";
 import getDriverDetails from "./routes/srcc-directories/getDriverDetails.mjs";
 import getLocationMaster from "./routes/srcc-directories/getLocationMaster.mjs";
 import getSrccOrganisations from "./routes/srcc-directories/getSrccOrganisations.mjs";
+
+// Submission
+import updateSubmissionJob from "./routes/submission/updateSubmissionJob.mjs";
 
 // Tyre Maintenance
 import getPlyRatings from "./routes/tyre-maintenance/getPlyRatings.mjs";
@@ -267,6 +273,9 @@ if (cluster.isPrimary) {
       app.use(approvedByHod);
       app.use(viewRevisionList);
 
+      // Documentation
+      app.use(updateDocumentationJob);
+
       // Employee KYC
       app.use(completeKyc);
       app.use(kycApproval);
@@ -376,6 +385,9 @@ if (cluster.isPrimary) {
       app.use(getDriverDetails);
       app.use(getLocationMaster);
       app.use(getSrccOrganisations);
+
+      // Submission
+      app.use(updateSubmissionJob);
 
       // Tyre Maintenance
       app.use(getPlyRatings);

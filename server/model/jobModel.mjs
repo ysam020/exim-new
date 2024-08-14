@@ -232,8 +232,22 @@ const jobSchema = new mongoose.Schema({
   ////////////////////////////////////////////////// CTH Documents
   cth_documents: [cthDocumentSchema],
 
-  // /////////////////////////////////////////////////// Documents
+  ////////////////////////////////////////////////////// Documents
   documents: [documentSchema],
+
+  ////////////////////////////////////////////////////// Documentation
+  document_entry_completed: { type: Boolean },
+  documentationRemarks: { type: String },
+
+  ////////////////////////////////////////////////////// Submission
+  checklist_verified_on: { type: String },
+  submission_date: { type: String },
+  queries: [
+    {
+      query: { type: String },
+      reply: { type: String },
+    },
+  ],
 });
 
 jobSchema.index({ importerURL: 1, year: 1, status: 1 });
