@@ -17,6 +17,32 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     "Insurance",
   ]);
 
+  const additionalDocs = [
+    "Pre-Shipment Inspection Certificate",
+    "Form 9 & Form 6",
+    "Registration Document (SIMS/NFMIMS/PIMS)",
+    "Certificate of Analysis",
+  ];
+
+  const commonCthCodes = [
+    "72041000",
+    "72042920",
+    "72042990",
+    "72043000",
+    "72044900",
+    "72042190",
+    "74040012",
+    "74040022",
+    "74040024",
+    "74040025",
+    "75030010",
+    "76020010",
+    "78020010",
+    "79020010",
+    "80020010",
+    "81042010",
+  ];
+
   // Fetch CTH documents
   useEffect(() => {
     async function getCthDocument() {
@@ -24,14 +50,26 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
         const res = await axios.get(
           `${process.env.REACT_APP_API_STRING}/get-cth-docs/${data.cth_no}`
         );
-        const additionalDocs = res.data.map((doc) => doc.document_name); // Extract document names
+        const fetchedDocs = res.data.map((doc) => doc.document_name); // Extract document names
 
         setDocuments((currentDocs) => {
           // Filter out any documents that are already in the currentDocs
-          const newDocs = additionalDocs.filter(
-            (doc) => !currentDocs.includes(doc)
+          let newDocs = fetchedDocs.filter((doc) => !currentDocs.includes(doc));
+
+          // If cth_no is in commonCthCodes, append additionalDocs
+          if (commonCthCodes.includes(data.cth_no)) {
+            newDocs = [
+              ...newDocs,
+              ...additionalDocs.filter((doc) => !newDocs.includes(doc)),
+            ];
+          }
+
+          // Combine currentDocs and newDocs, filtering out any duplicates
+          const updatedDocs = [...currentDocs, ...newDocs].filter(
+            (doc, index, self) => self.indexOf(doc) === index
           );
-          return [...currentDocs, ...newDocs]; // Only append new documents
+
+          return updatedDocs;
         });
       }
     }
@@ -61,7 +99,6 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       vessel_berthing: "",
       gateway_igm_date: "",
       discharge_date: "",
-      igm_date: "",
       status: "",
       detailed_status: "",
       free_time: "",
@@ -121,7 +158,6 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           delivery_date: values.delivery_date,
           gateway_igm_date: values.gateway_igm_date,
           discharge_date: values.discharge_date,
-          igm_date: values.igm_date,
           assessment_date: values.assessment_date,
           examination_date: values.examination_date,
           duty_paid_date: values.duty_paid_date,
@@ -276,7 +312,6 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           data.gateway_igm_date === undefined ? "" : data.gateway_igm_date,
         discharge_date:
           data.discharge_date === undefined ? "" : data.discharge_date,
-        igm_date: data.igm_date === undefined ? "" : data.igm_date,
         assessment_date:
           data.assessment_date === undefined ? "" : data.assessment_date,
         examination_date:

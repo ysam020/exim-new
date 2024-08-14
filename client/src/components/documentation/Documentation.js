@@ -99,13 +99,6 @@ function Documentation() {
       size: 150,
     },
     {
-      accessorKey: "awb_bl_no",
-      header: "BL Number",
-      enableSorting: false,
-      size: 200,
-      Cell: ({ cell }) => cell?.getValue()?.toString(),
-    },
-    {
       accessorKey: "container_numbers",
       header: "Container Nos",
       enableSorting: false,
@@ -131,13 +124,7 @@ function Documentation() {
     },
     {
       accessorKey: "discharge_date",
-      header: "Discharge Date",
-      enableSorting: false,
-      size: 110,
-    },
-    {
-      accessorKey: "igm_date",
-      header: "IGM Date",
+      header: "Discharge Date/ IGM Date",
       enableSorting: false,
       size: 110,
     },

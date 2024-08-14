@@ -357,17 +357,6 @@ function JobDetails() {
                       ? "Original Document Received Date"
                       : "Document Received Date"}
                   </strong>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    margin="normal"
-                    variant="outlined"
-                    type="date"
-                    id="document_received_date"
-                    name="document_received_date"
-                    value={formik.values.document_received_date}
-                    onChange={formik.handleChange}
-                  />
                 </div>
               </Col>
             </Row>
@@ -697,7 +686,7 @@ function JobDetails() {
               </Col>
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
-                  <strong>Discharge Date:&nbsp;</strong>
+                  <strong>Discharge Date/ IGM Date:&nbsp;</strong>
                   <TextField
                     fullWidth
                     size="small"
@@ -714,22 +703,6 @@ function JobDetails() {
             </Row>
             {/*************************** Row 12 ****************************/}
             <Row>
-              <Col xs={12} lg={4}>
-                <div className="job-detail-input-container">
-                  <strong>Local IGM Date:&nbsp;</strong>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    margin="normal"
-                    variant="outlined"
-                    type="date"
-                    id="igm_date"
-                    name="igm_date"
-                    value={formik.values.igm_date}
-                    onChange={formik.handleChange}
-                  />
-                </div>
-              </Col>
               <Col xs={12} lg={4}>
                 <div className="job-detail-input-container">
                   <strong>Assessment Date:&nbsp;</strong>
@@ -758,6 +731,7 @@ function JobDetails() {
                   {data.examination_date ? data.examination_date : ""}
                 </div>
               </Col>
+              <Col xs={12} lg={4}></Col>
             </Row>
 
             {/*************************** Row 13 ****************************/}
