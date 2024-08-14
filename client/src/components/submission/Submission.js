@@ -9,19 +9,17 @@ import {
   Checkbox,
   Modal,
   TextField,
-  Button,
   Box,
   Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 function Submission() {
   const [rows, setRows] = React.useState([]);
   const [openModal, setOpenModal] = React.useState(false);
-  const [currentRow, setCurrentRow] = React.useState(null);
-  const [queries, setQueries] = React.useState([{ query: "", reply: "" }]);
+  const [currentRowIndex, setCurrentRowIndex] = React.useState(null);
+  const [queries, setQueries] = React.useState([]);
 
   React.useEffect(() => {
     async function getData() {
@@ -34,18 +32,19 @@ function Submission() {
     getData();
   }, []);
 
-  const handleSave = (row) => {
-    // Implement save logic here
+  const handleSave = async (row) => {
     console.log("Save row:", row);
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_STRING}/update-submission-job`,
+      row
+    );
+    alert(res.data.message);
   };
 
-  const handleEditClick = (row) => {
-    setCurrentRow(row);
+  const handleEditClick = (rowIndex) => {
+    setCurrentRowIndex(rowIndex);
+    setQueries(rows[rowIndex].queries || []);
     setOpenModal(true);
-  };
-
-  const handleAddQuery = () => {
-    setQueries([...queries, { query: "", reply: "" }]);
   };
 
   const handleDateChange = (event, rowIndex, field) => {
@@ -65,31 +64,28 @@ function Submission() {
     }
     setRows(updatedRows);
   };
-  const handleQueryChange = (index, field, value) => {
-    const newQueries = [...queries];
-    newQueries[index][field] = value;
-    setQueries(newQueries);
-  };
 
   const handleModalClose = () => {
     setOpenModal(false);
-    setQueries([{ query: "", reply: "" }]); // Reset queries on close
   };
 
-  const handleSubmit = () => {
-    // Implement submission logic for queries here
-    console.log("Submitted queries:", queries);
-    handleModalClose();
+  const handleAddQuery = () => {
+    setQueries([...queries, { query: "", reply: "" }]);
   };
-  const handleCheckboxChange = (event, rowIndex) => {
-    const newValue = event.target.checked;
+
+  const handleQueryChange = (index, field, value) => {
+    const updatedQueries = [...queries];
+    updatedQueries[index][field] = value;
+    setQueries(updatedQueries);
+  };
+
+  const handleSubmitQueries = () => {
     setRows((prevRows) =>
       prevRows.map((row, index) =>
-        index === rowIndex
-          ? { ...row, document_entry_completed: newValue }
-          : row
+        index === currentRowIndex ? { ...row, queries } : row
       )
     );
+    setOpenModal(false);
   };
 
   const columns = [
@@ -103,7 +99,7 @@ function Submission() {
       accessorKey: "importer",
       header: "Importer",
       enableSorting: false,
-      size: 250,
+      size: 150,
     },
     {
       accessorKey: "custom_house",
@@ -140,13 +136,13 @@ function Submission() {
       accessorKey: "gateway_igm_date",
       header: "Gateway IGM Date",
       enableSorting: false,
-      size: 180,
+      size: 130,
     },
     {
       accessorKey: "discharge_date",
       header: "Discharge Date",
       enableSorting: false,
-      size: 160,
+      size: 130,
     },
     {
       accessorKey: "igm_date",
@@ -158,7 +154,7 @@ function Submission() {
       accessorKey: "checklist_verified_on",
       header: "Checklist Verified On",
       enableSorting: false,
-      size: 230,
+      size: 160,
       Cell: ({ row }) => (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <TextField
@@ -179,7 +175,7 @@ function Submission() {
       accessorKey: "submission_date",
       header: "Submission Date",
       enableSorting: false,
-      size: 230,
+      size: 130,
       Cell: ({ row }) => (
         <Box
           sx={{
@@ -201,35 +197,25 @@ function Submission() {
       ),
     },
     {
-      accessorKey: "query",
+      accessorKey: "queries",
       header: "Queries",
       enableSorting: false,
-      size: 130,
+      size: 100,
       Cell: ({ row }) => (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Typography
-            onClick={() => handleEditClick(row.original)}
-            style={{ cursor: "pointer", color: "blue" }}
-          >
-            Add Queries
-          </Typography>
-          {/* <IconButton onClick={() => handleEditClick(row.original)}>
-            <HelpOutlineIcon />
-          </IconButton> */}
-        </Box>
+        <IconButton onClick={() => handleEditClick(row.index)}>
+          <EditIcon />
+        </IconButton>
       ),
     },
     {
       accessorKey: "save",
       header: "Save",
       enableSorting: false,
-      size: 130,
+      size: 80,
       Cell: ({ row }) => (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <IconButton onClick={() => handleSave(row.original)}>
-            <SaveIcon />
-          </IconButton>
-        </Box>
+        <IconButton onClick={() => handleSave(row.original)}>
+          <SaveIcon sx={{ color: "#015C4B" }} />
+        </IconButton>
       ),
     },
   ];
@@ -267,53 +253,60 @@ function Submission() {
             position: "absolute",
             top: "50%",
             left: "50%",
-            height: 400, // Set a fixed height for the Box
+            height: 600,
             transform: "translate(-50%, -50%)",
-            width: 400,
+            width: 800,
             bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
-            overflowY: "auto", // Enable vertical scrolling
+            overflowY: "auto",
           }}
         >
-          {queries.map((query, index) => (
-            <div key={index}>
-              <TextField
-                label="Query"
-                multiline
-                rows={4}
-                value={query.query}
-                onChange={(e) =>
-                  handleQueryChange(index, "query", e.target.value)
-                }
-                fullWidth
-                margin="normal"
-                style={{ marginRight: 10 }}
-              />
-              <br />
-              <TextField
-                label="Reply"
-                rows={4}
-                multiline
-                value={query.reply}
-                onChange={(e) =>
-                  handleQueryChange(index, "reply", e.target.value)
-                }
-                fullWidth
-                margin="normal"
-              />
-            </div>
-          ))}
-          <button
-            onClick={handleAddQuery}
-            className="btn"
-            style={{ marginRight: "10px" }}
-          >
-            Add Queries
+          <div>
+            {queries.map((item, index) => (
+              <div key={index} style={{ marginBottom: "20px" }}>
+                <TextField
+                  label={`Query ${index + 1}`}
+                  multiline
+                  rows={2}
+                  value={item.query}
+                  fullWidth
+                  margin="normal"
+                  onChange={(e) =>
+                    handleQueryChange(index, "query", e.target.value)
+                  }
+                />
+                <TextField
+                  label={`Reply ${index + 1}`}
+                  multiline
+                  rows={2}
+                  value={item.reply}
+                  fullWidth
+                  margin="normal"
+                  onChange={(e) =>
+                    handleQueryChange(index, "reply", e.target.value)
+                  }
+                />
+              </div>
+            ))}
+          </div>
+
+          <button className="btn" onClick={handleAddQuery}>
+            Add New Query
           </button>
-          <button className="btn" onClick={handleSubmit}>
-            Submit
-          </button>
+
+          <div style={{ marginTop: "20px" }}>
+            <button
+              className="btn"
+              onClick={handleSubmitQueries}
+              style={{ marginRight: "10px" }}
+            >
+              Submit
+            </button>
+            <button className="btn" onClick={handleModalClose}>
+              Cancel
+            </button>
+          </div>
         </Box>
       </Modal>
     </div>

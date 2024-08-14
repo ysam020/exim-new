@@ -101,18 +101,6 @@ function ESanchit() {
           ?.map((container) => container.container_number)
           .join(", "),
     },
-    {
-      accessorKey: "be_no",
-      header: "BE Number",
-      enableSorting: false,
-      size: 150,
-    },
-    {
-      accessorKey: "be_date",
-      header: "BE Date",
-      enableSorting: false,
-      size: 150,
-    },
   ];
 
   const table = useMaterialReactTable({

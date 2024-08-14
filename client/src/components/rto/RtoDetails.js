@@ -20,7 +20,6 @@ import {
   TableHead,
   TableRow,
   DialogContentText,
-  Alert,
   FormControlLabel,
   Checkbox,
   Typography,
@@ -37,7 +36,6 @@ import * as Yup from "yup";
 
 const RtoDetails = () => {
   const [vehicles, setVehicles] = useState([]);
-  const [error, setError] = useState("");
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openImageDeleteModal, setOpenImageDeleteModal] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState(null);
@@ -49,19 +47,16 @@ const RtoDetails = () => {
   const apiBaseURL = `${process.env.REACT_APP_API_STRING}`;
   const getVehiclesAPI = `${apiBaseURL}/get-vehicles`;
   const deleteVehicleAPI = `${apiBaseURL}/delete-vehicle`;
-  const editVehicleAPI = `${apiBaseURL}/vehicles/Truck no should be here/rto`;
 
   useEffect(() => {
-    console.log("API Base URL:", apiBaseURL);
     fetchVehicles();
+    // eslint-disable-next-line
   }, []);
 
   const fetchVehicles = () => {
-    console.log("Fetching vehicles from:", getVehiclesAPI);
     axios
       .get(getVehiclesAPI)
       .then((response) => {
-        console.log("Fetched vehicles:", response.data);
         const formattedVehicles = (response.data || []).map((vehicle) => ({
           ...vehicle,
           ...vehicle.rto,
@@ -77,10 +72,6 @@ const RtoDetails = () => {
       })
       .catch((error) => {
         console.error("API Error:", error.response || error);
-        setError(
-          "Failed to fetch vehicles: " +
-            (error.response?.data?.message || error.message || "Unknown error")
-        );
       });
   };
 
@@ -101,7 +92,6 @@ const RtoDetails = () => {
   });
 
   const handleSubmit = (values, { setSubmitting }) => {
-    console.log("Form submitted with values:", values);
     handleEditDialogSave(values);
     setSubmitting(false);
   };
@@ -476,7 +466,6 @@ const RtoDetails = () => {
 
   const handleEditVehicle = (vehicle) => {
     if (vehicle) {
-      console.log("Editing vehicle:", vehicle);
       const editValues = {
         truck_no: vehicle.truck_no || "",
         type_of_vehicle: vehicle.type_of_vehicle || "",
@@ -503,7 +492,7 @@ const RtoDetails = () => {
         rc_front_photo: vehicle.rc_front_photo || [],
         rc_rear_photo: vehicle.rc_rear_photo || [],
       };
-      console.log("Setting form values:", editValues);
+
       formik.setValues(editValues);
       setOpenEditDialog(true);
     } else {
@@ -525,31 +514,15 @@ const RtoDetails = () => {
             setVehicles(
               vehicles.filter((v) => v.truck_no !== vehicleToDelete.truck_no)
             );
-            console.log("Vehicle deleted successfully");
           }
         })
         .catch((error) => {
           console.error("Failed to delete vehicle:", error);
-          setError("Failed to delete vehicle");
         });
     }
     setOpenDeleteVehicleConfirmDialog(false);
     setVehicleToDelete(null);
   };
-  // const handleDeleteVehicle = (vehicle) => {
-  //   axios
-  //     .delete(`${deleteVehicleAPI}/${vehicle.truck_no}`)
-  //     .then((response) => {
-  //       if (response.data.success) {
-  //         setVehicles(vehicles.filter((v) => v.truck_no !== vehicle.truck_no));
-  //         console.log("Vehicle deleted successfully");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Failed to delete vehicle:", error);
-  //       setError("Failed to delete vehicle");
-  //     });
-  // };
 
   const handleEditDialogClose = () => {
     setOpenEditDialog(false);
@@ -561,33 +534,22 @@ const RtoDetails = () => {
   };
 
   const handleEditDialogSave = (values) => {
-    console.log("Attempting to save vehicle data:", values);
     const editVehicleAPI = `${apiBaseURL}/vehicles/${values.truck_no}/rto`;
 
     axios
       .put(editVehicleAPI, values)
       .then((response) => {
-        console.log("API response:", response.data);
         if (response.data) {
           setVehicles(
             vehicles.map((v) => (v.truck_no === values.truck_no ? values : v))
           );
           setOpenEditDialog(false);
-          console.log("Vehicle updated successfully");
         } else {
           console.error("API returned unexpected response", response.data);
-          setError(
-            "Failed to update vehicle: " +
-              (response.data.message || "Unknown error")
-          );
         }
       })
       .catch((error) => {
         console.error("Failed to update vehicle:", error.response || error);
-        setError(
-          "Failed to update vehicle: " +
-            (error.response?.data?.message || error.message || "Unknown error")
-        );
       });
   };
 

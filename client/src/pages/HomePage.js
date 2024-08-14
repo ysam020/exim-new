@@ -54,6 +54,8 @@ import LrReport from "../components/lr-report/LrReport.js";
 // SRCC Directories
 import SrccDirectories from "../components/srcc-directories/SrccDirectories.js";
 import ViewSrccOrganisationData from "../components/srcc-directories/view-data/ViewSrccOrganisationData.js";
+// Submission
+import Submission from "../components/submission/Submission.js";
 // Tyre Maintenance
 import TyreMaintenance from "../components/tyre-maintenance/TyreMaintenance.js";
 // RTO
@@ -192,6 +194,9 @@ function HomePage() {
               path="/view-srcc-organisation-data/:_id"
               element={<ViewSrccOrganisationData />}
             />
+
+            {/* Submission */}
+            <Route path="/submission" element={<Submission />} />
 
             {/* Tyre Maintenance */}
             <Route path="/tyre-maintenance" element={<TyreMaintenance />} />
