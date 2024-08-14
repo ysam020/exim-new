@@ -104,7 +104,7 @@ function useLrColumns(props) {
       (truck) => truck.truck_no === vehicleNo
     );
 
-    if (selectedTruck.drivers?.length > 0) {
+    if (selectedTruck?.drivers?.length > 0) {
       const lastDriver =
         selectedTruck.drivers[selectedTruck.drivers?.length - 1];
 

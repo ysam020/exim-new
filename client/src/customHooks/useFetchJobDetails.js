@@ -346,9 +346,13 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       const earliestDate = updatedDate.reduce((earliest, current) => {
         return current < earliest ? current : earliest;
       }, "9999-12-31"); // A far future date as the initial value
+      console.log(earliestDate);
 
       // Set do_validity_upto_job_level to the earliest date
-      formik.setFieldValue("do_validity_upto_job_level", earliestDate);
+      formik.setFieldValue(
+        "do_validity_upto_job_level",
+        earliestDate === "9999-12-31" ? "" : earliestDate
+      );
     }
     // eslint-disable-next-line
   }, [
