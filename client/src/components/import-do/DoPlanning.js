@@ -26,6 +26,13 @@ function DoPlanning() {
       header: "Job Number",
       enableSorting: false,
       size: 150,
+      Cell: ({ cell }) => {
+        return (
+          <Link to={`/edit-do-planning/${cell.row.original._id}`}>
+            {cell.row.original.job_no}
+          </Link>
+        );
+      },
     },
     {
       accessorKey: "importer",
@@ -62,18 +69,6 @@ function DoPlanning() {
       header: "Payment Made Date",
       enableSorting: false,
       size: 200,
-    },
-    {
-      accessorKey: "actions",
-      header: "Actions1234",
-      enableSorting: false,
-      size: 150,
-
-      Cell: ({ cell }) => {
-        return (
-          <Link to={`/edit-do-planning/${cell.row.original._id}`}>Edit</Link>
-        );
-      },
     },
   ];
 
