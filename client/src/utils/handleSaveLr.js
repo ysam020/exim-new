@@ -45,10 +45,10 @@ export const handleSaveLr = async (row, props) => {
     );
   }
 
-  const vehicleNoRegex = /^[A-Z]{2}\d{2}[A-Z]{2}\d{4}$/i;
+  const vehicleNoRegex = /^[A-Z]{2}\d{2}[A-Z]{1,2}\d{4}$/i;
   if (row.vehicle_no && !vehicleNoRegex.test(row.vehicle_no)) {
     errors.push(
-      "Vehicle number is not valid. Format should be AA00AA0000 or aa00aa0000."
+      "Vehicle number is not valid. Format should be AA00AA0000, aa00aa0000, AA00A0000, or aa00a0000."
     );
   }
 

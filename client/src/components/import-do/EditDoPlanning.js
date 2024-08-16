@@ -46,6 +46,7 @@ function EditDoPlanning() {
       shipping_line_invoice: false,
       shipping_line_invoice_date: "",
       shipping_line_invoice_imgs: [],
+      do_queries: [{ query: "", reply: "" }],
     },
 
     onSubmit: async (values, { resetForm }) => {
@@ -70,7 +71,12 @@ function EditDoPlanning() {
 
   React.useEffect(() => {
     if (data) {
-      formik.setValues(data);
+      const updatedData = {
+        ...data,
+        do_queries: data.do_queries || [{ query: "", reply: "" }],
+      };
+
+      formik.setValues(updatedData);
 
       async function getKycDocs() {
         const importer = data.importer;
@@ -87,6 +93,21 @@ function EditDoPlanning() {
 
     // eslint-disable-next-line
   }, [data]);
+
+  const handleAddField = () => {
+    formik.setValues({
+      ...formik.values,
+      do_queries: [
+        ...formik.values.do_queries,
+        {
+          query: "",
+          reply: "",
+        },
+      ],
+    });
+  };
+
+  console.log(formik.values);
 
   return (
     <div>
@@ -359,6 +380,29 @@ function EditDoPlanning() {
           );
         })}
 
+        <h5>DO Queries</h5>
+        {formik.values.do_queries.map((item, id) => {
+          return (
+            <div key={id}>
+              <TextField
+                fullWidth
+                size="small"
+                margin="normal"
+                variant="outlined"
+                id={`do_queries[${id}].query`}
+                name={`do_queries[${id}].query`}
+                label="Query"
+                value={item.query}
+                onChange={formik.handleChange}
+              />
+              {item.reply}
+            </div>
+          );
+        })}
+        <br />
+        <button type="button" className="btn" onClick={handleAddField}>
+          Add Query
+        </button>
         <br />
         <button type="submit" className="btn">
           Submit

@@ -7,26 +7,22 @@ function useJobColumns(detailedStatus) {
       accessorKey: "job_no",
       header: "Job Number",
       size: 130,
-    },
-    {
-      accessorKey: "actions",
-      header: "Actions",
-      size: 120,
       Cell: ({ cell }) => (
         <Link to={`/job/${cell.row.original.job_no}/${cell.row.original.year}`}>
-          View Job
+          {cell.row.original.job_no}
         </Link>
       ),
     },
+
     {
       accessorKey: "importer",
       header: "Importer",
-      size: 300,
+      size: 250,
     },
     {
       accessorKey: "custom_house",
       header: "Custom House",
-      size: 200,
+      size: 150,
     },
     {
       accessorKey: "awb_bl_no",

@@ -65,11 +65,6 @@ import getESanchitJobs from "./routes/e-sanchit/getESanchitJobs.mjs";
 import getJobDetail from "./routes/e-sanchit/getJobDetail.mjs";
 import updateESanchitJob from "./routes/e-sanchit/updateESanchitJob.mjs";
 
-// Feedback
-import addFeedback from "./routes/feedback/addFeedback.mjs";
-import getFeedback from "./routes/feedback/getFeedback.mjs";
-import updateFeedback from "./routes/feedback/updateFeedback.mjs";
-
 // Home
 import assignModules from "./routes/home/assignModules.mjs";
 import assignRole from "./routes/home/assignRole.mjs";
@@ -159,6 +154,7 @@ import getLocationMaster from "./routes/srcc-directories/getLocationMaster.mjs";
 import getSrccOrganisations from "./routes/srcc-directories/getSrccOrganisations.mjs";
 
 // Submission
+import getSubmissionJobs from "./routes/submission/getSubmissionJobs.mjs";
 import updateSubmissionJob from "./routes/submission/updateSubmissionJob.mjs";
 
 // Tyre Maintenance
@@ -294,11 +290,6 @@ if (cluster.isPrimary) {
       app.use(getJobDetail);
       app.use(updateESanchitJob);
 
-      // Feedback
-      app.use(addFeedback);
-      app.use(getFeedback);
-      app.use(updateFeedback);
-
       // Home
       app.use(assignModules);
       app.use(assignRole);
@@ -390,6 +381,7 @@ if (cluster.isPrimary) {
 
       // Submission
       app.use(updateSubmissionJob);
+      app.use(getSubmissionJobs);
 
       // Tyre Maintenance
       app.use(getPlyRatings);

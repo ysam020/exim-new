@@ -23,6 +23,13 @@ function BillingSheet() {
       header: "Job Number",
       enableSorting: false,
       size: 150,
+      Cell: ({ cell }) => {
+        return (
+          <Link to={`/edit-billing-sheet/${cell.row.original._id}`}>
+            {cell.row.original.job_no}
+          </Link>
+        );
+      },
     },
     {
       accessorKey: "importer",
@@ -59,18 +66,6 @@ function BillingSheet() {
       header: "Bill Doc Sent To Accounts",
       enableSorting: false,
       size: 300,
-    },
-    {
-      accessorKey: "actions",
-      header: "Actions",
-      enableSorting: false,
-      size: 150,
-
-      Cell: ({ cell }) => {
-        return (
-          <Link to={`/edit-billing-sheet/${cell.row.original._id}`}>Edit</Link>
-        );
-      },
     },
   ];
 

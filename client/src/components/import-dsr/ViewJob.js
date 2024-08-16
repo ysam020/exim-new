@@ -192,6 +192,105 @@ function JobDetails() {
             </Row>
           </div>
 
+          <div className="job-details-container">
+            <JobDetailsRowHeading heading="Queries" />
+            <br />
+            <Row>
+              <div>
+                {formik.values.do_queries.length > 0 &&
+                  formik.values.do_queries.map((item, id) => (
+                    <div key={id}>
+                      {id === 0 && (
+                        <h6>
+                          <h6>DO Queries</h6>
+                        </h6>
+                      )}
+                      {item.query}
+                      <br />
+                      <TextField
+                        fullWidth
+                        size="small"
+                        margin="normal"
+                        variant="outlined"
+                        id={`do_queries[${id}].reply`}
+                        name={`do_queries[${id}].reply`}
+                        label="Reply"
+                        value={item.reply}
+                        onChange={formik.handleChange}
+                      />
+                      <br />
+                    </div>
+                  ))}
+
+                {formik.values.documentationQueries.length > 0 &&
+                  formik.values.documentationQueries.map((item, id) => (
+                    <div key={id}>
+                      <br />
+                      {id === 0 && <h6>Documentation Queries</h6>}
+                      {item.query}
+                      <br />
+                      <TextField
+                        fullWidth
+                        size="small"
+                        margin="normal"
+                        variant="outlined"
+                        id={`documentationQueries[${id}].reply`}
+                        name={`documentationQueries[${id}].reply`}
+                        label="Reply"
+                        value={item.reply}
+                        onChange={formik.handleChange}
+                      />
+                      <br />
+                    </div>
+                  ))}
+
+                {formik.values.eSachitQueries.length > 0 &&
+                  formik.values.eSachitQueries.map((item, id) => (
+                    <div key={id}>
+                      <br />
+                      {id === 0 && <h6>E-Sanchit Queries</h6>}
+                      {item.query}
+                      <br />
+                      <TextField
+                        fullWidth
+                        size="small"
+                        margin="normal"
+                        variant="outlined"
+                        id={`eSachitQueries[${id}].reply`}
+                        name={`eSachitQueries[${id}].reply`}
+                        label="Reply"
+                        value={item.reply}
+                        onChange={formik.handleChange}
+                      />
+                      <br />
+                    </div>
+                  ))}
+
+                {formik.values.submissionQueries.length > 0 &&
+                  formik.values.submissionQueries.map((item, id) => (
+                    <div key={id}>
+                      <br />
+                      {id === 0 && <h6>Submission Queries</h6>}
+                      {item.query}
+                      <br />
+                      <TextField
+                        fullWidth
+                        size="small"
+                        margin="normal"
+                        variant="outlined"
+                        id={`submissionQueries[${id}].reply`}
+                        name={`submissionQueries[${id}].reply`}
+                        label="Reply"
+                        value={item.reply}
+                        onChange={formik.handleChange}
+                      />
+                      <br />
+                    </div>
+                  ))}
+              </div>
+            </Row>
+          </div>
+
           {/*************************** Row 8 ****************************/}
           <div className="job-details-container">
             <JobDetailsRowHeading heading="Description and Checklist" />
@@ -731,7 +830,18 @@ function JobDetails() {
                   {data.examination_date ? data.examination_date : ""}
                 </div>
               </Col>
-              <Col xs={12} lg={4}></Col>
+              <Col xs={12} lg={4}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "100%",
+                  }}
+                >
+                  <strong>PCV Date:&nbsp;</strong>
+                  {data.pcv_date ? data.pcv_date : ""}
+                </div>
+              </Col>
             </Row>
 
             {/*************************** Row 13 ****************************/}

@@ -23,83 +23,41 @@ function ESanchit() {
   const columns = [
     {
       accessorKey: "job_no",
-      header: "Job Number",
+      header: "Job No",
       enableSorting: false,
-      size: 130,
-    },
-    {
-      accessorKey: "actions",
-      header: "Actions",
-      enableSorting: false,
-      size: 120,
+      size: 100,
       Cell: ({ cell }) => (
         <Link
           to={`/esanchit-job/${cell.row.original.job_no}/${cell.row.original.year}`}
         >
-          View Job
+          {cell.row.original.job_no}
         </Link>
       ),
+    },
+    {
+      accessorKey: "importer",
+      header: "Importer",
+      enableSorting: false,
+      size: 250,
     },
     {
       accessorKey: "custom_house",
       header: "Custom House",
       enableSorting: false,
-      size: 200,
+      size: 150,
     },
+
     {
-      accessorKey: "awb_bl_no",
-      header: "BL Number",
+      accessorKey: "gateway_igm_date",
+      header: "Gateway IGM Date",
       enableSorting: false,
-      size: 200,
-      Cell: ({ cell }) => cell?.getValue()?.toString(),
-    },
-    {
-      accessorKey: "vessel_berthing",
-      header: "ETA",
-      enableSorting: false,
-      size: 100,
+      size: 150,
     },
     {
       accessorKey: "discharge_date",
-      header: "Discharge Date",
+      header: "Discharge Date/ IGM Date",
       enableSorting: false,
-      size: 180,
-    },
-    {
-      accessorKey: "arrival_date",
-      header: "Arrival Date",
-      enableSorting: false,
-      size: 180,
-      Cell: ({ cell }) =>
-        cell.row.original.container_nos?.map((container, id) => (
-          <React.Fragment key={id}>
-            {container.arrival_date}
-            <br />
-          </React.Fragment>
-        )),
-      filterFn: "includes",
-      accessorFn: (row) =>
-        row.container_nos
-          ?.map((container) => container.arrival_date)
-          .join(", "),
-    },
-    {
-      accessorKey: "container_numbers",
-      header: "Container Numbers",
-      enableSorting: false,
-      size: 180,
-      Cell: ({ cell }) =>
-        cell.row.original.container_nos?.map((container, id) => (
-          <React.Fragment key={id}>
-            {container.container_number}
-            <br />
-          </React.Fragment>
-        )),
-      filterFn: "includes",
-      accessorFn: (row) =>
-        row.container_nos
-          ?.map((container) => container.container_number)
-          .join(", "),
+      size: 150,
     },
   ];
 

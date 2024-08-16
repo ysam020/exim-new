@@ -4,33 +4,15 @@ import JobModel from "../../model/jobModel.mjs";
 const router = express.Router();
 
 router.post("/api/update-esanchit-job", async (req, res) => {
-  const { job_no, year, cth_documents, documents } = req.body;
+  const { job_no, year, cth_documents, documents, eSachitQueries } = req.body;
 
   try {
     const job = await JobModel.findOne({ job_no, year });
 
     if (!job) {
-      // If job does not exist, create a new job document
-      const newJob = new JobModel({
-        job_no,
-        year,
-        cth_documents: cth_documents.map((doc) => ({
-          cth: doc.cth,
-          document_name: doc.document_name,
-          url: doc.url,
-          irn: doc.irn,
-        })),
-        documents: documents.map((doc) => ({
-          document_name: doc.document_name,
-          url: doc.url,
-          irn: doc.irn,
-        })),
-      });
-
-      await newJob.save();
-      return res.send({
-        message: "Job created and updated successfully",
-        job: newJob,
+      // Send a response indicating that the job does not exist
+      return res.status(200).send({
+        message: "Job not found",
       });
     }
 
@@ -62,8 +44,11 @@ router.post("/api/update-esanchit-job", async (req, res) => {
       }
     }
 
+    // Update eSachitQueries
+    job.eSachitQueries = eSachitQueries;
+
     await job.save();
-    res.send({ message: "Job updated successfully", job });
+    res.send({ message: "Job updated successfully" });
   } catch (error) {
     console.error("Error updating job:", error);
     res.status(500).send({ message: "Internal Server Error" });

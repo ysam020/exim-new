@@ -23,6 +23,13 @@ function List() {
       header: "Job Number",
       enableSorting: false,
       size: 150,
+      Cell: ({ cell }) => {
+        return (
+          <Link to={`/edit-do-list/${cell.row.original._id}`}>
+            {cell.row.original.job_no}
+          </Link>
+        );
+      },
     },
     {
       accessorKey: "importer",
@@ -53,16 +60,6 @@ function List() {
       header: "OBL Telex BL",
       enableSorting: false,
       size: 200,
-    },
-    {
-      accessorKey: "actions",
-      header: "Actions",
-      enableSorting: false,
-      size: 150,
-
-      Cell: ({ cell }) => {
-        return <Link to={`/edit-do-list/${cell.row.original._id}`}>Edit</Link>;
-      },
     },
   ];
 

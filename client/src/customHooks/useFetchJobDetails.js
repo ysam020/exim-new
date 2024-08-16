@@ -124,6 +124,10 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       examinationPlanning: false,
       examination_planning_date: "",
       do_copies: [],
+      do_queries: [],
+      documentationQueries: [],
+      submissionQueries: [],
+      eSachitQueries: [],
       processed_be_attachment: [],
       ooc_copies: [],
       gate_pass_copies: [],
@@ -166,6 +170,10 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           examinationPlanning: values.examinationPlanning,
           examination_planning_date: values.examination_planning_date,
           do_copies: values.do_copies,
+          do_queries: values.do_queries,
+          documentationQueries: values.documentationQueries,
+          submissionQueries: values.submissionQueries,
+          eSachitQueries: values.eSachitQueries,
           processed_be_attachment: values.processed_be_attachment,
           ooc_copies: values.ooc_copies,
           gate_pass_copies: values.gate_pass_copies,
@@ -320,6 +328,15 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           data.duty_paid_date === undefined ? "" : data.duty_paid_date,
 
         do_copies: data.do_copies === undefined ? [] : data.do_copies,
+        do_queries: data.do_queries === undefined ? [] : data.do_queries,
+        documentationQueries:
+          data.documentationQueries === undefined
+            ? []
+            : data.documentationQueries,
+        submissionQueries:
+          data.submissionQueries === undefined ? [] : data.submissionQueries,
+        eSachitQueries:
+          data.eSachitQueries === undefined ? [] : data.eSachitQueries,
         processed_be_attachment:
           data.processed_be_attachment === undefined
             ? []

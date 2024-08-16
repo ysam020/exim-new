@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post("/api/update-documentation-job", async (req, res) => {
   try {
-    const { job_no, year, document_entry_completed, documentationRemarks } =
+    const { job_no, year, document_entry_completed, documentationQueries } =
       req.body;
 
     // Find the matching job based on job number and year
@@ -14,7 +14,7 @@ router.post("/api/update-documentation-job", async (req, res) => {
     if (matchingJob) {
       // Update the fields with the new values
       matchingJob.document_entry_completed = document_entry_completed;
-      matchingJob.documentationRemarks = documentationRemarks;
+      matchingJob.documentationQueries = documentationQueries;
 
       // Save the updated job document back to the database
       await matchingJob.save();

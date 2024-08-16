@@ -199,6 +199,7 @@ const jobSchema = new mongoose.Schema({
   shipping_line_invoice: { type: String, trim: true },
   shipping_line_invoice_date: { type: String },
   shipping_line_invoice_imgs: [{ type: String, trim: true }],
+  do_queries: [{ query: { type: String }, reply: { type: String } }],
   // *******
   icd_cfs_invoice: { type: String, trim: true },
   icd_cfs_invoice_img: [{ type: String, trim: true }],
@@ -231,18 +232,24 @@ const jobSchema = new mongoose.Schema({
 
   ////////////////////////////////////////////////// CTH Documents
   cth_documents: [cthDocumentSchema],
+  eSachitQueries: [{ query: { type: String }, reply: { type: String } }],
 
   ////////////////////////////////////////////////////// Documents
   documents: [documentSchema],
 
   ////////////////////////////////////////////////////// Documentation
   document_entry_completed: { type: Boolean },
-  documentationRemarks: { type: String },
+  documentationQueries: [
+    {
+      query: { type: String },
+      reply: { type: String },
+    },
+  ],
 
   ////////////////////////////////////////////////////// Submission
   checklist_verified_on: { type: String },
   submission_date: { type: String },
-  queries: [
+  submissionQueries: [
     {
       query: { type: String },
       reply: { type: String },

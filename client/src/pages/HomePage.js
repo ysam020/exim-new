@@ -7,7 +7,6 @@ import { TabValueContext } from "../contexts/TabValueContext.js";
 // Home
 import Home from "../components/home/Home";
 import Assign from "../components/home/Assign.js";
-import Feedback from "../components/home/Feedback.js";
 import ViewBugs from "../components/home/ViewBugs.js";
 import ChangePassword from "../components/home/ChangePassword.js";
 // Accounts
@@ -102,7 +101,6 @@ function HomePage() {
             {/* Home */}
             <Route path="/" element={<Home />} />
             <Route path="/assign" element={<Assign />} />
-            <Route path="/feedback" element={<Feedback />} />
             <Route path="/view-bugs" element={<ViewBugs />} />
             <Route path="/change-password" element={<ChangePassword />} />
 

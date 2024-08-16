@@ -65,7 +65,12 @@ function Sidebar() {
           sx={{ textAlign: "left" }}
           className="appbar-links"
           aria-label="list-item"
-          onClick={() => navigate("/feedback")}
+          onClick={() =>
+            window.open(
+              "https://aivision.odoo.com/helpdesk/customer-care-1",
+              "_blank"
+            )
+          }
         >
           <IconButton sx={{ color: "#ffffff9f" }} aria-label="icon">
             <FeedbackIcon />
