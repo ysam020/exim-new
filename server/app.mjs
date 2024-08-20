@@ -157,6 +157,8 @@ import getTyreBrand from "./routes/srcc-directories/getTyreBrand.mjs";
 import getDriverDetails from "./routes/srcc-directories/getDriverDetails.mjs";
 import getLocationMaster from "./routes/srcc-directories/getLocationMaster.mjs";
 import getSrccOrganisations from "./routes/srcc-directories/getSrccOrganisations.mjs";
+// sr_cel
+import srCel from "./routes/srcc/sr_cel/srCel.mjs";
 
 // Submission
 import updateSubmissionJob from "./routes/submission/updateSubmissionJob.mjs";
@@ -220,23 +222,9 @@ if (cluster.isPrimary) {
       maxPoolSize: 1000,
     })
     .then(async () => {
-      app.get("/", async (req, res) => {
-        try {
-          // Update all documents where bill_no is "--" and set bill_no to an empty string
-          const result = await JobModel.updateMany(
-            { bill_no: "--" },
-            { $set: { bill_no: "" } }
-          );
-
-          // Find and return the updated documents
-          const updatedJobs = await JobModel.find({ bill_no: "" });
-
-          res.send(updatedJobs);
-        } catch (error) {
-          res.status(500).send("An error occurred while updating the jobs");
-        }
+      app.get("/", (req, res) => {
+        res.send("Server is running");
       });
-
       app.use(getAllUsers);
       app.use(getImporterList);
       app.use(getJobById);
@@ -387,6 +375,8 @@ if (cluster.isPrimary) {
       app.use(getDriverDetails);
       app.use(getLocationMaster);
       app.use(getSrccOrganisations);
+      // sr cel
+      app.use(srCel);
 
       // Submission
       app.use(updateSubmissionJob);

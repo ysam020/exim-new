@@ -7,13 +7,81 @@ import SaveIcon from "@mui/icons-material/Save";
 import Autocomplete from "@mui/material/Autocomplete";
 import { handleSaveLr } from "../utils/handleSaveLr";
 import { lrContainerPlanningStatus } from "../assets/data/dsrDetailedStatus";
+// import SrCelDropdown from "./SrCelDropdown.js";
 
 function useLrColumns(props) {
   const [rows, setRows] = useState([]);
   const [filteredTruckNos, setFilteredTruckNos] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [truckNos, setTruckNos] = useState([]);
+  const [srcelOptions, setSrcelOptions] = useState([]);
 
+  console.log(truckNos);
+  // console.log(`srCelNos`, srCelNos);
+  useEffect(() => {
+    // Fetch the sr_cel options when the component mounts
+    fetchSrcelOptions();
+  }, []);
+  const fetchSrcelOptions = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_STRING}/get-all-srcel`
+      );
+      const data = await response.json();
+      console.log(`data`, data);
+      setSrcelOptions(data);
+    } catch (error) {
+      console.error("Error fetching sr_cel options:", error);
+    }
+  };
+  const SrCelDropdown = ({ options, onSelect, defaultValue, rowIndex }) => {
+    console.log(`options`, options);
+    console.log(`onSelect`, onSelect);
+    console.log(`defaultValue`, defaultValue);
+    console.log(`rowIndex`, rowIndex);
+    return (
+      <Autocomplete
+        options={options}
+        getOptionLabel={(option) => option.sr_cel_no}
+        renderInput={(params) => <TextField {...params} size="small" />}
+        onChange={(event, newValue) => {
+          console.log(`newValue`, newValue._id);
+          onSelect(
+            {
+              target: {
+                value: newValue ? newValue.sr_cel_no : null,
+              },
+            },
+            rowIndex,
+            "sr_cel_no"
+          );
+          onSelect(
+            {
+              target: {
+                value: newValue ? newValue.FGUID : null,
+              },
+            },
+            rowIndex,
+            "sr_cel_FGUID"
+          );
+          // onSelect(
+          //   {
+          //     target: {
+          //       value: newValue ? newValue._id : null,
+          //     },
+          //   },
+          //   rowIndex,
+          //   "sr_cel_FGUID"
+          // );
+        }}
+        defaultValue={
+          options.find((option) => option.sr_cel_no === defaultValue) || null
+        }
+        size="small"
+        fullWidth
+      />
+    );
+  };
   useEffect(() => {
     async function getTruckNo() {
       const res = await axios(
@@ -425,22 +493,29 @@ function useLrColumns(props) {
           />
         ),
     },
+
     {
-      accessorKey: "srcel_No",
+      accessorKey: "sr_cel_no",
       header: "SR CEL No",
       enableSorting: false,
       size: 200,
       Cell: ({ cell, row }) => (
-        <TextField
-          sx={{ width: "100%" }}
-          size="small"
+        <SrCelDropdown
+          options={srcelOptions}
+          onSelect={handleInputChange}
           defaultValue={cell.getValue()}
-          onBlur={(event) =>
-            handleInputChange(event, row.index, cell.column.id)
-          }
+          rowIndex={row.index}
         />
       ),
     },
+    // {
+    //   accessorKey: "sr_cel_FGUID",
+    //   header: "SR CEL FGUID",
+    //   enableSorting: false,
+    //   size: 200,
+    //   Cell: ({ cell }) => <span>{cell.getValue()}</span>,
+    // },
+
     {
       accessorKey: "status",
       header: "Status",

@@ -102,6 +102,12 @@ const PrDataSchema = new mongoose.Schema({
       driver_phone: {
         type: String,
       },
+      sr_cel_no: {
+        type: String,
+      },
+      sr_cel_FGUID: {
+        type: String,
+      },
       status: {
         type: String,
       },

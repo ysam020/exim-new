@@ -1,6 +1,8 @@
 import axios from "axios";
 
 export const handleSaveLr = async (row, props) => {
+  console.log("Save row:", row);
+  console.log("Props:", props);
   const errors = [];
 
   if (!row.container_number || row.container_number.trim() === "") {
@@ -25,7 +27,7 @@ export const handleSaveLr = async (row, props) => {
       }
     }
   }
-
+  // Validate weights
   if (row.gross_weight && (isNaN(row.gross_weight) || row.gross_weight <= 0)) {
     errors.push("Gross weight must be a positive number.");
   }
@@ -37,7 +39,7 @@ export const handleSaveLr = async (row, props) => {
   if (row.net_weight && (isNaN(row.net_weight) || row.net_weight <= 0)) {
     errors.push("Net weight must be a positive number.");
   }
-
+  // Validate driver phone number
   const indianMobileRegex = /^[6-9]\d{9}$/;
   if (row.driver_phone && !indianMobileRegex.test(row.driver_phone)) {
     errors.push(
@@ -45,8 +47,6 @@ export const handleSaveLr = async (row, props) => {
     );
   }
 
-
-  
   const vehicleNoRegex = /^[A-Z]{2}\d{2}[A-Z]{1,2}\d{4}$/i;
   if (row.vehicle_no && !vehicleNoRegex.test(row.vehicle_no)) {
     errors.push(
@@ -58,7 +58,24 @@ export const handleSaveLr = async (row, props) => {
     alert(errors.join("\n"));
     return;
   }
-
+  // If both sr_cel_FGUID and sr_cel_no are present, call the PATCH API
+  if (row.sr_cel_FGUID && row.sr_cel_no) {
+    console.log(
+      ` Happpy first happy second ${row.sr_cel_FGUID} ${row.sr_cel_no}`
+    );
+    try {
+      await axios.patch(
+        `${process.env.REACT_APP_API_STRING}/get-srcel/${row._id}`,
+        {
+          sr_cel_locked: true,
+        }
+      );
+      console.log("SR CEL Locked successfully");
+    } catch (error) {
+      console.error("Error locking SR CEL:", error);
+      return; // Stop further execution if there's an error
+    }
+  }
   // Proceed with save logic
   const pr_no = props.pr_no;
 
