@@ -43,6 +43,33 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     "81042010",
   ];
 
+  // Function to calculate the maximum date
+  function getMaxDate(date1, date2, date3) {
+    // Function to parse date strings into Date objects safely
+    const parseDate = (dateString) => {
+      const [year, month, day] = dateString.split("-");
+      return new Date(year, month - 1, day); // Subtract 1 from month because Date() expects 0-indexed months
+    };
+
+    // Filter out any invalid or empty dates
+    const dates = [date1, date2, date3]
+      .filter((date) => date && !isNaN(Date.parse(date)))
+      .map((date) => parseDate(date));
+
+    // If there are no valid dates, return an empty string
+    if (dates.length === 0) return "";
+
+    // Find the maximum date from valid dates
+    const maxDate = new Date(Math.max(...dates));
+
+    // Format the date back to yyyy-mm-dd
+    const year = maxDate.getFullYear();
+    const month = String(maxDate.getMonth() + 1).padStart(2, "0");
+    const day = String(maxDate.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
+
   // Fetch CTH documents
   useEffect(() => {
     async function getCthDocument() {
@@ -93,7 +120,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
   const formik = useFormik({
     initialValues: {
       checkedDocs: [],
-      container_nos: "",
+      container_nos: [],
       obl_telex_bl: "",
       document_received_date: "",
       vessel_berthing: "",
@@ -191,6 +218,17 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       navigate("/import-dsr");
     },
   });
+
+  const serializedContainerNos = useMemo(
+    () =>
+      JSON.stringify(
+        formik.values.container_nos.map((container) => ({
+          arrival_date: container.arrival_date,
+          free_time: container.free_time,
+        }))
+      ),
+    [formik.values.container_nos]
+  );
 
   // Update formik intial values when data is fetched from db
   useEffect(() => {
@@ -365,6 +403,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     // eslint-disable-next-line
   }, [data]);
 
+  // Update detention from dates and do validity upto job level
   useEffect(() => {
     function addDaysToDate(dateString, days) {
       var date = new Date(dateString);
@@ -410,15 +449,19 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       );
     }
     // eslint-disable-next-line
-  }, [
-    formik.values.arrival_date,
-    formik.values.free_time,
-    formik.values.container_nos,
-    data,
-    checked,
-  ]);
+  }, [formik.values.arrival_date, formik.values.free_time, data, checked]);
 
   const currentDate = new Date().toISOString().split("T")[0];
+
+  // Set document_received_date to today if obl_telex_bl is not empty
+  useEffect(() => {
+    if (formik.values.obl_telex_bl !== "") {
+      formik.setFieldValue("document_received_date", currentDate);
+    } else {
+      formik.setFieldValue("document_received_date", "");
+    }
+  }, [formik.values.obl_telex_bl]);
+
   // Set do_planning_date to today if doPlanning is true
   useEffect(() => {
     if (formik.values.doPlanning === true) {
@@ -446,20 +489,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     }
   }, [formik.values.examinationPlanning]);
 
-  const derivedContainerNos = useMemo(() => {
-    return formik.values.container_nos.length > 0
-      ? formik.values.container_nos
-      : [];
-  }, [formik.values.container_nos]);
-
-  const arrivalDate = useMemo(() => {
-    return formik.values.arrival_date;
-  }, [formik.values.arrival_date]);
-
-  const freeTime = useMemo(() => {
-    return formik.values.free_time;
-  }, [formik.values.free_time]);
-
+  // Update detention from dates and set do_validity_upto_job_level
   useEffect(() => {
     function addDaysToDate(dateString, days) {
       const date = new Date(dateString);
@@ -467,63 +497,81 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
-      return year + "-" + month + "-" + day;
+      return `${year}-${month}-${day}`;
     }
 
-    if (derivedContainerNos.length > 0 && data !== null) {
-      let updatedDates = [];
-
-      if (!checked) {
-        updatedDates = derivedContainerNos.map((container) =>
-          addDaysToDate(container.arrival_date, parseInt(freeTime))
-        );
-      } else {
-        updatedDates = derivedContainerNos.map((container) =>
-          addDaysToDate(arrivalDate, parseInt(freeTime))
-        );
-      }
-
-      if (JSON.stringify(updatedDates) !== JSON.stringify(detentionFrom)) {
-        setDetentionFrom(updatedDates);
-      }
-    }
-  }, [
-    derivedContainerNos,
-    arrivalDate,
-    freeTime,
-    checked,
-    data,
-    detentionFrom,
-  ]);
-
-  useEffect(() => {
     function subtractDaysFromDate(dateString, days) {
       const date = new Date(dateString);
       date.setDate(date.getDate() - days);
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
-      return year + "-" + month + "-" + day;
+      return `${year}-${month}-${day}`;
     }
 
-    if (detentionFrom.length > 0) {
-      const updatedContainerValidity = detentionFrom.map((date) =>
-        subtractDaysFromDate(date, 1)
+    if (formik.values.container_nos !== "" && data !== null) {
+      let updatedDate = [];
+
+      // If all containers do not arrive at the same time, use the arrival date of individual container
+      if (!checked) {
+        updatedDate = formik.values.container_nos?.map((container) =>
+          addDaysToDate(
+            container.arrival_date,
+            parseInt(formik.values.free_time)
+          )
+        );
+      } else {
+        // If all containers arrive at the same time, use the common arrival date
+        updatedDate = formik.values.container_nos?.map((container) =>
+          addDaysToDate(
+            formik.values.arrival_date,
+            parseInt(formik.values.free_time)
+          )
+        );
+      }
+
+      setDetentionFrom(updatedDate);
+
+      // Find the earliest date from updatedDate
+      const earliestDate = updatedDate.reduce((earliest, current) => {
+        return current < earliest ? current : earliest;
+      }, "9999-12-31"); // Set a far future date as the initial value
+
+      // Subtract one day from the earliest date
+      const doValidityDate =
+        earliestDate === "9999-12-31"
+          ? ""
+          : subtractDaysFromDate(earliestDate, 1);
+
+      // Set do_validity_upto_job_level to the calculated date
+      formik.setFieldValue("do_validity_upto_job_level", doValidityDate);
+    }
+    // eslint-disable-next-line
+  }, [
+    formik.values.arrival_date,
+    formik.values.free_time,
+    data,
+    checked,
+    serializedContainerNos,
+  ]);
+
+  // UseEffect to update do_validity_upto_container_level when do_validity_upto_job_level changes
+  useEffect(() => {
+    if (formik.values.do_validity_upto_job_level) {
+      const updatedContainers = formik.values.container_nos.map(
+        (container) => ({
+          ...container,
+          do_validity_upto_container_level:
+            formik.values.do_validity_upto_job_level,
+        })
       );
 
-      const updatedContainers = derivedContainerNos.map((container, index) => ({
-        ...container,
-        do_validity_upto_container_level: updatedContainerValidity[index],
-      }));
-
-      if (
-        JSON.stringify(formik.values.container_nos) !==
-        JSON.stringify(updatedContainers)
-      ) {
-        formik.setFieldValue("container_nos", updatedContainers);
-      }
+      formik.setFieldValue("container_nos", updatedContainers);
     }
-  }, [detentionFrom, derivedContainerNos]);
+    // eslint-disable-next-line
+  }, [formik.values.do_validity_upto_job_level]);
+
+  console.log(formik.values.do_validity_upto_job_level);
 
   return {
     data,

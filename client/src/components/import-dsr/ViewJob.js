@@ -443,9 +443,11 @@ function JobDetails() {
                 >
                   <strong>
                     {formik.values.obl_telex_bl === "OBL"
-                      ? "Original Document Received Date"
-                      : "Document Received Date"}
+                      ? "Original Document Received Date:"
+                      : "Document Received Date:"}
                   </strong>
+                  &nbsp;
+                  {formik.values.document_received_date}
                 </div>
               </Col>
             </Row>
