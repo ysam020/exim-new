@@ -1,3 +1,15 @@
+import * as Sentry from "@sentry/node";
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
+import logger from "./logger.js";
+
+process.on("uncaughtException", (error) => {
+  logger.error(`Uncaught Exception: ${error.message}`, { stack: error.stack });
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  logger.error(`Unhandled Rejection at: ${promise} reason: ${reason}`);
+});
+
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
@@ -6,6 +18,14 @@ import compression from "compression";
 import cluster from "cluster";
 import os from "os";
 import bodyParser from "body-parser";
+dotenv.config();
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  integrations: [nodeProfilingIntegration()],
+  tracesSampleRate: 1.0, // Capture 100% of transactions for tracing
+  profilesSampleRate: 1.0, // Capture 100% of transactions for profiling
+});
 
 // Import routes
 import getAllUsers from "./routes/getAllUsers.mjs";
@@ -178,8 +198,6 @@ import getTyreDetails from "./routes/tyre-maintenance/getTyreDetails.mjs";
 import getTruckDetails from "./routes/tyre-maintenance/getTruckDetails.mjs";
 import JobModel from "./model/jobModel.mjs";
 
-dotenv.config();
-
 const MONGODB_URI =
   process.env.NODE_ENV === "production"
     ? process.env.PROD_MONGODB_URI
@@ -200,6 +218,7 @@ if (cluster.isPrimary) {
   });
 } else {
   const app = express();
+
   app.use(bodyParser.json({ limit: "100mb" }));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -216,6 +235,14 @@ if (cluster.isPrimary) {
       maxPoolSize: 1000,
     })
     .then(async () => {
+      Sentry.setupExpressErrorHandler(app);
+
+      // Optional fallthrough error handler
+      app.use(function onError(err, req, res, next) {
+        res.statusCode = 500;
+        res.end(res.sentry + "\n");
+      });
+
       app.get("/", async (req, res) => {
         try {
           // Update all documents where bill_no is "--" and set bill_no to an empty string

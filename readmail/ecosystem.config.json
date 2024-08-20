@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "name": "app",
+      "name": "readmail",
       "script": "app.mjs",
       "watch": true,
       "env": {

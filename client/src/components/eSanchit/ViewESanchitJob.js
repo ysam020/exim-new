@@ -46,12 +46,69 @@ function ViewESanchitJob() {
   const params = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-  const [cthDocuments, setCthDocuments] = useState([]);
+  const [cthDocuments, setCthDocuments] = useState([
+    {
+      document_name: "Commercial Invoice",
+      document_code: "380000",
+    },
+    {
+      document_name: "Packing List",
+      document_code: "271000",
+    },
+    {
+      document_name: "Bill of Lading",
+      document_code: "704000",
+    },
+    {
+      document_name: "Certificate of Origin",
+      document_code: "861000",
+    },
+    {
+      document_name: "Contract",
+      document_code: "315000",
+    },
+    {
+      document_name: "Insurance",
+      document_code: "91WH13",
+    },
+  ]);
   const [documents, setDocuments] = useState([]);
   const [snackbar, setSnackbar] = useState(false);
   const [fileSnackbar, setFileSnackbar] = useState(false);
   const [selectedDocuments, setSelectedDocuments] = useState([]);
   const bl_no_ref = useRef();
+
+  const commonCthCodes = [
+    "72041000",
+    "72042920",
+    "72042990",
+    "72043000",
+    "72044900",
+    "72042190",
+    "74040012",
+    "74040022",
+    "74040024",
+    "74040025",
+    "75030010",
+    "76020010",
+    "78020010",
+    "79020010",
+    "80020010",
+    "81042010",
+  ];
+
+  const additionalDocs = [
+    {
+      document_name: "Pre-Shipment Inspection Certificate",
+      document_code: "856001",
+    },
+    { document_name: "Form 9 & Form 6", document_code: "856001" },
+    {
+      document_name: "Registration Document (SIMS/NFMIMS/PIMS)",
+      document_code: "101000",
+    },
+    { document_name: "Certificate of Analysis", document_code: "001000" },
+  ];
 
   useEffect(() => {
     async function getData() {
@@ -84,7 +141,21 @@ function ViewESanchitJob() {
           };
         });
 
-        setCthDocuments(mergedCthDocuments);
+        // Merge with existing cthDocuments state and eliminate duplicates
+        setCthDocuments((prevCthDocuments) => {
+          const allDocuments = [...prevCthDocuments, ...mergedCthDocuments];
+          const uniqueDocuments = allDocuments.reduce((acc, current) => {
+            const x = acc.find(
+              (doc) => doc.document_name === current.document_name
+            );
+            if (!x) {
+              return acc.concat([current]);
+            } else {
+              return acc;
+            }
+          }, []);
+          return uniqueDocuments;
+        });
       }
 
       if (res.data.documents) {
@@ -119,6 +190,15 @@ function ViewESanchitJob() {
 
     getDocuments();
   }, []);
+
+  useEffect(() => {
+    if (commonCthCodes.includes(data.cth_no)) {
+      // Create a new array with the existing documents plus the additional ones
+      const updatedCthDocuments = [...cthDocuments, ...additionalDocs];
+      // Update the state or the cthDocuments array with the new list
+      setCthDocuments(updatedCthDocuments);
+    }
+  }, [data.cth_no]);
 
   const handleFileChange = async (event, documentName, index, isCth) => {
     const files = event.target.files;
@@ -409,29 +489,29 @@ function ViewESanchitJob() {
             </div>
 
             <div className="job-details-container">
-              <Row>
-                <Col>
-                  <h4>Queries</h4>
-                  {eSachitQueries.map((item, id) => {
-                    return (
-                      <div key={id}>
-                        <TextField
-                          fullWidth
-                          multiline
-                          rows={2}
-                          size="small"
-                          label="Query"
-                          value={item.query} // Set the current query value
-                          onChange={(e) => handleQueryChange(e, id)} // Handle changes
-                        />
-                        {item.reply}
-                        <br />
-                        <br />
-                      </div>
-                    );
-                  })}
-                </Col>
-              </Row>
+              <h4>Queries</h4>
+              {eSachitQueries.map((item, id) => {
+                return (
+                  <Row key={id}>
+                    <Col>
+                      <TextField
+                        fullWidth
+                        multiline
+                        rows={2}
+                        size="small"
+                        label="Query"
+                        value={item.query} // Set the current query value
+                        onChange={(e) => handleQueryChange(e, id)} // Handle changes
+                      />
+                    </Col>
+                    <Col>
+                      {item.reply}
+                      <br />
+                      <br />
+                    </Col>
+                  </Row>
+                );
+              })}
               <button onClick={addQuery} className="btn">
                 Add Query
               </button>

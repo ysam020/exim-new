@@ -67,7 +67,9 @@ const jobSchema = new mongoose.Schema({
       examination_videos: [{ url: { type: String, trim: true } }],
       do_revalidation_date: { type: String, trim: true },
       do_validity_upto_container_level: { type: String, trim: true },
-      do_revalidation_upto_container_level: { type: String, trim: true },
+      do_revalidation: [
+        { do_revalidation_upto: { type: String }, remarks: { type: String } },
+      ],
     },
   ],
   container_count: { type: String, trim: true },

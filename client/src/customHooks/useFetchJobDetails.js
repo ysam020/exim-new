@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import { convertDateFormatForUI } from "../utils/convertDateFormatForUI";
@@ -206,6 +206,10 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       );
 
       const container_nos = data.container_nos?.map((container) => ({
+        do_revalidation:
+          container.do_revalidation === undefined
+            ? []
+            : container.do_revalidation,
         arrival_date:
           container.arrival_date === undefined
             ? ""
@@ -397,8 +401,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       // Find the earliest date from updatedDate
       const earliestDate = updatedDate.reduce((earliest, current) => {
         return current < earliest ? current : earliest;
-      }, "9999-12-31"); // A far future date as the initial value
-      console.log(earliestDate);
+      }, "9999-12-31"); // Set a far future date as the initial value
 
       // Set do_validity_upto_job_level to the earliest date
       formik.setFieldValue(
@@ -414,6 +417,113 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     data,
     checked,
   ]);
+
+  const currentDate = new Date().toISOString().split("T")[0];
+  // Set do_planning_date to today if doPlanning is true
+  useEffect(() => {
+    if (formik.values.doPlanning === true) {
+      formik.setFieldValue("do_planning_date", currentDate);
+    } else {
+      formik.setFieldValue("do_planning_date", "");
+    }
+  }, [formik.values.doPlanning]);
+
+  // Set do_revalidation_date to today if do_revalidation is true
+  useEffect(() => {
+    if (formik.values.do_revalidation === true) {
+      formik.setFieldValue("do_revalidation_date", currentDate);
+    } else {
+      formik.setFieldValue("do_revalidation_date", "");
+    }
+  }, [formik.values.do_revalidation]);
+
+  // Set examination_planning_date to today if examinationPlanning is true
+  useEffect(() => {
+    if (formik.values.examinationPlanning === true) {
+      formik.setFieldValue("examination_planning_date", currentDate);
+    } else {
+      formik.setFieldValue("examination_planning_date", "");
+    }
+  }, [formik.values.examinationPlanning]);
+
+  const derivedContainerNos = useMemo(() => {
+    return formik.values.container_nos.length > 0
+      ? formik.values.container_nos
+      : [];
+  }, [formik.values.container_nos]);
+
+  const arrivalDate = useMemo(() => {
+    return formik.values.arrival_date;
+  }, [formik.values.arrival_date]);
+
+  const freeTime = useMemo(() => {
+    return formik.values.free_time;
+  }, [formik.values.free_time]);
+
+  useEffect(() => {
+    function addDaysToDate(dateString, days) {
+      const date = new Date(dateString);
+      date.setDate(date.getDate() + days);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return year + "-" + month + "-" + day;
+    }
+
+    if (derivedContainerNos.length > 0 && data !== null) {
+      let updatedDates = [];
+
+      if (!checked) {
+        updatedDates = derivedContainerNos.map((container) =>
+          addDaysToDate(container.arrival_date, parseInt(freeTime))
+        );
+      } else {
+        updatedDates = derivedContainerNos.map((container) =>
+          addDaysToDate(arrivalDate, parseInt(freeTime))
+        );
+      }
+
+      if (JSON.stringify(updatedDates) !== JSON.stringify(detentionFrom)) {
+        setDetentionFrom(updatedDates);
+      }
+    }
+  }, [
+    derivedContainerNos,
+    arrivalDate,
+    freeTime,
+    checked,
+    data,
+    detentionFrom,
+  ]);
+
+  useEffect(() => {
+    function subtractDaysFromDate(dateString, days) {
+      const date = new Date(dateString);
+      date.setDate(date.getDate() - days);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return year + "-" + month + "-" + day;
+    }
+
+    if (detentionFrom.length > 0) {
+      const updatedContainerValidity = detentionFrom.map((date) =>
+        subtractDaysFromDate(date, 1)
+      );
+
+      const updatedContainers = derivedContainerNos.map((container, index) => ({
+        ...container,
+        do_validity_upto_container_level: updatedContainerValidity[index],
+      }));
+
+      if (
+        JSON.stringify(formik.values.container_nos) !==
+        JSON.stringify(updatedContainers)
+      ) {
+        formik.setFieldValue("container_nos", updatedContainers);
+      }
+    }
+  }, [detentionFrom, derivedContainerNos]);
 
   return {
     data,

@@ -1,9 +1,28 @@
+import * as Sentry from "@sentry/node";
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
+import logger from "./logger.js";
+
+process.on("uncaughtException", (error) => {
+  logger.error(`Uncaught Exception: ${error.message}`, { stack: error.stack });
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  logger.error(`Unhandled Rejection at: ${promise} reason: ${reason}`);
+});
+
 import dotenv from "dotenv";
 import xlsx from "xlsx";
 import axios from "axios";
 import imaps from "imap-simple";
 
 dotenv.config();
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  integrations: [nodeProfilingIntegration()],
+  tracesSampleRate: 1.0, // Capture 100% of transactions for tracing
+  profilesSampleRate: 1.0, // Capture 100% of transactions for profiling
+});
 
 const BACKEND_API_URI =
   process.env.NODE_ENV === "production"
@@ -42,6 +61,9 @@ const imapConfig = {
 const watchEmailAddresses = process.env.WATCH_EMAIL_ADDRESSES.split(",");
 
 const processMessages = async (messages, connection) => {
+  // Optional fallthrough error handler
+  Sentry.captureMessage("Processing messages complete", "info");
+
   console.log(`Found ${messages.length} new messages`);
 
   for (const message of messages) {

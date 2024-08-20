@@ -195,100 +195,90 @@ function JobDetails() {
           <div className="job-details-container">
             <JobDetailsRowHeading heading="Queries" />
             <br />
-            <Row>
-              <div>
-                {formik.values.do_queries.length > 0 &&
-                  formik.values.do_queries.map((item, id) => (
-                    <div key={id}>
-                      {id === 0 && (
-                        <h6>
-                          <h6>DO Queries</h6>
-                        </h6>
-                      )}
-                      {item.query}
-                      <br />
-                      <TextField
-                        fullWidth
-                        size="small"
-                        margin="normal"
-                        variant="outlined"
-                        id={`do_queries[${id}].reply`}
-                        name={`do_queries[${id}].reply`}
-                        label="Reply"
-                        value={item.reply}
-                        onChange={formik.handleChange}
-                      />
-                      <br />
-                    </div>
-                  ))}
+            {formik.values.do_queries.length > 0 &&
+              formik.values.do_queries.map((item, id) => (
+                <Row key={id}>
+                  {id === 0 && <h5>DO Queries</h5>}
 
-                {formik.values.documentationQueries.length > 0 &&
-                  formik.values.documentationQueries.map((item, id) => (
-                    <div key={id}>
-                      <br />
-                      {id === 0 && <h6>Documentation Queries</h6>}
-                      {item.query}
-                      <br />
-                      <TextField
-                        fullWidth
-                        size="small"
-                        margin="normal"
-                        variant="outlined"
-                        id={`documentationQueries[${id}].reply`}
-                        name={`documentationQueries[${id}].reply`}
-                        label="Reply"
-                        value={item.reply}
-                        onChange={formik.handleChange}
-                      />
-                      <br />
-                    </div>
-                  ))}
-
-                {formik.values.eSachitQueries.length > 0 &&
-                  formik.values.eSachitQueries.map((item, id) => (
-                    <div key={id}>
-                      <br />
-                      {id === 0 && <h6>E-Sanchit Queries</h6>}
-                      {item.query}
-                      <br />
-                      <TextField
-                        fullWidth
-                        size="small"
-                        margin="normal"
-                        variant="outlined"
-                        id={`eSachitQueries[${id}].reply`}
-                        name={`eSachitQueries[${id}].reply`}
-                        label="Reply"
-                        value={item.reply}
-                        onChange={formik.handleChange}
-                      />
-                      <br />
-                    </div>
-                  ))}
-
-                {formik.values.submissionQueries.length > 0 &&
-                  formik.values.submissionQueries.map((item, id) => (
-                    <div key={id}>
-                      <br />
-                      {id === 0 && <h6>Submission Queries</h6>}
-                      {item.query}
-                      <br />
-                      <TextField
-                        fullWidth
-                        size="small"
-                        margin="normal"
-                        variant="outlined"
-                        id={`submissionQueries[${id}].reply`}
-                        name={`submissionQueries[${id}].reply`}
-                        label="Reply"
-                        value={item.reply}
-                        onChange={formik.handleChange}
-                      />
-                      <br />
-                    </div>
-                  ))}
-              </div>
-            </Row>
+                  <Col xs={6}>{item.query}</Col>
+                  <Col xs={6}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      margin="normal"
+                      variant="outlined"
+                      id={`do_queries[${id}].reply`}
+                      name={`do_queries[${id}].reply`}
+                      label="Reply"
+                      value={item.reply}
+                      onChange={formik.handleChange}
+                    />
+                  </Col>
+                </Row>
+              ))}
+            {formik.values.documentationQueries.length > 0 &&
+              formik.values.documentationQueries.map((item, id) => (
+                <Row key={id}>
+                  <br />
+                  {id === 0 && <h5>Documentation Queries</h5>}
+                  <Col>{item.query}</Col>
+                  <Col>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      margin="normal"
+                      variant="outlined"
+                      id={`documentationQueries[${id}].reply`}
+                      name={`documentationQueries[${id}].reply`}
+                      label="Reply"
+                      value={item.reply}
+                      onChange={formik.handleChange}
+                    />
+                  </Col>
+                </Row>
+              ))}
+            {formik.values.eSachitQueries.length > 0 &&
+              formik.values.eSachitQueries.map((item, id) => (
+                <Row key={id}>
+                  <br />
+                  {id === 0 && <h5>E-Sanchit Queries</h5>}
+                  <Col>{item.query}</Col>
+                  <Col>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      margin="normal"
+                      variant="outlined"
+                      id={`eSachitQueries[${id}].reply`}
+                      name={`eSachitQueries[${id}].reply`}
+                      label="Reply"
+                      value={item.reply}
+                      onChange={formik.handleChange}
+                    />
+                  </Col>
+                </Row>
+              ))}
+            {formik.values.submissionQueries.length > 0 &&
+              formik.values.submissionQueries.map((item, id) => (
+                <Row key={id}>
+                  <br />
+                  {id === 0 && <h5>Submission Queries</h5>}
+                  <Col>{item.query}</Col>
+                  <Col>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      margin="normal"
+                      variant="outlined"
+                      id={`submissionQueries[${id}].reply`}
+                      name={`submissionQueries[${id}].reply`}
+                      label="Reply"
+                      value={item.reply}
+                      onChange={formik.handleChange}
+                    />
+                  </Col>
+                </Row>
+              ))}
           </div>
 
           {/*************************** Row 8 ****************************/}
@@ -460,7 +450,7 @@ function JobDetails() {
               </Col>
             </Row>
             <Row>
-              <Col xs={12} lg={3}>
+              <Col xs={12} lg={4}>
                 <div
                   className="job-detail-input-container"
                   style={{ justifyContent: "flex-start" }}
@@ -475,52 +465,34 @@ function JobDetails() {
                       formik.setFieldValue("doPlanning", newValue);
                     }}
                   />
+                  {formik.values.do_planning_date}
                 </div>
               </Col>
-              <Col xs={12} lg={4}>
+              <Col xs={12} lg={5}>
                 <div className="job-detail-input-container">
-                  <strong>DO Planning Date:&nbsp;</strong>
-                  <TextField
-                    fullWidth={true}
-                    size="small"
-                    type="date"
-                    margin="normal"
-                    variant="outlined"
-                    id="do_planning_date"
-                    name="do_planning_date"
-                    value={formik.values.do_planning_date}
-                    onChange={formik.handleChange}
-                    inputProps={
-                      user.username === "manu_pillai"
-                        ? ""
-                        : {
-                            min: data.do_planning_date
-                              ? data.do_planning_date
-                              : today,
-                          }
-                    }
-                  />
-                </div>
-              </Col>
-              <Col xs={12} lg={4}>
-                <div className="job-detail-input-container">
-                  <strong>DO Validity Upto&nbsp;</strong>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    margin="normal"
-                    variant="outlined"
-                    type="date"
-                    id="do_validity_upto_job_level"
-                    name="do_validity_upto_job_level"
-                    value={formik.values.do_validity_upto_job_level}
-                    onChange={formik.handleChange}
-                  />
+                  <strong style={{ width: "50%" }}>
+                    DO Validity Upto&nbsp;
+                  </strong>
+                  {formik.values.do_revalidation ? (
+                    formik.values.do_validity_upto_job_level
+                  ) : (
+                    <TextField
+                      fullWidth
+                      size="small"
+                      margin="normal"
+                      variant="outlined"
+                      type="date"
+                      id="do_validity_upto_job_level"
+                      name="do_validity_upto_job_level"
+                      value={formik.values.do_validity_upto_job_level}
+                      onChange={formik.handleChange}
+                    />
+                  )}
                 </div>
               </Col>
             </Row>
             <Row>
-              <Col xs={12} lg={3}>
+              <Col xs={12} lg={4}>
                 <div
                   className="job-detail-input-container"
                   style={{ justifyContent: "flex-start" }}
@@ -534,52 +506,12 @@ function JobDetails() {
                       formik.setFieldValue("do_revalidation", newValue);
                     }}
                   />
-                </div>
-              </Col>
-              <Col xs={12} lg={4}>
-                <div className="job-detail-input-container">
-                  <strong>DO Revalidation Date:&nbsp;</strong>
-                  <TextField
-                    fullWidth={true}
-                    size="small"
-                    type="date"
-                    margin="normal"
-                    variant="outlined"
-                    id="do_revalidation_date"
-                    name="do_revalidation_date"
-                    value={formik.values.do_revalidation_date}
-                    onChange={formik.handleChange}
-                    inputProps={
-                      user.username === "manu_pillai"
-                        ? ""
-                        : {
-                            min: data.do_planning_date
-                              ? data.do_planning_date
-                              : today,
-                          }
-                    }
-                  />
-                </div>
-              </Col>
-              <Col xs={12} lg={4}>
-                <div className="job-detail-input-container">
-                  <strong>DO Revalidation Upto&nbsp;</strong>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    margin="normal"
-                    variant="outlined"
-                    type="date"
-                    id="do_revalidation_upto_job_level"
-                    name="do_revalidation_upto_job_level"
-                    value={formik.values.do_revalidation_upto_job_level}
-                    onChange={formik.handleChange}
-                  />
+                  {formik.values.do_revalidation_date}
                 </div>
               </Col>
             </Row>
             <Row>
-              <Col xs={12} lg={3}>
+              <Col xs={12} lg={4}>
                 <div
                   className="job-detail-input-container"
                   style={{ justifyContent: "flex-start" }}
@@ -594,31 +526,7 @@ function JobDetails() {
                       formik.setFieldValue("examinationPlanning", newValue);
                     }}
                   />
-                </div>
-              </Col>
-              <Col xs={12} lg={4}>
-                <div className="job-detail-input-container">
-                  <strong>Examination Planning Date:&nbsp;</strong>
-                  <TextField
-                    fullWidth={true}
-                    size="small"
-                    type="date"
-                    margin="normal"
-                    variant="outlined"
-                    id="examination_planning_date"
-                    name="examination_planning_date"
-                    value={formik.values.examination_planning_date}
-                    onChange={formik.handleChange}
-                    inputProps={
-                      user.username === "manu_pillai"
-                        ? ""
-                        : {
-                            min: data.do_planning_date
-                              ? data.do_planning_date
-                              : today,
-                          }
-                    }
-                  />
+                  {formik.values.examination_planning_date}
                 </div>
               </Col>
             </Row>
@@ -1083,27 +991,49 @@ function JobDetails() {
               formik.values.container_nos?.map((container, index) => {
                 return (
                   <div key={index}>
-                    <div style={{ padding: "30px" }}>
-                      <h6>
-                        <strong>
-                          {index + 1}. Container Number:&nbsp;
-                          <span ref={container_number_ref[index]}>
-                            {container.container_number}
-                          </span>
-                          <IconButton
-                            onClick={() =>
-                              handleCopyContainerNumber(
-                                container.container_number,
-                                setSnackbar
-                              )
-                            }
-                            aria-label="copy-btn"
-                          >
-                            <ContentCopyIcon />
-                          </IconButton>
-                        </strong>
-                      </h6>
+                    <div
+                      style={{
+                        padding: "30px",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <h6 style={{ marginBottom: 0 }}>
+                          <strong>
+                            {index + 1}. Container Number:&nbsp;
+                            <span ref={container_number_ref[index]}>
+                              {container.container_number}
+                            </span>
+                            <IconButton
+                              onClick={() =>
+                                handleCopyContainerNumber(
+                                  container.container_number,
+                                  setSnackbar
+                                )
+                              }
+                              aria-label="copy-btn"
+                            >
+                              <ContentCopyIcon />
+                            </IconButton>
+                          </strong>
+                        </h6>
 
+                        <strong style={{ marginLeft: "20px" }}>
+                          Size:&nbsp;
+                        </strong>
+                        <TextField
+                          select
+                          size="small"
+                          margin="normal"
+                          variant="outlined"
+                          id={`size_${index}`}
+                          name={`container_nos[${index}].size`}
+                          value={container.size}
+                          onChange={formik.handleChange}
+                        >
+                          <MenuItem value="20">20</MenuItem>
+                          <MenuItem value="40">40</MenuItem>
+                        </TextField>
+                      </div>
                       <br />
                       <Row>
                         {!checked && (
@@ -1152,46 +1082,7 @@ function JobDetails() {
                           <strong>Detention From:&nbsp;</strong>
                           {detentionFrom[index]}
                         </Col>
-                        <Col xs={12} lg={3} className="flex-div">
-                          <div className="job-detail-input-container">
-                            <strong>Size:&nbsp;</strong>
-                            <TextField
-                              fullWidth
-                              select
-                              size="small"
-                              margin="normal"
-                              variant="outlined"
-                              id={`size_${index}`}
-                              name={`container_nos[${index}].size`}
-                              value={container.size}
-                              onChange={formik.handleChange}
-                            >
-                              <MenuItem value="20">20</MenuItem>
-                              <MenuItem value="40">40</MenuItem>
-                            </TextField>
-                          </div>
-                        </Col>
-                        {checked && <Col></Col>}
-                      </Row>
 
-                      <Row>
-                        <Col xs={12} lg={3}>
-                          <div className="job-detail-input-container">
-                            <strong>DO Revalidation Date:&nbsp;</strong>
-                            <TextField
-                              fullWidth
-                              key={index}
-                              size="small"
-                              margin="normal"
-                              variant="outlined"
-                              type="date"
-                              id={`do_revalidation_date_${index}`}
-                              name={`container_nos[${index}].do_revalidation_date`}
-                              value={container.do_revalidation_date}
-                              onChange={formik.handleChange}
-                            />
-                          </div>
-                        </Col>
                         <Col xs={12} lg={3}>
                           <div className="job-detail-input-container">
                             <strong>DO Validity Upto:&nbsp;</strong>
@@ -1210,6 +1101,62 @@ function JobDetails() {
                           </div>
                         </Col>
                       </Row>
+
+                      {container.do_revalidation?.map((item, id) => {
+                        return (
+                          <Row key={id}>
+                            <Col xs={12} lg={3}>
+                              <div className="job-detail-input-container">
+                                <strong>DO Revalidation Upto:&nbsp;</strong>
+                                <TextField
+                                  fullWidth
+                                  size="small"
+                                  margin="normal"
+                                  variant="outlined"
+                                  type="date"
+                                  id={`do_revalidation_date_${index}_${id}`}
+                                  name={`container_nos[${index}].do_revalidation[${id}].do_revalidation_upto`}
+                                  value={item.do_revalidation_upto}
+                                  onChange={formik.handleChange}
+                                />
+                              </div>
+                            </Col>
+                            <Col xs={12} lg={9}>
+                              <div className="job-detail-input-container">
+                                <strong>Remarks:&nbsp;</strong>
+                                <TextField
+                                  fullWidth
+                                  size="small"
+                                  margin="normal"
+                                  variant="outlined"
+                                  id={`remarks_${index}_${id}`}
+                                  name={`container_nos[${index}].do_revalidation[${id}].remarks`}
+                                  value={item.remarks}
+                                  onChange={formik.handleChange}
+                                />
+                              </div>
+                            </Col>
+                          </Row>
+                        );
+                      })}
+
+                      {/* Add DO Revalidation Button */}
+                      <button
+                        type="button"
+                        className="btn"
+                        onClick={() => {
+                          const newRevalidation = {
+                            do_revalidation_upto: "",
+                            remarks: "",
+                          };
+                          formik.setFieldValue(
+                            `container_nos[${index}].do_revalidation`,
+                            [...container.do_revalidation, newRevalidation]
+                          );
+                        }}
+                      >
+                        Add DO Revalidation
+                      </button>
 
                       <Row className="job-detail-row">
                         <Col xs={12} lg={3}>
@@ -1386,7 +1333,7 @@ function JobDetails() {
               <button
                 className="btn"
                 type="submit"
-                style={{ float: "right", margin: "20px" }}
+                style={{ float: "right", margin: "10px" }}
                 aria-label="submit-btn"
               >
                 Submit
