@@ -3,25 +3,89 @@ import axios from "axios";
 import { useFormik } from "formik";
 import { convertDateFormatForUI } from "../utils/convertDateFormatForUI";
 import { useNavigate } from "react-router-dom";
+import AWS from "aws-sdk";
 
-function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
+const handleSingleFileUpload = async (file, folderName, setFileSnackbar) => {
+  try {
+    const key = `${folderName}/${file.name}`;
+
+    const s3 = new AWS.S3({
+      accessKeyId: process.env.REACT_APP_ACCESS_KEY,
+      secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
+      region: "ap-south-1",
+    });
+
+    const params = {
+      Bucket: "alvision-exim-images",
+      Key: key,
+      Body: file,
+    };
+
+    const data = await s3.upload(params).promise();
+    const photoUrl = data.Location;
+
+    setFileSnackbar(true);
+
+    setTimeout(() => {
+      setFileSnackbar(false);
+    }, 3000);
+
+    return photoUrl;
+  } catch (err) {
+    console.error("Error uploading file:", err);
+  }
+};
+
+function useFetchJobDetails(
+  params,
+  checked,
+  setSelectedRegNo,
+  setTabValue,
+  setFileSnackbar
+) {
   const [data, setData] = useState(null);
   const [detentionFrom, setDetentionFrom] = useState([]);
   const navigate = useNavigate();
-  const [documents, setDocuments] = useState([
-    "Commercial Invoice",
-    "Packing List",
-    "Bill of Lading",
-    "Certificate of Origin",
-    "Contract",
-    "Insurance",
+  const [cthDocuments, setCthDocuments] = useState([
+    {
+      document_name: "Commercial Invoice",
+      document_code: "380000",
+    },
+    {
+      document_name: "Packing List",
+      document_code: "271000",
+    },
+    {
+      document_name: "Bill of Lading",
+      document_code: "704000",
+    },
+    {
+      document_name: "Certificate of Origin",
+      document_code: "861000",
+    },
+    {
+      document_name: "Contract",
+      document_code: "315000",
+    },
+    {
+      document_name: "Insurance",
+      document_code: "91WH13",
+    },
   ]);
+  const [documents, setDocuments] = useState([]);
+  const [selectedDocuments, setSelectedDocuments] = useState([]);
 
   const additionalDocs = [
-    "Pre-Shipment Inspection Certificate",
-    "Form 9 & Form 6",
-    "Registration Document (SIMS/NFMIMS/PIMS)",
-    "Certificate of Analysis",
+    {
+      document_name: "Pre-Shipment Inspection Certificate",
+      document_code: "856001",
+    },
+    { document_name: "Form 9 & Form 6", document_code: "856001" },
+    {
+      document_name: "Registration Document (SIMS/NFMIMS/PIMS)",
+      document_code: "101000",
+    },
+    { document_name: "Certificate of Analysis", document_code: "001000" },
   ];
 
   const commonCthCodes = [
@@ -43,67 +107,6 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     "81042010",
   ];
 
-  // Function to calculate the maximum date
-  function getMaxDate(date1, date2, date3) {
-    // Function to parse date strings into Date objects safely
-    const parseDate = (dateString) => {
-      const [year, month, day] = dateString.split("-");
-      return new Date(year, month - 1, day); // Subtract 1 from month because Date() expects 0-indexed months
-    };
-
-    // Filter out any invalid or empty dates
-    const dates = [date1, date2, date3]
-      .filter((date) => date && !isNaN(Date.parse(date)))
-      .map((date) => parseDate(date));
-
-    // If there are no valid dates, return an empty string
-    if (dates.length === 0) return "";
-
-    // Find the maximum date from valid dates
-    const maxDate = new Date(Math.max(...dates));
-
-    // Format the date back to yyyy-mm-dd
-    const year = maxDate.getFullYear();
-    const month = String(maxDate.getMonth() + 1).padStart(2, "0");
-    const day = String(maxDate.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  }
-
-  // Fetch CTH documents
-  useEffect(() => {
-    async function getCthDocument() {
-      if (data && data.cth_no) {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_STRING}/get-cth-docs/${data.cth_no}`
-        );
-        const fetchedDocs = res.data.map((doc) => doc.document_name); // Extract document names
-
-        setDocuments((currentDocs) => {
-          // Filter out any documents that are already in the currentDocs
-          let newDocs = fetchedDocs.filter((doc) => !currentDocs.includes(doc));
-
-          // If cth_no is in commonCthCodes, append additionalDocs
-          if (commonCthCodes.includes(data.cth_no)) {
-            newDocs = [
-              ...newDocs,
-              ...additionalDocs.filter((doc) => !newDocs.includes(doc)),
-            ];
-          }
-
-          // Combine currentDocs and newDocs, filtering out any duplicates
-          const updatedDocs = [...currentDocs, ...newDocs].filter(
-            (doc, index, self) => self.indexOf(doc) === index
-          );
-
-          return updatedDocs;
-        });
-      }
-    }
-
-    getCthDocument();
-  }, [data]); // Dependency on data object
-
   // Fetch data
   useEffect(() => {
     async function getJobDetails() {
@@ -111,10 +114,85 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
         `${process.env.REACT_APP_API_STRING}/get-job/${params.selected_year}/${params.job_no}`
       );
       setData(response.data);
+      setSelectedDocuments(response.data.documents);
     }
 
     getJobDetails();
   }, [params.importer, params.job_no, params.selected_year]);
+
+  // Fetch documents
+  useEffect(() => {
+    async function getDocuments() {
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_STRING}/get-docs`
+      );
+      setDocuments(res.data);
+    }
+
+    getDocuments();
+  }, []);
+
+  // Fetch CTH documents based on CTH number and Update additional CTH documents based on CTH number
+  useEffect(() => {
+    async function getCthDocs() {
+      if (data?.cth_no) {
+        const cthRes = await axios.get(
+          `${process.env.REACT_APP_API_STRING}/get-cth-docs/${data?.cth_no}`
+        );
+
+        // Fetched CTH documents with URLs merged from data.cth_documents if they exist
+        const fetchedCthDocuments = cthRes.data.map((cthDoc) => {
+          const additionalData = data?.cth_documents.find(
+            (doc) => doc.document_name === cthDoc.document_name
+          );
+
+          return {
+            ...cthDoc,
+            url: additionalData ? additionalData.url : "",
+          };
+        });
+
+        // Start with initial cthDocuments
+        let documentsToMerge = [...cthDocuments];
+
+        // If data.cth_no is in commonCthCodes, merge with additionalDocs
+        if (commonCthCodes.includes(data.cth_no)) {
+          documentsToMerge = [...documentsToMerge, ...additionalDocs];
+        }
+
+        // Merge fetched CTH documents
+        documentsToMerge = [...documentsToMerge, ...fetchedCthDocuments];
+
+        // Merge data.cth_documents into the array
+        documentsToMerge = [...documentsToMerge, ...data.cth_documents];
+
+        // Eliminate duplicates, keeping only the document with a URL if it exists
+        const uniqueDocuments = documentsToMerge.reduce((acc, current) => {
+          const existingDocIndex = acc.findIndex(
+            (doc) => doc.document_name === current.document_name
+          );
+
+          if (existingDocIndex === -1) {
+            // Document does not exist, add it
+            return acc.concat([current]);
+          } else {
+            // Document exists, replace it only if the current one has a URL
+            if (current.url) {
+              acc[existingDocIndex] = current;
+            }
+            return acc;
+          }
+        }, []);
+
+        setCthDocuments(uniqueDocuments);
+      }
+    }
+    if (data) {
+      setSelectedDocuments(data.documents);
+    }
+
+    getCthDocs();
+  }, [data]);
 
   // Formik
   const formik = useFormik({
@@ -163,11 +241,12 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       out_of_charge: "",
       checked: false,
     },
-
     onSubmit: async (values, { resetForm }) => {
       await axios.put(
         `${process.env.REACT_APP_API_STRING}/update-job/${params.selected_year}/${params.job_no}`,
         {
+          cth_documents: cthDocuments,
+          documents: selectedDocuments,
           checkedDocs: values.checkedDocs,
           vessel_berthing: values.vessel_berthing,
           free_time: values.free_time,
@@ -229,7 +308,6 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       ),
     [formik.values.container_nos]
   );
-
   // Update formik intial values when data is fetched from db
   useEffect(() => {
     if (data) {
@@ -571,13 +649,95 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     // eslint-disable-next-line
   }, [formik.values.do_validity_upto_job_level]);
 
-  console.log(formik.values.do_validity_upto_job_level);
+  const handleFileChange = async (event, documentName, index, isCth) => {
+    const file = event.target.files[0]; // Assuming only one file is uploaded per document
+    if (!file) return;
+
+    const formattedDocumentName = documentName
+      .toLowerCase()
+      .replace(/\[.*?\]|\(.*?\)/g, "")
+      .replace(/[^\w\s]/g, "_")
+      .replace(/\s+/g, "_")
+      .replace(/_+/g, "_")
+      .replace(/^_+|_+$/g, "");
+
+    const photoUrl = await handleSingleFileUpload(
+      file,
+      formattedDocumentName,
+      setFileSnackbar
+    );
+
+    if (isCth) {
+      const updatedCthDocuments = [...cthDocuments];
+      updatedCthDocuments[index].url = photoUrl; // Store as a string
+      setCthDocuments(updatedCthDocuments);
+    } else {
+      const updatedSelectedDocuments = [...selectedDocuments];
+      updatedSelectedDocuments[index].url = photoUrl; // Store as a string
+      setSelectedDocuments(updatedSelectedDocuments);
+    }
+  };
+
+  const handleDocumentChange = (index, newValue) => {
+    setSelectedDocuments((prevSelectedDocuments) => {
+      const updatedDocuments = [...prevSelectedDocuments];
+
+      // Ensure the new object has the desired structure
+      updatedDocuments[index] = {
+        document_name: newValue?.document_name || "",
+        document_code: newValue?.document_code || "",
+        url: newValue?.url || "", // or `newValue.url` if you get `url` in the `newValue`
+      };
+
+      return updatedDocuments;
+    });
+  };
+
+  const handleAddDocument = () => {
+    setSelectedDocuments([
+      ...selectedDocuments,
+      { document_name: "", document_code: "", url: "" },
+    ]);
+  };
+
+  const handleRemoveDocument = (index) => {
+    const newSelectedDocuments = [...selectedDocuments];
+    newSelectedDocuments.splice(index, 1);
+    setSelectedDocuments(newSelectedDocuments);
+  };
+
+  const filterDocuments = (selectedDocuments, currentIndex) => {
+    const restrictedDocs = new Set();
+
+    selectedDocuments.forEach((doc, index) => {
+      if (doc.document) {
+        restrictedDocs.add(doc.document.document_code);
+        if (doc.document.document_code === "380000") {
+          restrictedDocs.add("331000");
+        } else if (doc.document.document_code === "271000") {
+          restrictedDocs.add("331000");
+        } else if (doc.document.document_code === "331000") {
+          restrictedDocs.add("380000");
+          restrictedDocs.add("271000");
+        }
+      }
+    });
+
+    return documents.filter((doc) => !restrictedDocs.has(doc.document_code));
+  };
 
   return {
     data,
     detentionFrom,
     formik,
+    cthDocuments,
     documents,
+    handleFileChange,
+    selectedDocuments,
+    handleDocumentChange,
+    handleAddDocument,
+    handleRemoveDocument,
+    filterDocuments,
   };
 }
 

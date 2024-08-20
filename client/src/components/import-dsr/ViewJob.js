@@ -1,7 +1,7 @@
 import React, { useState, useRef, useContext } from "react";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { IconButton, TextField } from "@mui/material";
+import { IconButton, TextField, Autocomplete } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import "../../styles/job-details.scss";
 import useFetchJobDetails from "../../customHooks/useFetchJobDetails";
@@ -21,6 +21,7 @@ import FormGroup from "@mui/material/FormGroup";
 import { TabValueContext } from "../../contexts/TabValueContext";
 import { handleNetWeightChange } from "../../utils/handleNetWeightChange";
 import { UserContext } from "../../contexts/UserContext";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function JobDetails() {
   const params = useParams();
@@ -39,11 +40,24 @@ function JobDetails() {
   const weighmentSlipRef = useRef();
   const container_number_ref = useRef([]);
   const today = new Date().toISOString().split("T")[0];
-  const { data, detentionFrom, formik, documents } = useFetchJobDetails(
+  const {
+    data,
+    detentionFrom,
+    formik,
+    cthDocuments,
+    documents,
+    handleFileChange,
+    selectedDocuments,
+    handleDocumentChange,
+    handleAddDocument,
+    handleRemoveDocument,
+    filterDocuments,
+  } = useFetchJobDetails(
     params,
     checked,
     setSelectedRegNo,
-    setTabValue
+    setTabValue,
+    setFileSnackbar
   );
 
   const handleRadioChange = (event) => {
@@ -146,17 +160,6 @@ function JobDetails() {
     }
   };
 
-  const handleCheckboxChange = (event) => {
-    const { checked, name } = event.target;
-
-    formik.setFieldValue(
-      "checkedDocs",
-      checked
-        ? [...formik.values.checkedDocs, name] // Add document if checked
-        : formik.values.checkedDocs.filter((doc) => doc !== name) // Remove document if unchecked
-    );
-  };
-
   return (
     <>
       {data !== null && (
@@ -171,25 +174,107 @@ function JobDetails() {
 
           <div className="job-details-container">
             <JobDetailsRowHeading heading="Documents" />
-            <Row className="job-detail-row">
-              <div className="job-detail-input-container">
-                <FormGroup row>
-                  {documents.map((document, id) => (
-                    <FormControlLabel
-                      key={id}
-                      control={
-                        <Checkbox
-                          checked={formik.values.checkedDocs.includes(document)}
-                          onChange={handleCheckboxChange}
-                          name={document}
-                        />
-                      }
-                      label={document}
-                    />
-                  ))}
-                </FormGroup>
-              </div>
-            </Row>
+            <br />
+            {cthDocuments?.map((doc, index) => (
+              <Row key={index} className="document-upload">
+                <Col xs={5}>
+                  <strong>
+                    {doc.document_name} ({doc.document_code})&nbsp;
+                  </strong>
+                </Col>
+                <Col xs={3}>
+                  <br />
+                  <input
+                    type="file"
+                    multiple
+                    onChange={(e) =>
+                      handleFileChange(e, doc.document_name, index, true)
+                    }
+                  />
+
+                  {doc.url && <a href={doc.url}>View</a>}
+                </Col>
+              </Row>
+            ))}
+
+            {selectedDocuments.map((selectedDocument, index) => (
+              <Row key={index} style={{ marginTop: "20px" }}>
+                <Col xs={5}>
+                  {/* <Autocomplete
+                    options={filterDocuments(selectedDocuments, index)}
+                    getOptionLabel={(doc) =>
+                      `${doc.document_name} (${doc.document_code})`
+                    }
+                    value={
+                      `${selectedDocument.document_name} ${selectedDocument.document_code}` ||
+                      ""
+                    }
+                    onChange={(event, newValue) => {
+                      handleDocumentChange(index, newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select Document"
+                        size="small"
+                        sx={{ width: 500 }}
+                      />
+                    )}
+                  /> */}
+                  <Autocomplete
+                    options={filterDocuments(selectedDocuments, index)}
+                    getOptionLabel={(doc) =>
+                      `${doc.document_name} (${doc.document_code})`
+                    }
+                    value={selectedDocument || null} // Pass the whole selectedDocument object
+                    onChange={(event, newValue) => {
+                      handleDocumentChange(index, newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select Document"
+                        size="small"
+                        sx={{ width: 500 }}
+                      />
+                    )}
+                  />
+                </Col>
+                <Col xs={3}>
+                  <input
+                    type="file"
+                    multiple
+                    onChange={(e) =>
+                      handleFileChange(
+                        e,
+                        selectedDocument.document_name,
+                        index,
+                        false
+                      )
+                    }
+                    disabled={!selectedDocument.document_code}
+                  />
+                  <br />
+                  <br />
+                  {selectedDocument.url && (
+                    <a href={selectedDocument.url}>View</a>
+                  )}
+                </Col>
+
+                <Col>
+                  <IconButton
+                    onClick={() => handleRemoveDocument(index)}
+                    sx={{ color: "#BE3838" }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Col>
+              </Row>
+            ))}
+
+            <button type="button" className="btn" onClick={handleAddDocument}>
+              Add Document
+            </button>
           </div>
 
           <div className="job-details-container">

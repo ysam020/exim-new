@@ -180,6 +180,7 @@ function ViewESanchitJob() {
     getData();
   }, [params.job_no, params.year]);
 
+  // Fetch documents
   useEffect(() => {
     async function getDocuments() {
       const res = await axios.get(
@@ -191,6 +192,7 @@ function ViewESanchitJob() {
     getDocuments();
   }, []);
 
+  // Update CTH documents based on CTH number
   useEffect(() => {
     if (commonCthCodes.includes(data.cth_no)) {
       // Create a new array with the existing documents plus the additional ones
@@ -200,6 +202,7 @@ function ViewESanchitJob() {
     }
   }, [data.cth_no]);
 
+  // Handle file upload
   const handleFileChange = async (event, documentName, index, isCth) => {
     const files = event.target.files;
     if (!files) return;
@@ -233,6 +236,7 @@ function ViewESanchitJob() {
     }
   };
 
+  // Handle document addition
   const handleAddDocument = () => {
     setSelectedDocuments([
       ...selectedDocuments,
@@ -240,18 +244,21 @@ function ViewESanchitJob() {
     ]);
   };
 
+  // Handle document removal
   const handleRemoveDocument = (index) => {
     const newSelectedDocuments = [...selectedDocuments];
     newSelectedDocuments.splice(index, 1);
     setSelectedDocuments(newSelectedDocuments);
   };
 
+  // Handle document change
   const handleDocumentChange = (index, newValue) => {
     const newSelectedDocuments = [...selectedDocuments];
     newSelectedDocuments[index].document = newValue;
     setSelectedDocuments(newSelectedDocuments);
   };
 
+  // Handle IRN change
   const handleIrnChange = (index, newIrn, isCth) => {
     if (isCth) {
       const updatedCthDocuments = [...cthDocuments];
@@ -264,6 +271,7 @@ function ViewESanchitJob() {
     }
   };
 
+  // Filter documents
   const filterDocuments = (selectedDocuments, currentIndex) => {
     const restrictedDocs = new Set();
 
@@ -284,6 +292,7 @@ function ViewESanchitJob() {
     return documents.filter((doc) => !restrictedDocs.has(doc.document_code));
   };
 
+  // Handle submit
   const handleSubmit = async () => {
     const formattedData = {
       cth_documents: [],
@@ -322,6 +331,7 @@ function ViewESanchitJob() {
     console.log(formattedData);
   };
 
+  // Handle sign documents
   const handleSignDocuments = async () => {
     try {
       const signRequests = selectedDocuments.map(({ urls }) =>
