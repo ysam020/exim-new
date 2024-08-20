@@ -426,6 +426,22 @@ function useLrColumns(props) {
         ),
     },
     {
+      accessorKey: "srcel_No",
+      header: "SR CEL No",
+      enableSorting: false,
+      size: 200,
+      Cell: ({ cell, row }) => (
+        <TextField
+          sx={{ width: "100%" }}
+          size="small"
+          defaultValue={cell.getValue()}
+          onBlur={(event) =>
+            handleInputChange(event, row.index, cell.column.id)
+          }
+        />
+      ),
+    },
+    {
       accessorKey: "status",
       header: "Status",
       enableSorting: false,

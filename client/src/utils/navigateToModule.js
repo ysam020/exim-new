@@ -30,6 +30,8 @@ export const navigateToModule = (module, navigate) => {
       return navigate("/srcc-directories");
     case "RTO":
       return navigate("/rto");
+    case "SR CEL":
+      return navigate("/srcel");
     case "Documentation":
       return navigate("/documentation");
     case "Submission":
