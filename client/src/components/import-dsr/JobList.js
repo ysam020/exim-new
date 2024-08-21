@@ -28,6 +28,8 @@ function JobList(props) {
     data: rows,
     enableColumnResizing: true,
     enableColumnOrdering: true,
+    enablePagination: false,
+    enableBottomToolbar: false,
     enableDensityToggle: false, // Disable density toggle
     initialState: { density: "compact", columnPinning: { left: ["job_no"] } }, // Set initial table density to compact
     enableGrouping: true, // Enable row grouping
@@ -36,7 +38,7 @@ function JobList(props) {
     enableStickyHeader: true, // Enable sticky header
     enablePinning: true, // Enable pinning for sticky columns
     muiTableContainerProps: {
-      sx: { maxHeight: "450px", overflowY: "auto" },
+      sx: { maxHeight: "520px", overflowY: "auto" },
     },
     muiTableBodyRowProps: ({ row }) => ({
       className: getTableRowsClassname(row),

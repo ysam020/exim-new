@@ -4,66 +4,60 @@ import JobModel from "../../model/jobModel.mjs";
 const router = express.Router();
 
 router.post("/api/update-esanchit-job", async (req, res) => {
-  const { job_no, year, cth_documents, documents } = req.body;
+  const { job_no, year, cth_documents, documents, eSachitQueries } = req.body;
 
   try {
-    const job = await JobModel.findOne({ job_no, year });
+    const matchingJob = await JobModel.findOne({ job_no, year });
 
-    if (!job) {
-      // If job does not exist, create a new job document
-      const newJob = new JobModel({
-        job_no,
-        year,
-        cth_documents: cth_documents.map((doc) => ({
-          cth: doc.cth,
-          document_name: doc.document_name,
-          url: doc.url,
-          irn: doc.irn,
-        })),
-        documents: documents.map((doc) => ({
-          document_name: doc.document_name,
-          url: doc.url,
-          irn: doc.irn,
-        })),
-      });
-
-      await newJob.save();
-      return res.send({
-        message: "Job created and updated successfully",
-        job: newJob,
+    if (!matchingJob) {
+      // Send a response indicating that the job does not exist
+      return res.status(200).send({
+        message: "Job not found",
       });
     }
 
-    // Update cth_documents
-    for (const cthDoc of cth_documents) {
-      const index = job.cth_documents.findIndex(
-        (doc) => doc.cth === cthDoc.cth
-      );
-      if (index !== -1) {
-        // Update existing document
-        job.cth_documents[index] = cthDoc;
-      } else {
-        // Add new document
-        job.cth_documents.push(cthDoc);
-      }
+    if (cth_documents && cth_documents.length > 0) {
+      cth_documents.forEach((incomingDoc) => {
+        const existingDocIndex = matchingJob.cth_documents.findIndex(
+          (doc) => doc.document_name === incomingDoc.document_name
+        );
+        if (existingDocIndex !== -1) {
+          // Update the existing document
+          matchingJob.cth_documents[existingDocIndex] = {
+            ...matchingJob.cth_documents[existingDocIndex],
+            ...incomingDoc,
+          };
+        } else {
+          // Add new document if it doesn't exist
+          matchingJob.cth_documents.push(incomingDoc);
+        }
+      });
     }
 
-    // Update documents
-    for (const doc of documents) {
-      const index = job.documents.findIndex(
-        (d) => d.document_name === doc.document_name
-      );
-      if (index !== -1) {
-        // Update existing document
-        job.documents[index] = doc;
-      } else {
-        // Add new document
-        job.documents.push(doc);
-      }
+    // 3. Update documents
+    if (documents && documents.length > 0) {
+      documents.forEach((incomingDoc) => {
+        const existingDocIndex = matchingJob.documents.findIndex(
+          (doc) => doc.document_name === incomingDoc.document_name
+        );
+        if (existingDocIndex !== -1) {
+          // Update the existing document
+          matchingJob.documents[existingDocIndex] = {
+            ...matchingJob.documents[existingDocIndex],
+            ...incomingDoc,
+          };
+        } else {
+          // Add new document if it doesn't exist
+          matchingJob.documents.push(incomingDoc);
+        }
+      });
     }
 
-    await job.save();
-    res.send({ message: "Job updated successfully", job });
+    // Update eSachitQueries
+    matchingJob.eSachitQueries = eSachitQueries;
+
+    await matchingJob.save();
+    res.send({ message: "Job updated successfully" });
   } catch (error) {
     console.error("Error updating job:", error);
     res.status(500).send({ message: "Internal Server Error" });

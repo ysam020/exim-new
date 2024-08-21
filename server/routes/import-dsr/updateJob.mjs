@@ -7,13 +7,14 @@ const router = express.Router();
 
 router.put("/api/update-job/:year/:jobNo", async (req, res) => {
   const { jobNo, year } = req.params;
+
   const {
+    cth_documents,
+    documents,
     container_nos,
     arrival_date,
     free_time,
     checked,
-    do_validity_upto_job_level,
-    do_revalidation_upto_job_level,
   } = req.body;
 
   function addDaysToDate(dateString, days) {
@@ -157,8 +158,6 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
             arrival_date === ""
               ? ""
               : addDaysToDate(arrival_date, parseInt(free_time)),
-          do_validity_upto_container_level: do_validity_upto_job_level,
-          do_revalidation_upto_container_level: do_revalidation_upto_job_level,
         };
       });
     } else {
@@ -170,9 +169,44 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
             container.arrival_date === ""
               ? ""
               : addDaysToDate(container.arrival_date, parseInt(free_time)),
-          do_validity_upto_container_level: do_validity_upto_job_level,
-          do_revalidation_upto_container_level: do_revalidation_upto_job_level,
         };
+      });
+    }
+
+    if (cth_documents && cth_documents.length > 0) {
+      cth_documents.forEach((incomingDoc) => {
+        const existingDocIndex = matchingJob.cth_documents.findIndex(
+          (doc) => doc.document_name === incomingDoc.document_name
+        );
+        if (existingDocIndex !== -1) {
+          // Update the existing document
+          matchingJob.cth_documents[existingDocIndex] = {
+            ...matchingJob.cth_documents[existingDocIndex],
+            ...incomingDoc,
+          };
+        } else {
+          // Add new document if it doesn't exist
+          matchingJob.cth_documents.push(incomingDoc);
+        }
+      });
+    }
+
+    // 3. Update documents
+    if (documents && documents.length > 0) {
+      documents.forEach((incomingDoc) => {
+        const existingDocIndex = matchingJob.documents.findIndex(
+          (doc) => doc.document_name === incomingDoc.document_name
+        );
+        if (existingDocIndex !== -1) {
+          // Update the existing document
+          matchingJob.documents[existingDocIndex] = {
+            ...matchingJob.documents[existingDocIndex],
+            ...incomingDoc,
+          };
+        } else {
+          // Add new document if it doesn't exist
+          matchingJob.documents.push(incomingDoc);
+        }
       });
     }
 

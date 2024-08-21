@@ -1,3 +1,15 @@
+import * as Sentry from "@sentry/node";
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
+import logger from "./logger.js";
+
+process.on("uncaughtException", (error) => {
+  logger.error(`Uncaught Exception: ${error.message}`, { stack: error.stack });
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  logger.error(`Unhandled Rejection at: ${promise} reason: ${reason}`);
+});
+
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
@@ -6,6 +18,14 @@ import compression from "compression";
 import cluster from "cluster";
 import os from "os";
 import bodyParser from "body-parser";
+dotenv.config();
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  integrations: [nodeProfilingIntegration()],
+  tracesSampleRate: 1.0, // Capture 100% of transactions for tracing
+  profilesSampleRate: 1.0, // Capture 100% of transactions for profiling
+});
 
 // Import routes
 import getAllUsers from "./routes/getAllUsers.mjs";
@@ -64,11 +84,6 @@ import getDocs from "./routes/e-sanchit/getDocs.mjs";
 import getESanchitJobs from "./routes/e-sanchit/getESanchitJobs.mjs";
 import getJobDetail from "./routes/e-sanchit/getJobDetail.mjs";
 import updateESanchitJob from "./routes/e-sanchit/updateESanchitJob.mjs";
-
-// Feedback
-import addFeedback from "./routes/feedback/addFeedback.mjs";
-import getFeedback from "./routes/feedback/getFeedback.mjs";
-import updateFeedback from "./routes/feedback/updateFeedback.mjs";
 
 // Home
 import assignModules from "./routes/home/assignModules.mjs";
@@ -161,6 +176,7 @@ import getSrccOrganisations from "./routes/srcc-directories/getSrccOrganisations
 import srCel from "./routes/srcc/sr_cel/srCel.mjs";
 
 // Submission
+import getSubmissionJobs from "./routes/submission/getSubmissionJobs.mjs";
 import updateSubmissionJob from "./routes/submission/updateSubmissionJob.mjs";
 
 // Tyre Maintenance
@@ -184,8 +200,6 @@ import getTyreDetails from "./routes/tyre-maintenance/getTyreDetails.mjs";
 import getTruckDetails from "./routes/tyre-maintenance/getTruckDetails.mjs";
 import JobModel from "./model/jobModel.mjs";
 
-dotenv.config();
-
 const MONGODB_URI =
   process.env.NODE_ENV === "production"
     ? process.env.PROD_MONGODB_URI
@@ -206,6 +220,7 @@ if (cluster.isPrimary) {
   });
 } else {
   const app = express();
+
   app.use(bodyParser.json({ limit: "100mb" }));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -222,8 +237,29 @@ if (cluster.isPrimary) {
       maxPoolSize: 1000,
     })
     .then(async () => {
-      app.get("/", (req, res) => {
-        res.send("Server is running");
+      Sentry.setupExpressErrorHandler(app);
+
+      // Optional fallthrough error handler
+      app.use(function onError(err, req, res, next) {
+        res.statusCode = 500;
+        res.end(res.sentry + "\n");
+      });
+
+      app.get("/", async (req, res) => {
+        try {
+          // Update all documents where bill_no is "--" and set bill_no to an empty string
+          const result = await JobModel.updateMany(
+            { bill_no: "--" },
+            { $set: { bill_no: "" } }
+          );
+
+          // Find and return the updated documents
+          const updatedJobs = await JobModel.find({ bill_no: "" });
+
+          res.send(updatedJobs);
+        } catch (error) {
+          res.status(500).send("An error occurred while updating the jobs");
+        }
       });
       app.use(getAllUsers);
       app.use(getImporterList);
@@ -281,11 +317,6 @@ if (cluster.isPrimary) {
       app.use(getESanchitJobs);
       app.use(getJobDetail);
       app.use(updateESanchitJob);
-
-      // Feedback
-      app.use(addFeedback);
-      app.use(getFeedback);
-      app.use(updateFeedback);
 
       // Home
       app.use(assignModules);
@@ -380,6 +411,7 @@ if (cluster.isPrimary) {
 
       // Submission
       app.use(updateSubmissionJob);
+      app.use(getSubmissionJobs);
 
       // Tyre Maintenance
       app.use(getPlyRatings);

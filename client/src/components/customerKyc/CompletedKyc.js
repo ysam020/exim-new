@@ -69,6 +69,21 @@ function CompletedKyc() {
           ""
         ),
     },
+    ...(user.username === "manu_pillai"
+      ? [
+          {
+            accessorKey: "edit",
+            header: "Edit",
+            enableSorting: false,
+            size: 120,
+            Cell: ({ cell }) => (
+              <Link to={`/revise-customer-kyc/${cell.row.original._id}`}>
+                Edit
+              </Link>
+            ),
+          },
+        ]
+      : []),
   ];
   const table = useTableConfig(data, columns);
   return (

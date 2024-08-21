@@ -231,6 +231,8 @@ function ViewDSR() {
     data: rows,
     enableColumnResizing: true,
     enableColumnOrdering: true,
+    enablePagination: false,
+    enableBottomToolbar: false,
     enableDensityToggle: false, // Disable density toggle
     initialState: { density: "compact", columnPinning: { left: ["job_no"] } }, // Set initial table density to compact,
     enableGrouping: true, // Enable row grouping
@@ -239,7 +241,7 @@ function ViewDSR() {
     enableStickyHeader: true, // Enable sticky header
     enableColumnPinning: true, // Enable pinning for sticky columns
     muiTableContainerProps: {
-      sx: { maxHeight: "500px", overflowY: "auto" },
+      sx: { maxHeight: "580px", overflowY: "auto" },
     },
     muiTableBodyRowProps: ({ row }) => ({
       className: getTableRowsClassname(row),

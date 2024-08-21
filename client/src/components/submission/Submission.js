@@ -19,12 +19,12 @@ function Submission() {
   const [rows, setRows] = React.useState([]);
   const [openModal, setOpenModal] = React.useState(false);
   const [currentRowIndex, setCurrentRowIndex] = React.useState(null);
-  const [queries, setQueries] = React.useState([]);
+  const [submissionQueries, setSubmissionQueries] = React.useState([]);
 
   React.useEffect(() => {
     async function getData() {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_STRING}/get-esanchit-jobs`
+        `${process.env.REACT_APP_API_STRING}/get-submission-jobs`
       );
       setRows(res.data);
     }
@@ -43,7 +43,7 @@ function Submission() {
 
   const handleEditClick = (rowIndex) => {
     setCurrentRowIndex(rowIndex);
-    setQueries(rows[rowIndex].queries || []);
+    setSubmissionQueries(rows[rowIndex].submissionQueries || []);
     setOpenModal(true);
   };
 
@@ -70,19 +70,19 @@ function Submission() {
   };
 
   const handleAddQuery = () => {
-    setQueries([...queries, { query: "", reply: "" }]);
+    setSubmissionQueries([...submissionQueries, { query: "", reply: "" }]);
   };
 
   const handleQueryChange = (index, field, value) => {
-    const updatedQueries = [...queries];
+    const updatedQueries = [...submissionQueries];
     updatedQueries[index][field] = value;
-    setQueries(updatedQueries);
+    setSubmissionQueries(updatedQueries);
   };
 
   const handleSubmitQueries = () => {
     setRows((prevRows) =>
       prevRows.map((row, index) =>
-        index === currentRowIndex ? { ...row, queries } : row
+        index === currentRowIndex ? { ...row, submissionQueries } : row
       )
     );
     setOpenModal(false);
@@ -108,24 +108,6 @@ function Submission() {
       size: 150,
     },
 
-    {
-      accessorKey: "container_numbers",
-      header: "Container Nos",
-      enableSorting: false,
-      size: 140,
-      Cell: ({ cell }) =>
-        cell.row.original.container_nos?.map((container, id) => (
-          <React.Fragment key={id}>
-            {container.container_number}
-            <br />
-          </React.Fragment>
-        )),
-      filterFn: "includes",
-      accessorFn: (row) =>
-        row.container_nos
-          ?.map((container) => container.container_number)
-          .join(", "),
-    },
     {
       accessorKey: "gateway_igm_date",
       header: "Gateway IGM Date",
@@ -251,10 +233,10 @@ function Submission() {
           }}
         >
           <div>
-            {queries.map((item, index) => (
+            {submissionQueries.map((item, index) => (
               <div key={index} style={{ marginBottom: "20px" }}>
                 <TextField
-                  label={`Query ${index + 1}`}
+                  label="Query"
                   multiline
                   rows={2}
                   value={item.query}
@@ -264,17 +246,7 @@ function Submission() {
                     handleQueryChange(index, "query", e.target.value)
                   }
                 />
-                <TextField
-                  label={`Reply ${index + 1}`}
-                  multiline
-                  rows={2}
-                  value={item.reply}
-                  fullWidth
-                  margin="normal"
-                  onChange={(e) =>
-                    handleQueryChange(index, "reply", e.target.value)
-                  }
-                />
+                {item.reply}
               </div>
             ))}
           </div>

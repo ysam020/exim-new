@@ -3,12 +3,14 @@ import mongoose from "mongoose";
 const cthDocumentSchema = new mongoose.Schema({
   cth: { type: Number, trim: true },
   document_name: { type: String, trim: true },
+  document_code: { type: String, trim: true },
   url: { type: String, trim: true },
   irn: { type: String, trim: true },
 });
 
 const documentSchema = new mongoose.Schema({
   document_name: { type: String, trim: true },
+  document_code: { type: String, trim: true },
   url: { type: String, trim: true },
   irn: { type: String, trim: true },
 });
@@ -67,7 +69,9 @@ const jobSchema = new mongoose.Schema({
       examination_videos: [{ url: { type: String, trim: true } }],
       do_revalidation_date: { type: String, trim: true },
       do_validity_upto_container_level: { type: String, trim: true },
-      do_revalidation_upto_container_level: { type: String, trim: true },
+      do_revalidation: [
+        { do_revalidation_upto: { type: String }, remarks: { type: String } },
+      ],
     },
   ],
   container_count: { type: String, trim: true },
@@ -199,6 +203,7 @@ const jobSchema = new mongoose.Schema({
   shipping_line_invoice: { type: String, trim: true },
   shipping_line_invoice_date: { type: String },
   shipping_line_invoice_imgs: [{ type: String, trim: true }],
+  do_queries: [{ query: { type: String }, reply: { type: String } }],
   // *******
   icd_cfs_invoice: { type: String, trim: true },
   icd_cfs_invoice_img: [{ type: String, trim: true }],
@@ -231,18 +236,24 @@ const jobSchema = new mongoose.Schema({
 
   ////////////////////////////////////////////////// CTH Documents
   cth_documents: [cthDocumentSchema],
+  eSachitQueries: [{ query: { type: String }, reply: { type: String } }],
 
   ////////////////////////////////////////////////////// Documents
   documents: [documentSchema],
 
   ////////////////////////////////////////////////////// Documentation
   document_entry_completed: { type: Boolean },
-  documentationRemarks: { type: String },
+  documentationQueries: [
+    {
+      query: { type: String },
+      reply: { type: String },
+    },
+  ],
 
   ////////////////////////////////////////////////////// Submission
   checklist_verified_on: { type: String },
   submission_date: { type: String },
-  queries: [
+  submissionQueries: [
     {
       query: { type: String },
       reply: { type: String },

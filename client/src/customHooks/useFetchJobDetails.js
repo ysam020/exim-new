@@ -1,27 +1,91 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import { convertDateFormatForUI } from "../utils/convertDateFormatForUI";
 import { useNavigate } from "react-router-dom";
+import AWS from "aws-sdk";
 
-function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
+const handleSingleFileUpload = async (file, folderName, setFileSnackbar) => {
+  try {
+    const key = `${folderName}/${file.name}`;
+
+    const s3 = new AWS.S3({
+      accessKeyId: process.env.REACT_APP_ACCESS_KEY,
+      secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
+      region: "ap-south-1",
+    });
+
+    const params = {
+      Bucket: "alvision-exim-images",
+      Key: key,
+      Body: file,
+    };
+
+    const data = await s3.upload(params).promise();
+    const photoUrl = data.Location;
+
+    setFileSnackbar(true);
+
+    setTimeout(() => {
+      setFileSnackbar(false);
+    }, 3000);
+
+    return photoUrl;
+  } catch (err) {
+    console.error("Error uploading file:", err);
+  }
+};
+
+function useFetchJobDetails(
+  params,
+  checked,
+  setSelectedRegNo,
+  setTabValue,
+  setFileSnackbar
+) {
   const [data, setData] = useState(null);
   const [detentionFrom, setDetentionFrom] = useState([]);
   const navigate = useNavigate();
-  const [documents, setDocuments] = useState([
-    "Commercial Invoice",
-    "Packing List",
-    "Bill of Lading",
-    "Certificate of Origin",
-    "Contract",
-    "Insurance",
+  const [cthDocuments, setCthDocuments] = useState([
+    {
+      document_name: "Commercial Invoice",
+      document_code: "380000",
+    },
+    {
+      document_name: "Packing List",
+      document_code: "271000",
+    },
+    {
+      document_name: "Bill of Lading",
+      document_code: "704000",
+    },
+    {
+      document_name: "Certificate of Origin",
+      document_code: "861000",
+    },
+    {
+      document_name: "Contract",
+      document_code: "315000",
+    },
+    {
+      document_name: "Insurance",
+      document_code: "91WH13",
+    },
   ]);
+  const [documents, setDocuments] = useState([]);
+  const [selectedDocuments, setSelectedDocuments] = useState([]);
 
   const additionalDocs = [
-    "Pre-Shipment Inspection Certificate",
-    "Form 9 & Form 6",
-    "Registration Document (SIMS/NFMIMS/PIMS)",
-    "Certificate of Analysis",
+    {
+      document_name: "Pre-Shipment Inspection Certificate",
+      document_code: "856001",
+    },
+    { document_name: "Form 9 & Form 6", document_code: "856001" },
+    {
+      document_name: "Registration Document (SIMS/NFMIMS/PIMS)",
+      document_code: "101000",
+    },
+    { document_name: "Certificate of Analysis", document_code: "001000" },
   ];
 
   const commonCthCodes = [
@@ -43,40 +107,6 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     "81042010",
   ];
 
-  // Fetch CTH documents
-  useEffect(() => {
-    async function getCthDocument() {
-      if (data && data.cth_no) {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_STRING}/get-cth-docs/${data.cth_no}`
-        );
-        const fetchedDocs = res.data.map((doc) => doc.document_name); // Extract document names
-
-        setDocuments((currentDocs) => {
-          // Filter out any documents that are already in the currentDocs
-          let newDocs = fetchedDocs.filter((doc) => !currentDocs.includes(doc));
-
-          // If cth_no is in commonCthCodes, append additionalDocs
-          if (commonCthCodes.includes(data.cth_no)) {
-            newDocs = [
-              ...newDocs,
-              ...additionalDocs.filter((doc) => !newDocs.includes(doc)),
-            ];
-          }
-
-          // Combine currentDocs and newDocs, filtering out any duplicates
-          const updatedDocs = [...currentDocs, ...newDocs].filter(
-            (doc, index, self) => self.indexOf(doc) === index
-          );
-
-          return updatedDocs;
-        });
-      }
-    }
-
-    getCthDocument();
-  }, [data]); // Dependency on data object
-
   // Fetch data
   useEffect(() => {
     async function getJobDetails() {
@@ -84,16 +114,91 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
         `${process.env.REACT_APP_API_STRING}/get-job/${params.selected_year}/${params.job_no}`
       );
       setData(response.data);
+      setSelectedDocuments(response.data.documents);
     }
 
     getJobDetails();
   }, [params.importer, params.job_no, params.selected_year]);
 
+  // Fetch documents
+  useEffect(() => {
+    async function getDocuments() {
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_STRING}/get-docs`
+      );
+      setDocuments(res.data);
+    }
+
+    getDocuments();
+  }, []);
+
+  // Fetch CTH documents based on CTH number and Update additional CTH documents based on CTH number
+  useEffect(() => {
+    async function getCthDocs() {
+      if (data?.cth_no) {
+        const cthRes = await axios.get(
+          `${process.env.REACT_APP_API_STRING}/get-cth-docs/${data?.cth_no}`
+        );
+
+        // Fetched CTH documents with URLs merged from data.cth_documents if they exist
+        const fetchedCthDocuments = cthRes.data.map((cthDoc) => {
+          const additionalData = data?.cth_documents.find(
+            (doc) => doc.document_name === cthDoc.document_name
+          );
+
+          return {
+            ...cthDoc,
+            url: additionalData ? additionalData.url : "",
+          };
+        });
+
+        // Start with initial cthDocuments
+        let documentsToMerge = [...cthDocuments];
+
+        // If data.cth_no is in commonCthCodes, merge with additionalDocs
+        if (commonCthCodes.includes(data.cth_no)) {
+          documentsToMerge = [...documentsToMerge, ...additionalDocs];
+        }
+
+        // Merge fetched CTH documents
+        documentsToMerge = [...documentsToMerge, ...fetchedCthDocuments];
+
+        // Merge data.cth_documents into the array
+        documentsToMerge = [...documentsToMerge, ...data.cth_documents];
+
+        // Eliminate duplicates, keeping only the document with a URL if it exists
+        const uniqueDocuments = documentsToMerge.reduce((acc, current) => {
+          const existingDocIndex = acc.findIndex(
+            (doc) => doc.document_name === current.document_name
+          );
+
+          if (existingDocIndex === -1) {
+            // Document does not exist, add it
+            return acc.concat([current]);
+          } else {
+            // Document exists, replace it only if the current one has a URL
+            if (current.url) {
+              acc[existingDocIndex] = current;
+            }
+            return acc;
+          }
+        }, []);
+
+        setCthDocuments(uniqueDocuments);
+      }
+    }
+    if (data) {
+      setSelectedDocuments(data.documents);
+    }
+
+    getCthDocs();
+  }, [data]);
+
   // Formik
   const formik = useFormik({
     initialValues: {
       checkedDocs: [],
-      container_nos: "",
+      container_nos: [],
       obl_telex_bl: "",
       document_received_date: "",
       vessel_berthing: "",
@@ -124,6 +229,10 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       examinationPlanning: false,
       examination_planning_date: "",
       do_copies: [],
+      do_queries: [],
+      documentationQueries: [],
+      submissionQueries: [],
+      eSachitQueries: [],
       processed_be_attachment: [],
       ooc_copies: [],
       gate_pass_copies: [],
@@ -132,11 +241,12 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       out_of_charge: "",
       checked: false,
     },
-
     onSubmit: async (values, { resetForm }) => {
       await axios.put(
         `${process.env.REACT_APP_API_STRING}/update-job/${params.selected_year}/${params.job_no}`,
         {
+          cth_documents: cthDocuments,
+          documents: selectedDocuments,
           checkedDocs: values.checkedDocs,
           vessel_berthing: values.vessel_berthing,
           free_time: values.free_time,
@@ -166,6 +276,10 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           examinationPlanning: values.examinationPlanning,
           examination_planning_date: values.examination_planning_date,
           do_copies: values.do_copies,
+          do_queries: values.do_queries,
+          documentationQueries: values.documentationQueries,
+          submissionQueries: values.submissionQueries,
+          eSachitQueries: values.eSachitQueries,
           processed_be_attachment: values.processed_be_attachment,
           ooc_copies: values.ooc_copies,
           gate_pass_copies: values.gate_pass_copies,
@@ -183,7 +297,17 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       navigate("/import-dsr");
     },
   });
-
+  console.log(formik.values.do_validity_upto_job_level);
+  const serializedContainerNos = useMemo(
+    () =>
+      JSON.stringify(
+        formik.values.container_nos.map((container) => ({
+          arrival_date: container.arrival_date,
+          free_time: container.free_time,
+        }))
+      ),
+    [formik.values.container_nos]
+  );
   // Update formik intial values when data is fetched from db
   useEffect(() => {
     if (data) {
@@ -198,6 +322,10 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       );
 
       const container_nos = data.container_nos?.map((container) => ({
+        do_revalidation:
+          container.do_revalidation === undefined
+            ? []
+            : container.do_revalidation,
         arrival_date:
           container.arrival_date === undefined
             ? ""
@@ -320,6 +448,15 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
           data.duty_paid_date === undefined ? "" : data.duty_paid_date,
 
         do_copies: data.do_copies === undefined ? [] : data.do_copies,
+        do_queries: data.do_queries === undefined ? [] : data.do_queries,
+        documentationQueries:
+          data.documentationQueries === undefined
+            ? []
+            : data.documentationQueries,
+        submissionQueries:
+          data.submissionQueries === undefined ? [] : data.submissionQueries,
+        eSachitQueries:
+          data.eSachitQueries === undefined ? [] : data.eSachitQueries,
         processed_be_attachment:
           data.processed_be_attachment === undefined
             ? []
@@ -344,6 +481,7 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
     // eslint-disable-next-line
   }, [data]);
 
+  // Update detention from dates and do validity upto job level
   useEffect(() => {
     function addDaysToDate(dateString, days) {
       var date = new Date(dateString);
@@ -380,29 +518,231 @@ function useFetchJobDetails(params, checked, setSelectedRegNo, setTabValue) {
       // Find the earliest date from updatedDate
       const earliestDate = updatedDate.reduce((earliest, current) => {
         return current < earliest ? current : earliest;
-      }, "9999-12-31"); // A far future date as the initial value
-      console.log(earliestDate);
+      }, "9999-12-31"); // Set a far future date as the initial value
 
       // Set do_validity_upto_job_level to the earliest date
       formik.setFieldValue(
         "do_validity_upto_job_level",
-        earliestDate === "9999-12-31" ? "" : earliestDate
+        earliestDate === "9999-12-31"
+          ? data.do_validity_upto_job_level
+          : earliestDate
+      );
+    }
+    // eslint-disable-next-line
+  }, [formik.values.arrival_date, formik.values.free_time, data, checked]);
+
+  const currentDate = new Date().toISOString().split("T")[0];
+
+  // Set document_received_date to today if obl_telex_bl is not empty
+  useEffect(() => {
+    if (formik.values.obl_telex_bl !== "") {
+      formik.setFieldValue("document_received_date", currentDate);
+    } else {
+      formik.setFieldValue("document_received_date", "");
+    }
+  }, [formik.values.obl_telex_bl]);
+
+  // Set do_planning_date to today if doPlanning is true
+  useEffect(() => {
+    if (formik.values.doPlanning === true) {
+      formik.setFieldValue("do_planning_date", currentDate);
+    } else {
+      formik.setFieldValue("do_planning_date", "");
+    }
+  }, [formik.values.doPlanning]);
+
+  // Set do_revalidation_date to today if do_revalidation is true
+  useEffect(() => {
+    if (formik.values.do_revalidation === true) {
+      formik.setFieldValue("do_revalidation_date", currentDate);
+    } else {
+      formik.setFieldValue("do_revalidation_date", "");
+    }
+  }, [formik.values.do_revalidation]);
+
+  // Set examination_planning_date to today if examinationPlanning is true
+  useEffect(() => {
+    if (formik.values.examinationPlanning === true) {
+      formik.setFieldValue("examination_planning_date", currentDate);
+    } else {
+      formik.setFieldValue("examination_planning_date", "");
+    }
+  }, [formik.values.examinationPlanning]);
+
+  // Update detention from dates and set do_validity_upto_job_level
+  useEffect(() => {
+    function addDaysToDate(dateString, days) {
+      const date = new Date(dateString);
+      date.setDate(date.getDate() + days);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function subtractDaysFromDate(dateString, days) {
+      const date = new Date(dateString);
+      date.setDate(date.getDate() - days);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    if (formik.values.container_nos !== "" && data !== null) {
+      let updatedDate = [];
+
+      // If all containers do not arrive at the same time, use the arrival date of individual container
+      if (!checked) {
+        updatedDate = formik.values.container_nos?.map((container) =>
+          addDaysToDate(
+            container.arrival_date,
+            parseInt(formik.values.free_time)
+          )
+        );
+      } else {
+        // If all containers arrive at the same time, use the common arrival date
+        updatedDate = formik.values.container_nos?.map((container) =>
+          addDaysToDate(
+            formik.values.arrival_date,
+            parseInt(formik.values.free_time)
+          )
+        );
+      }
+
+      setDetentionFrom(updatedDate);
+
+      // Find the earliest date from updatedDate
+      const earliestDate = updatedDate.reduce((earliest, current) => {
+        return current < earliest ? current : earliest;
+      }, "9999-12-31"); // Set a far future date as the initial value
+
+      // Subtract one day from the earliest date
+      const doValidityDate =
+        earliestDate === "9999-12-31"
+          ? ""
+          : subtractDaysFromDate(earliestDate, 1);
+
+      // Set do_validity_upto_job_level to the calculated date
+      formik.setFieldValue(
+        "do_validity_upto_job_level",
+        doValidityDate === "" ? data.do_validity_upto_job_level : doValidityDate
       );
     }
     // eslint-disable-next-line
   }, [
     formik.values.arrival_date,
     formik.values.free_time,
-    formik.values.container_nos,
     data,
     checked,
+    serializedContainerNos,
   ]);
+
+  // UseEffect to update do_validity_upto_container_level when do_validity_upto_job_level changes
+  useEffect(() => {
+    if (formik.values.do_validity_upto_job_level) {
+      const updatedContainers = formik.values.container_nos.map(
+        (container) => ({
+          ...container,
+          do_validity_upto_container_level:
+            formik.values.do_validity_upto_job_level,
+        })
+      );
+
+      formik.setFieldValue("container_nos", updatedContainers);
+    }
+    // eslint-disable-next-line
+  }, [formik.values.do_validity_upto_job_level]);
+
+  const handleFileChange = async (event, documentName, index, isCth) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formattedDocumentName = documentName
+      .toLowerCase()
+      .replace(/\[.*?\]|\(.*?\)/g, "")
+      .replace(/[^\w\s]/g, "_")
+      .replace(/\s+/g, "_")
+      .replace(/_+/g, "_")
+      .replace(/^_+|_+$/g, "");
+
+    const photoUrl = await handleSingleFileUpload(
+      file,
+      formattedDocumentName,
+      setFileSnackbar
+    );
+
+    if (isCth) {
+      const updatedCthDocuments = [...cthDocuments];
+      updatedCthDocuments[index].url = photoUrl; // Store as a string
+      setCthDocuments(updatedCthDocuments);
+    } else {
+      const updatedSelectedDocuments = [...selectedDocuments];
+      updatedSelectedDocuments[index].url = photoUrl; // Store as a string
+      setSelectedDocuments(updatedSelectedDocuments);
+    }
+  };
+
+  const handleDocumentChange = (index, newValue) => {
+    setSelectedDocuments((prevSelectedDocuments) => {
+      const updatedDocuments = [...prevSelectedDocuments];
+
+      // Ensure the new object has the desired structure
+      updatedDocuments[index] = {
+        document_name: newValue?.document_name || "",
+        document_code: newValue?.document_code || "",
+        url: newValue?.url || "", // or `newValue.url` if you get `url` in the `newValue`
+      };
+
+      return updatedDocuments;
+    });
+  };
+
+  const handleAddDocument = () => {
+    setSelectedDocuments([
+      ...selectedDocuments,
+      { document_name: "", document_code: "", url: "" },
+    ]);
+  };
+
+  const handleRemoveDocument = (index) => {
+    const newSelectedDocuments = [...selectedDocuments];
+    newSelectedDocuments.splice(index, 1);
+    setSelectedDocuments(newSelectedDocuments);
+  };
+
+  const filterDocuments = (selectedDocuments, currentIndex) => {
+    const restrictedDocs = new Set();
+
+    selectedDocuments.forEach((doc, index) => {
+      if (doc.document) {
+        restrictedDocs.add(doc.document.document_code);
+        if (doc.document.document_code === "380000") {
+          restrictedDocs.add("331000");
+        } else if (doc.document.document_code === "271000") {
+          restrictedDocs.add("331000");
+        } else if (doc.document.document_code === "331000") {
+          restrictedDocs.add("380000");
+          restrictedDocs.add("271000");
+        }
+      }
+    });
+
+    return documents.filter((doc) => !restrictedDocs.has(doc.document_code));
+  };
 
   return {
     data,
     detentionFrom,
     formik,
+    cthDocuments,
     documents,
+    handleFileChange,
+    selectedDocuments,
+    handleDocumentChange,
+    handleAddDocument,
+    handleRemoveDocument,
+    filterDocuments,
   };
 }
 

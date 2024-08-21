@@ -17,12 +17,12 @@ function useJobColumns(detailedStatus) {
     {
       accessorKey: "importer",
       header: "Importer",
-      size: 300,
+      size: 250,
     },
     {
       accessorKey: "custom_house",
       header: "Custom House",
-      size: 200,
+      size: 150,
     },
     {
       accessorKey: "awb_bl_no",
