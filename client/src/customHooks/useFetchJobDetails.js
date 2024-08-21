@@ -297,7 +297,7 @@ function useFetchJobDetails(
       navigate("/import-dsr");
     },
   });
-
+  console.log(formik.values.do_validity_upto_job_level);
   const serializedContainerNos = useMemo(
     () =>
       JSON.stringify(
@@ -523,7 +523,9 @@ function useFetchJobDetails(
       // Set do_validity_upto_job_level to the earliest date
       formik.setFieldValue(
         "do_validity_upto_job_level",
-        earliestDate === "9999-12-31" ? "" : earliestDate
+        earliestDate === "9999-12-31"
+          ? data.do_validity_upto_job_level
+          : earliestDate
       );
     }
     // eslint-disable-next-line
@@ -622,7 +624,10 @@ function useFetchJobDetails(
           : subtractDaysFromDate(earliestDate, 1);
 
       // Set do_validity_upto_job_level to the calculated date
-      formik.setFieldValue("do_validity_upto_job_level", doValidityDate);
+      formik.setFieldValue(
+        "do_validity_upto_job_level",
+        doValidityDate === "" ? data.do_validity_upto_job_level : doValidityDate
+      );
     }
     // eslint-disable-next-line
   }, [
@@ -650,7 +655,7 @@ function useFetchJobDetails(
   }, [formik.values.do_validity_upto_job_level]);
 
   const handleFileChange = async (event, documentName, index, isCth) => {
-    const file = event.target.files[0]; // Assuming only one file is uploaded per document
+    const file = event.target.files[0];
     if (!file) return;
 
     const formattedDocumentName = documentName

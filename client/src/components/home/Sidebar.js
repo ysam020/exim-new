@@ -67,7 +67,7 @@ function Sidebar() {
           aria-label="list-item"
           onClick={() =>
             window.open(
-              "https://aivision.odoo.com/helpdesk/customer-care-1",
+              "https://novusha-consulting-services-india-llp.odoo.com/helpdesk/customer-care-1",
               "_blank"
             )
           }

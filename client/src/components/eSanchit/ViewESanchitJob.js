@@ -4,40 +4,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import JobDetailsStaticData from "../import-dsr/JobDetailsStaticData";
 import Snackbar from "@mui/material/Snackbar";
 import AWS from "aws-sdk";
-import { Autocomplete, TextField, IconButton } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { TextField } from "@mui/material";
 import { Row, Col } from "react-bootstrap";
-
-const handleSingleFileUpload = async (file, folderName, setFileSnackbar) => {
-  try {
-    const key = `${folderName}/${file.name}`;
-
-    const s3 = new AWS.S3({
-      accessKeyId: process.env.REACT_APP_ACCESS_KEY,
-      secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
-      region: "ap-south-1",
-    });
-
-    const params = {
-      Bucket: "alvision-exim-images",
-      Key: key,
-      Body: file,
-    };
-
-    const data = await s3.upload(params).promise();
-    const photoUrl = data.Location;
-
-    setFileSnackbar(true);
-
-    setTimeout(() => {
-      setFileSnackbar(false);
-    }, 3000);
-
-    return photoUrl;
-  } catch (err) {
-    console.error("Error uploading file:", err);
-  }
-};
 
 function ViewESanchitJob() {
   const [eSachitQueries, setESanchitQueries] = useState([
@@ -72,7 +40,6 @@ function ViewESanchitJob() {
       document_code: "91WH13",
     },
   ]);
-  const [documents, setDocuments] = useState([]);
   const [snackbar, setSnackbar] = useState(false);
   const [fileSnackbar, setFileSnackbar] = useState(false);
   const [selectedDocuments, setSelectedDocuments] = useState([]);
@@ -110,153 +77,104 @@ function ViewESanchitJob() {
     { document_name: "Certificate of Analysis", document_code: "001000" },
   ];
 
+  // Fetch data
   useEffect(() => {
     async function getData() {
       const res = await axios(
         `${process.env.REACT_APP_API_STRING}/get-esanchit-job/${params.job_no}/${params.year}`
       );
       setData(res.data);
-
-      // Fetch eSanchit Queries
-      if (res.data.eSachitQueries && res.data.eSachitQueries.length > 0) {
-        setESanchitQueries(res.data.eSachitQueries);
-      }
-
-      // Fetch CTH documents based on CTH number
-      if (res.data.cth_no) {
-        const cthRes = await axios.get(
-          `${process.env.REACT_APP_API_STRING}/get-cth-docs/${res.data.cth_no}`
-        );
-
-        const mergedCthDocuments = cthRes.data.map((cthDoc) => {
-          const additionalData = res.data.cth_documents.find(
-            (doc) => doc.cth === cthDoc.cth
-          );
-
-          return {
-            ...cthDoc,
-            url: additionalData ? additionalData.url : "",
-            irn: additionalData ? additionalData.irn : "",
-            urls: additionalData ? [additionalData.url] : [],
-          };
-        });
-
-        // Merge with existing cthDocuments state and eliminate duplicates
-        setCthDocuments((prevCthDocuments) => {
-          const allDocuments = [...prevCthDocuments, ...mergedCthDocuments];
-          const uniqueDocuments = allDocuments.reduce((acc, current) => {
-            const x = acc.find(
-              (doc) => doc.document_name === current.document_name
-            );
-            if (!x) {
-              return acc.concat([current]);
-            } else {
-              return acc;
-            }
-          }, []);
-          return uniqueDocuments;
-        });
-      }
-
-      if (res.data.documents) {
-        setSelectedDocuments(
-          res.data.documents.map((doc) => {
-            const documentParts = doc.document_name.match(/^(.+?) \((\d+)\)$/);
-            return {
-              document: {
-                document_name: documentParts
-                  ? documentParts[1]
-                  : doc.document_name,
-                document_code: documentParts ? documentParts[2] : "",
-              },
-              irn: doc.irn,
-              urls: [doc.url],
-            };
-          })
-        );
-      }
+      setSelectedDocuments(res.data.documents);
     }
 
     getData();
   }, [params.job_no, params.year]);
 
-  // Fetch documents
+  // Fetch CTH documents based on CTH number and Update additional CTH documents based on CTH number
+
   useEffect(() => {
-    async function getDocuments() {
-      const res = await axios.get(
-        `${process.env.REACT_APP_API_STRING}/get-docs`
-      );
-      setDocuments(res.data);
+    async function getCthDocs() {
+      if (data?.cth_no) {
+        const cthRes = await axios.get(
+          `${process.env.REACT_APP_API_STRING}/get-cth-docs/${data?.cth_no}`
+        );
+
+        // Fetched CTH documents with URLs merged from data.cth_documents if they exist
+        const fetchedCthDocuments = cthRes.data?.map((cthDoc) => {
+          const additionalData = data?.cth_documents.find(
+            (doc) => doc.document_name === cthDoc.document_name
+          );
+
+          return {
+            ...cthDoc,
+            url: additionalData ? additionalData.url : "",
+          };
+        });
+
+        // Start with initial cthDocuments
+        let documentsToMerge = [...cthDocuments];
+
+        // If data.cth_no is in commonCthCodes, merge with additionalDocs
+        if (commonCthCodes.includes(data.cth_no)) {
+          documentsToMerge = [...documentsToMerge, ...additionalDocs];
+        }
+
+        // Merge fetched CTH documents
+        documentsToMerge = [...documentsToMerge, ...fetchedCthDocuments];
+
+        // Merge data.cth_documents into the array
+        documentsToMerge = [...documentsToMerge, ...data.cth_documents];
+
+        // Eliminate duplicates, keeping only the document with a URL if it exists
+        // const uniqueDocuments = documentsToMerge.reduce((acc, current) => {
+        //   const existingDocIndex = acc.findIndex(
+        //     (doc) => doc.document_name === current.document_name
+        //   );
+
+        //   if (existingDocIndex === -1) {
+        //     // Document does not exist, add it
+        //     return acc.concat([current]);
+        //   } else {
+        //     // Document exists, replace it only if the current one has a URL
+        //     if (current.url) {
+        //       acc[existingDocIndex] = current;
+        //     }
+        //     return acc;
+        //   }
+        // }, []);
+
+        // setCthDocuments(uniqueDocuments);
+        // Eliminate duplicates, keeping only the document with a URL if it exists
+        const uniqueDocuments = documentsToMerge.reduce((acc, current) => {
+          // Create a unique key based on document_name and document_code
+          const uniqueKey = `${current.document_name} (${current.document_code})`;
+
+          // Check if the document with this unique key already exists in the accumulator
+          const existingDocIndex = acc.findIndex(
+            (doc) => `${doc.document_name} (${doc.document_code})` === uniqueKey
+          );
+
+          if (existingDocIndex === -1) {
+            // Document does not exist, add it
+            return acc.concat([current]);
+          } else {
+            // Document exists, replace it only if the current one has a URL or has a document code
+            if (current.url || current.document_code) {
+              acc[existingDocIndex] = current;
+            }
+            return acc;
+          }
+        }, []);
+
+        setCthDocuments(uniqueDocuments);
+      }
+    }
+    if (data) {
+      setSelectedDocuments(data.documents);
     }
 
-    getDocuments();
-  }, []);
-
-  // Update CTH documents based on CTH number
-  useEffect(() => {
-    if (commonCthCodes.includes(data.cth_no)) {
-      // Create a new array with the existing documents plus the additional ones
-      const updatedCthDocuments = [...cthDocuments, ...additionalDocs];
-      // Update the state or the cthDocuments array with the new list
-      setCthDocuments(updatedCthDocuments);
-    }
-  }, [data.cth_no]);
-
-  // Handle file upload
-  const handleFileChange = async (event, documentName, index, isCth) => {
-    const files = event.target.files;
-    if (!files) return;
-
-    const formattedDocumentName = documentName
-      .toLowerCase()
-      .replace(/\[.*?\]|\(.*?\)/g, "")
-      .replace(/[^\w\s]/g, "_")
-      .replace(/\s+/g, "_")
-      .replace(/_+/g, "_")
-      .replace(/^_+|_+$/g, "");
-
-    const urls = [];
-    for (let file of files) {
-      const photoUrl = await handleSingleFileUpload(
-        file,
-        formattedDocumentName,
-        setFileSnackbar
-      );
-      urls.push(photoUrl);
-    }
-
-    if (isCth) {
-      const updatedCthDocuments = [...cthDocuments];
-      updatedCthDocuments[index].urls = urls;
-      setCthDocuments(updatedCthDocuments);
-    } else {
-      const updatedSelectedDocuments = [...selectedDocuments];
-      updatedSelectedDocuments[index].urls = urls;
-      setSelectedDocuments(updatedSelectedDocuments);
-    }
-  };
-
-  // Handle document addition
-  const handleAddDocument = () => {
-    setSelectedDocuments([
-      ...selectedDocuments,
-      { document: null, irn: "", urls: [] },
-    ]);
-  };
-
-  // Handle document removal
-  const handleRemoveDocument = (index) => {
-    const newSelectedDocuments = [...selectedDocuments];
-    newSelectedDocuments.splice(index, 1);
-    setSelectedDocuments(newSelectedDocuments);
-  };
-
-  // Handle document change
-  const handleDocumentChange = (index, newValue) => {
-    const newSelectedDocuments = [...selectedDocuments];
-    newSelectedDocuments[index].document = newValue;
-    setSelectedDocuments(newSelectedDocuments);
-  };
+    getCthDocs();
+  }, [data]);
 
   // Handle IRN change
   const handleIrnChange = (index, newIrn, isCth) => {
@@ -271,27 +189,6 @@ function ViewESanchitJob() {
     }
   };
 
-  // Filter documents
-  const filterDocuments = (selectedDocuments, currentIndex) => {
-    const restrictedDocs = new Set();
-
-    selectedDocuments.forEach((doc, index) => {
-      if (doc.document) {
-        restrictedDocs.add(doc.document.document_code);
-        if (doc.document.document_code === "380000") {
-          restrictedDocs.add("331000");
-        } else if (doc.document.document_code === "271000") {
-          restrictedDocs.add("331000");
-        } else if (doc.document.document_code === "331000") {
-          restrictedDocs.add("380000");
-          restrictedDocs.add("271000");
-        }
-      }
-    });
-
-    return documents.filter((doc) => !restrictedDocs.has(doc.document_code));
-  };
-
   // Handle submit
   const handleSubmit = async () => {
     const formattedData = {
@@ -302,23 +199,26 @@ function ViewESanchitJob() {
       eSachitQueries: eSachitQueries,
     };
 
-    cthDocuments.forEach(({ cth, document_name, urls, irn }) => {
-      if (urls && urls.length > 0) {
+    // Add CTH documents with IRNs
+    cthDocuments.forEach(({ document_name, document_code, url, irn }) => {
+      if (url && url.length > 0) {
         formattedData.cth_documents.push({
-          cth,
-          document_name,
-          url: urls[0],
-          irn: irn || "",
+          document_name: `${document_name}`,
+          document_code: `${document_code}`,
+          url: url,
+          irn: irn || "", // Include IRN if it exists
         });
       }
     });
 
-    selectedDocuments.forEach(({ document, irn, urls }) => {
-      if (document && urls.length > 0) {
+    // Add selected documents with IRNs
+    selectedDocuments.forEach(({ document_name, document_code, url, irn }) => {
+      if (url && url.length > 0) {
         formattedData.documents.push({
-          document_name: `${document.document_name} (${document.document_code})`,
-          url: urls[0],
-          irn: irn || "",
+          document_name: `${document_name}`,
+          document_code: `${document_code}`,
+          url: url,
+          irn: irn || "", // Include IRN if it exists
         });
       }
     });
@@ -334,7 +234,7 @@ function ViewESanchitJob() {
   // Handle sign documents
   const handleSignDocuments = async () => {
     try {
-      const signRequests = selectedDocuments.map(({ urls }) =>
+      const signRequests = selectedDocuments?.map(({ urls }) =>
         axios.post(`${process.env.REACT_APP_API_STRING}/sign-document`, {
           documentUrl: urls[0],
         })
@@ -380,97 +280,43 @@ function ViewESanchitJob() {
             />
             <div className="job-details-container">
               <h4>Documents</h4>
-              {cthDocuments?.map((doc, index) => (
-                <Row key={index} className="document-upload">
+              {cthDocuments &&
+                cthDocuments?.map((doc, index) => (
+                  <Row key={index} className="document-upload">
+                    <Col xs={5}>
+                      <strong>
+                        {doc.document_name} ({doc.document_code})&nbsp;
+                      </strong>
+                    </Col>
+                    <Col xs={3}>{doc.url && <a href={doc.url}>View</a>}</Col>
+                    <Col>
+                      <TextField
+                        size="small"
+                        label="IRN"
+                        value={doc.irn || ""}
+                        onChange={(e) =>
+                          handleIrnChange(index, e.target.value, true)
+                        }
+                        disabled={!doc.url}
+                      />
+                    </Col>
+                    <br />
+                    <br />
+                  </Row>
+                ))}
+
+              {selectedDocuments?.map((selectedDocument, index) => (
+                <Row key={index} style={{ marginTop: "20px" }}>
                   <Col xs={5}>
                     <strong>
-                      {doc.document_name} ({doc.document_code})&nbsp;
+                      {selectedDocument.document_name} (
+                      {selectedDocument.document_code})&nbsp;
                     </strong>
                   </Col>
                   <Col xs={3}>
-                    <input
-                      type="file"
-                      multiple
-                      onChange={(e) =>
-                        handleFileChange(e, doc.document_name, index, true)
-                      }
-                    />
-                    {doc.urls &&
-                      doc.urls.map((url, idx) => (
-                        <div key={idx}>
-                          <a
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            View Document
-                          </a>
-                        </div>
-                      ))}
-                  </Col>
-                  <Col>
-                    <TextField
-                      size="small"
-                      label="IRN"
-                      value={doc.irn || ""}
-                      onChange={(e) =>
-                        handleIrnChange(index, e.target.value, true)
-                      }
-                    />
-                  </Col>
-                  <br />
-                  <br />
-                </Row>
-              ))}
-
-              {selectedDocuments.map((selectedDocument, index) => (
-                <Row key={index} style={{ marginTop: "20px" }}>
-                  <Col xs={5}>
-                    <Autocomplete
-                      options={filterDocuments(selectedDocuments, index)}
-                      getOptionLabel={(doc) =>
-                        `${doc.document_name} (${doc.document_code})`
-                      }
-                      value={selectedDocument.document}
-                      onChange={(event, newValue) => {
-                        handleDocumentChange(index, newValue);
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Select Document"
-                          size="small"
-                          sx={{ width: 500 }}
-                        />
-                      )}
-                    />
-                  </Col>
-                  <Col xs={3}>
-                    <input
-                      type="file"
-                      multiple
-                      onChange={(e) =>
-                        handleFileChange(
-                          e,
-                          selectedDocument.document.document_name,
-                          index,
-                          false
-                        )
-                      }
-                      disabled={!selectedDocument.document}
-                    />
-                    {selectedDocument.urls &&
-                      selectedDocument.urls.map((url, idx) => (
-                        <div key={idx}>
-                          <a
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            View Document
-                          </a>
-                        </div>
-                      ))}
+                    {selectedDocument.url && (
+                      <a href={selectedDocument.url}>View</a>
+                    )}
                   </Col>
                   <Col>
                     <TextField
@@ -482,25 +328,13 @@ function ViewESanchitJob() {
                       }
                     />
                   </Col>
-                  <Col>
-                    <IconButton
-                      onClick={() => handleRemoveDocument(index)}
-                      sx={{ color: "#BE3838" }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Col>
                 </Row>
               ))}
-
-              <button className="btn" onClick={handleAddDocument}>
-                Add Document
-              </button>
             </div>
 
             <div className="job-details-container">
               <h4>Queries</h4>
-              {eSachitQueries.map((item, id) => {
+              {eSachitQueries?.map((item, id) => {
                 return (
                   <Row key={id}>
                     <Col>

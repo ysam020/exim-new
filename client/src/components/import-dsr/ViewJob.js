@@ -200,27 +200,6 @@ function JobDetails() {
             {selectedDocuments.map((selectedDocument, index) => (
               <Row key={index} style={{ marginTop: "20px" }}>
                 <Col xs={5}>
-                  {/* <Autocomplete
-                    options={filterDocuments(selectedDocuments, index)}
-                    getOptionLabel={(doc) =>
-                      `${doc.document_name} (${doc.document_code})`
-                    }
-                    value={
-                      `${selectedDocument.document_name} ${selectedDocument.document_code}` ||
-                      ""
-                    }
-                    onChange={(event, newValue) => {
-                      handleDocumentChange(index, newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select Document"
-                        size="small"
-                        sx={{ width: 500 }}
-                      />
-                    )}
-                  /> */}
                   <Autocomplete
                     options={filterDocuments(selectedDocuments, index)}
                     getOptionLabel={(doc) =>
@@ -535,9 +514,36 @@ function JobDetails() {
                   {formik.values.document_received_date}
                 </div>
               </Col>
+
+              {user.username === "sameer_yadav" && (
+                <Col xs={12} lg={4}>
+                  <div
+                    className="job-detail-input-container"
+                    style={{ justifyContent: "flex-start" }}
+                  >
+                    <strong>
+                      {formik.values.obl_telex_bl === "OBL"
+                        ? "Original Document Received Date:"
+                        : "Document Received Date:"}
+                    </strong>
+                    &nbsp;
+                    <TextField
+                      fullWidth
+                      size="small"
+                      margin="normal"
+                      variant="outlined"
+                      type="date"
+                      id="document_received_date"
+                      name="document_received_date"
+                      value={formik.values.document_received_date}
+                      onChange={formik.handleChange}
+                    />
+                  </div>
+                </Col>
+              )}
             </Row>
             <Row>
-              <Col xs={12} lg={4}>
+              <Col xs={12} lg={3}>
                 <div
                   className="job-detail-input-container"
                   style={{ justifyContent: "flex-start" }}
@@ -555,10 +561,32 @@ function JobDetails() {
                   {formik.values.do_planning_date}
                 </div>
               </Col>
+              {user.username === "sameer_yadav" && (
+                <Col xs={12} lg={4}>
+                  <div
+                    className="job-detail-input-container"
+                    style={{ justifyContent: "flex-start" }}
+                  >
+                    <strong>DO Planning Date:&nbsp;</strong>
+
+                    <TextField
+                      fullWidth
+                      size="small"
+                      margin="normal"
+                      variant="outlined"
+                      type="date"
+                      id="do_planning_date"
+                      name="do_planning_date"
+                      value={formik.values.do_planning_date}
+                      onChange={formik.handleChange}
+                    />
+                  </div>
+                </Col>
+              )}
               <Col xs={12} lg={5}>
                 <div className="job-detail-input-container">
                   <strong style={{ width: "50%" }}>
-                    DO Validity Upto&nbsp;
+                    DO Validity Upto:&nbsp;
                   </strong>
                   {formik.values.do_revalidation ? (
                     formik.values.do_validity_upto_job_level
@@ -579,7 +607,7 @@ function JobDetails() {
               </Col>
             </Row>
             <Row>
-              <Col xs={12} lg={4}>
+              <Col xs={12} lg={3}>
                 <div
                   className="job-detail-input-container"
                   style={{ justifyContent: "flex-start" }}
@@ -596,9 +624,32 @@ function JobDetails() {
                   {formik.values.do_revalidation_date}
                 </div>
               </Col>
+
+              {user.username === "sameer_yadav" && (
+                <Col xs={12} lg={4}>
+                  <div
+                    className="job-detail-input-container"
+                    style={{ justifyContent: "flex-start" }}
+                  >
+                    <strong>DO Revalidation Date:&nbsp;</strong>
+
+                    <TextField
+                      fullWidth
+                      size="small"
+                      margin="normal"
+                      variant="outlined"
+                      type="date"
+                      id="do_revalidation_date"
+                      name="do_revalidation_date"
+                      value={formik.values.do_revalidation_date}
+                      onChange={formik.handleChange}
+                    />
+                  </div>
+                </Col>
+              )}
             </Row>
             <Row>
-              <Col xs={12} lg={4}>
+              <Col xs={12} lg={3}>
                 <div
                   className="job-detail-input-container"
                   style={{ justifyContent: "flex-start" }}
@@ -616,6 +667,28 @@ function JobDetails() {
                   {formik.values.examination_planning_date}
                 </div>
               </Col>
+              {user.username === "sameer_yadav" && (
+                <Col xs={12} lg={4}>
+                  <div
+                    className="job-detail-input-container"
+                    style={{ justifyContent: "flex-start" }}
+                  >
+                    <strong>Examination Planning Date:&nbsp;</strong>
+
+                    <TextField
+                      fullWidth
+                      size="small"
+                      margin="normal"
+                      variant="outlined"
+                      type="date"
+                      id="examination_planning_date"
+                      name="examination_planning_date"
+                      value={formik.values.examination_planning_date}
+                      onChange={formik.handleChange}
+                    />
+                  </div>
+                </Col>
+              )}
             </Row>
           </div>
           {/*************************** Row 10 ****************************/}
