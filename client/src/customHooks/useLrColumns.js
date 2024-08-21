@@ -130,17 +130,18 @@ function useLrColumns(props) {
     // eslint-disable-next-line
   }, [props.prData, props.pr_no]);
   const handleLocationClick = async (asset) => {
+    console.log(asset);
     try {
       const response = await axios.post(
         "http://icloud.assetscontrols.com:8092/OpenApi/LBS",
         {
           FTokenID: "e36d2589-9dc3-4302-be7d-dc239af1846c",
           FAction: "QueryLBSMonitorListByFGUIDs",
-          FGUIDs: "de0d32ab-2cad-4f3d-ab76-4f894fc604bd",
+          FGUIDs: asset,
           FType: 2,
         }
       );
-
+      console.log(response.data);
       if (response.data.Result === 200 && response.data.FObject.length > 0) {
         console.log(response.data.FObject[0]);
         setLocationData(response.data.FObject[0]);
@@ -599,12 +600,12 @@ function useLrColumns(props) {
       header: "Realtime Location",
       enableSorting: false,
       size: 200,
-      Cell: ({ cell, row }) => (
+      Cell: ({ row }) => (
         <StyledButton
           variant="contained"
           color="secondary"
           // onClick={() => handleLocationClick(row.original)}
-          onClick={() => handleLocationClick()}
+          onClick={() => handleLocationClick(row.original.sr_cel_FGUID)}
           startIcon={<LocationOnIcon />}
           sx={{ minWidth: "100%", textTransform: "none" }} // Ensure the button spans the full width
         >
@@ -646,21 +647,15 @@ function useLrColumns(props) {
     },
   ];
 
-  return { rows, setRows, columns, selectedRows };
-
-  // return (
-  //   <div>
-  //     {/* <Table columns={columns} data={rows} onRowSelect={setSelectedRows} /> */}
-  //     <LocationDialog
-  //       open={openLocationDialog}
-  //       onClose={handleCloseLocationDialog}
-  //       locationData={locationData}
-  //     />
-  //     {/* Add any other necessary components or functionality */}
-  //   </div>
-  // );
-
-  // return { rows, setRows, columns, selectedRows };
+  return {
+    rows,
+    setRows,
+    columns,
+    selectedRows,
+    openLocationDialog,
+    handleCloseLocationDialog,
+    locationData,
+  };
 }
 
 export default useLrColumns;

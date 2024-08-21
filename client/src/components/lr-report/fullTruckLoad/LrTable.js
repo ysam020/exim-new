@@ -8,9 +8,18 @@ import TableRowsIcon from "@mui/icons-material/TableRows";
 import PrintIcon from "@mui/icons-material/Print";
 import { generateLrPdf } from "../../../utils/generateLrPdf";
 import useLrColumns from "../../../customHooks/useLrColumns";
+import LocationDialog from "../../srcel/LocationDialog";
 
 function LrTable(props) {
-  const { rows, setRows, columns, selectedRows } = useLrColumns(props);
+  const {
+    rows,
+    setRows,
+    columns,
+    selectedRows,
+    openLocationDialog,
+    handleCloseLocationDialog,
+    locationData,
+  } = useLrColumns(props);
 
   const table = useMaterialReactTable({
     columns,
@@ -63,6 +72,11 @@ function LrTable(props) {
   return (
     <>
       <MaterialReactTable table={table} />
+      <LocationDialog
+        open={openLocationDialog}
+        onClose={handleCloseLocationDialog}
+        locationData={locationData}
+      />
     </>
   );
 }
