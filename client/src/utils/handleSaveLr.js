@@ -60,9 +60,6 @@ export const handleSaveLr = async (row, props) => {
   }
   // If both sr_cel_FGUID and sr_cel_no are present, call the PATCH API
   if (row.sr_cel_FGUID && row.sr_cel_no && row.sr_cel_id) {
-    console.log(
-      ` Happpy first happy second ${row.sr_cel_FGUID} ${row.sr_cel_no} row.sr_cel_id`
-    );
     try {
       await axios.patch(
         `${process.env.REACT_APP_API_STRING}/get-srcel/${row.sr_cel_id}`,

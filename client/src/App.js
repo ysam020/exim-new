@@ -30,49 +30,10 @@ function App() {
       }
     };
 
-    const handleMouseDown = (event) => {
-      // Disable text selection
-      document.onselectstart = () => false;
-      document.body.style.cursor = "grabbing"; // Change cursor to grabbing
-      startX = event.clientX;
-    };
-
-    const handleMouseMove = (event) => {
-      if (startX !== null) {
-        const deltaX = event.clientX - startX;
-        if (deltaX > 100) {
-          // Swipe right to navigate forward
-          navigate(1);
-          resetDrag(); // Reset tracking and enable text selection
-        } else if (deltaX < -100) {
-          // Swipe left to navigate back
-          navigate(-1);
-          resetDrag(); // Reset tracking and enable text selection
-        }
-      }
-    };
-
-    const handleMouseUp = () => {
-      resetDrag(); // Reset tracking and enable text selection
-    };
-
-    const resetDrag = () => {
-      startX = null;
-      document.onselectstart = null; // Re-enable text selection
-      document.body.style.cursor = ""; // Reset cursor
-    };
-
-    let startX = null;
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("mousedown", handleMouseDown);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [navigate]);
 

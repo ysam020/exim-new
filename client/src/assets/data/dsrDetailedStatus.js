@@ -54,6 +54,7 @@ export const srccDsrStatus = [
   "Reached empty depot, empty offloading pending (damaged container)",
   "Reached empty depot, empty offloading pending (DO validity expired)",
   "Empty offloaded - Yard name",
+  "Successful Collection of SR-CEL Lock",
 ];
 
 export const dsrDisabledOptions = [

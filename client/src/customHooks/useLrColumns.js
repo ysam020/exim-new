@@ -7,6 +7,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import Autocomplete from "@mui/material/Autocomplete";
 import { handleSaveLr } from "../utils/handleSaveLr";
 import { lrContainerPlanningStatus } from "../assets/data/dsrDetailedStatus";
+import Tooltip from "@mui/material/Tooltip";
 // import SrCelDropdown from "./SrCelDropdown.js";
 
 function useLrColumns(props) {
@@ -508,13 +509,6 @@ function useLrColumns(props) {
         />
       ),
     },
-    // {
-    //   accessorKey: "sr_cel_FGUID",
-    //   header: "SR CEL FGUID",
-    //   enableSorting: false,
-    //   size: 200,
-    //   Cell: ({ cell }) => <span>{cell.getValue()}</span>,
-    // },
 
     {
       accessorKey: "status",
@@ -537,6 +531,9 @@ function useLrColumns(props) {
             onBlur={(event) =>
               handleInputChange(event, row.index, cell.column.id)
             }
+            disabled={
+              row.original.status === "Successful Collection of SR-CEL Lock"
+            }
           >
             {options.map((item) => (
               <MenuItem key={item} value={item}>
@@ -547,16 +544,38 @@ function useLrColumns(props) {
         );
       },
     },
+
     {
       accessorKey: "action",
       header: "Save",
       enableSorting: false,
       size: 100,
-      Cell: ({ cell, row }) => (
-        <IconButton onClick={() => handleSaveLr(row.original, props)}>
-          <SaveIcon sx={{ color: "#015C4B" }} />
-        </IconButton>
-      ),
+      Cell: ({ cell, row }) => {
+        const statusValue = row.original.status; // Assuming 'status' is the key for status in row.original
+
+        return (
+          <IconButton
+            onClick={() => {
+              handleSaveLr(row.original, props);
+              setTimeout(() => {
+                fetchSrcelOptions();
+              }, 2000);
+            }}
+            disabled={statusValue === "Successful Collection of SR-CEL Lock"}
+          >
+            {statusValue === "Successful Collection of SR-CEL Lock" ? (
+              <Tooltip title="Action not required" arrow>
+                <IconButton disabled>
+                  <SaveIcon sx={{ color: "#9E9E9E" }} />{" "}
+                  {/* Greyed-out color */}
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <SaveIcon sx={{ color: "#015C4B" }} />
+            )}
+          </IconButton>
+        );
+      },
     },
   ];
 

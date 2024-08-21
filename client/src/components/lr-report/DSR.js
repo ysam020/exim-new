@@ -192,11 +192,34 @@ function DSR() {
   };
 
   const handleSave = async (row) => {
-    const res = await axios.post(
-      `${process.env.REACT_APP_API_STRING}/update-srcc-dsr`,
-      row
-    );
-    alert(res.data.message);
+    try {
+      // First, check if the status is "Successful Collection of SR-CEL Lock"
+      if (
+        row.status === "Successful Collection of SR-CEL Lock" &&
+        row.sr_cel_id
+      ) {
+        // Update the sr_cel_locked field
+        await axios.patch(
+          `${process.env.REACT_APP_API_STRING}/get-srcel/${row.sr_cel_id}`,
+          {
+            sr_cel_locked: false,
+          }
+        );
+        console.log("SR CEL Locked successfully");
+      }
+
+      // Save the row data
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_STRING}/update-srcc-dsr`,
+        row
+      );
+
+      // Notify the user of success
+      alert(res.data.message);
+    } catch (error) {
+      console.error("Error during save:", error);
+      alert("There was an error saving the data. Please try again.");
+    }
   };
 
   const columns = [
@@ -209,6 +232,12 @@ function DSR() {
     {
       accessorKey: "container_number",
       header: "Container No",
+      enableSorting: false,
+      size: 150,
+    },
+    {
+      accessorKey: "sr_cel_no",
+      header: "SR-CEL No",
       enableSorting: false,
       size: 150,
     },
