@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TextField, IconButton, MenuItem } from "@mui/material";
+import { TextField, IconButton, MenuItem, Card, Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
@@ -8,7 +8,32 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { handleSaveLr } from "../utils/handleSaveLr";
 import { lrContainerPlanningStatus } from "../assets/data/dsrDetailedStatus";
 import Tooltip from "@mui/material/Tooltip";
+import { styled } from "@mui/system";
 // import SrCelDropdown from "./SrCelDropdown.js";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import LocationDialog from "../components/srcel/LocationDialog";
+
+const GlassCard = styled(Card)(({ theme }) => ({
+  background: "rgba(255, 255, 255, 0.1)",
+  backdropFilter: "blur(10px)",
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+  transition: "all 0.3s ease-in-out",
+  "&:hover": {
+    transform: "translateY(-5px)",
+    boxShadow: "0 8px 12px rgba(0, 0, 0, 0.2)",
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  backdropFilter: "blur(5px)",
+  borderRadius: theme.shape.borderRadius,
+  transition: "all 0.3s ease-in-out",
+  "&:hover": {
+    transform: "scale(1.05)",
+    background: "linear-gradient(45deg, #111B21 30%, #2A7D7B 90%)",
+  },
+}));
 
 function useLrColumns(props) {
   const [rows, setRows] = useState([]);
@@ -16,8 +41,10 @@ function useLrColumns(props) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [truckNos, setTruckNos] = useState([]);
   const [srcelOptions, setSrcelOptions] = useState([]);
-
-  console.log(truckNos);
+  const [openLocationDialog, setOpenLocationDialog] = useState(false);
+  const [locationData, setLocationData] = useState(null);
+  console.log(`locationData`, locationData);
+  // console.log(truckNos);
   // console.log(`srCelNos`, srCelNos);
   useEffect(() => {
     // Fetch the sr_cel options when the component mounts
@@ -36,10 +63,6 @@ function useLrColumns(props) {
     }
   };
   const SrCelDropdown = ({ options, onSelect, defaultValue, rowIndex }) => {
-    console.log(`options`, options);
-    console.log(`onSelect`, onSelect);
-    console.log(`defaultValue`, defaultValue);
-    console.log(`rowIndex`, rowIndex);
     return (
       <Autocomplete
         options={options.filter((option) => !option.sr_cel_locked)}
@@ -106,6 +129,29 @@ function useLrColumns(props) {
     getData();
     // eslint-disable-next-line
   }, [props.prData, props.pr_no]);
+  const handleLocationClick = async (asset) => {
+    try {
+      const response = await axios.post(
+        "http://icloud.assetscontrols.com:8092/OpenApi/LBS",
+        {
+          FTokenID: "e36d2589-9dc3-4302-be7d-dc239af1846c",
+          FAction: "QueryLBSMonitorListByFGUIDs",
+          FGUIDs: "de0d32ab-2cad-4f3d-ab76-4f894fc604bd",
+          FType: 2,
+        }
+      );
+
+      if (response.data.Result === 200 && response.data.FObject.length > 0) {
+        console.log(response.data.FObject[0]);
+        setLocationData(response.data.FObject[0]);
+        setOpenLocationDialog(true);
+      } else {
+        alert("Failed to fetch location data");
+      }
+    } catch (error) {
+      alert("An error occurred while fetching location data");
+    }
+  };
 
   const handleInputChange = (event, rowIndex, columnId) => {
     const { value } = event.target;
@@ -186,6 +232,10 @@ function useLrColumns(props) {
     setRows(newRows); // Update the state to reflect changes in the UI
   };
 
+  const handleCloseLocationDialog = () => {
+    setOpenLocationDialog(false);
+    setLocationData(null);
+  };
   const columns = [
     {
       accessorKey: "print",
@@ -544,7 +594,24 @@ function useLrColumns(props) {
         );
       },
     },
-
+    {
+      accessorKey: "realtime_location",
+      header: "Realtime Location",
+      enableSorting: false,
+      size: 200,
+      Cell: ({ cell, row }) => (
+        <StyledButton
+          variant="contained"
+          color="secondary"
+          // onClick={() => handleLocationClick(row.original)}
+          onClick={() => handleLocationClick()}
+          startIcon={<LocationOnIcon />}
+          sx={{ minWidth: "100%", textTransform: "none" }} // Ensure the button spans the full width
+        >
+          GPS
+        </StyledButton>
+      ),
+    },
     {
       accessorKey: "action",
       header: "Save",
@@ -580,6 +647,20 @@ function useLrColumns(props) {
   ];
 
   return { rows, setRows, columns, selectedRows };
+
+  // return (
+  //   <div>
+  //     {/* <Table columns={columns} data={rows} onRowSelect={setSelectedRows} /> */}
+  //     <LocationDialog
+  //       open={openLocationDialog}
+  //       onClose={handleCloseLocationDialog}
+  //       locationData={locationData}
+  //     />
+  //     {/* Add any other necessary components or functionality */}
+  //   </div>
+  // );
+
+  // return { rows, setRows, columns, selectedRows };
 }
 
 export default useLrColumns;
