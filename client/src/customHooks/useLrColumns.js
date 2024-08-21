@@ -41,11 +41,11 @@ function useLrColumns(props) {
     console.log(`rowIndex`, rowIndex);
     return (
       <Autocomplete
-        options={options}
+        options={options.filter((option) => !option.sr_cel_locked)}
         getOptionLabel={(option) => option.sr_cel_no}
         renderInput={(params) => <TextField {...params} size="small" />}
         onChange={(event, newValue) => {
-          console.log(`newValue`, newValue._id);
+          console.log(`newValue`, newValue?._id);
           onSelect(
             {
               target: {
@@ -64,15 +64,15 @@ function useLrColumns(props) {
             rowIndex,
             "sr_cel_FGUID"
           );
-          // onSelect(
-          //   {
-          //     target: {
-          //       value: newValue ? newValue._id : null,
-          //     },
-          //   },
-          //   rowIndex,
-          //   "sr_cel_FGUID"
-          // );
+          onSelect(
+            {
+              target: {
+                value: newValue ? newValue._id : null,
+              },
+            },
+            rowIndex,
+            "sr_cel_id"
+          );
         }}
         defaultValue={
           options.find((option) => option.sr_cel_no === defaultValue) || null

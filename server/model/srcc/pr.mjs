@@ -108,6 +108,9 @@ const PrDataSchema = new mongoose.Schema({
       sr_cel_FGUID: {
         type: String,
       },
+      sr_cel_id: {
+        type: String,
+      },
       status: {
         type: String,
       },

@@ -20,6 +20,7 @@ router.post("/api/update-container", async (req, res) => {
       driver_phone,
       sr_cel_no,
       sr_cel_FGUID,
+      sr_cel_id,
       seal_no,
       gross_weight,
       vehicle_no,
@@ -67,6 +68,7 @@ router.post("/api/update-container", async (req, res) => {
         containerWithoutNumber.net_weight = net_weight;
         containerWithoutNumber.sr_cel_no = sr_cel_no;
         containerWithoutNumber.sr_cel_FGUID = sr_cel_FGUID;
+        containerWithoutNumber.sr_cel_id = sr_cel_id;
         containerWithoutNumber.goods_pickup = goods_pickup;
         containerWithoutNumber.goods_delivery = goods_delivery;
         containerWithoutNumber.own_hired = own_hired;
@@ -95,6 +97,7 @@ router.post("/api/update-container", async (req, res) => {
           driver_phone,
           sr_cel_no,
           sr_cel_FGUID,
+          sr_cel_id,
           seal_no,
           gross_weight,
           vehicle_no,
@@ -125,6 +128,7 @@ router.post("/api/update-container", async (req, res) => {
       matchingContainer.driver_phone = driver_phone;
       matchingContainer.sr_cel_no = sr_cel_no;
       matchingContainer.sr_cel_FGUID = sr_cel_FGUID;
+      matchingContainer.sr_cel_id = sr_cel_id;
       matchingContainer.seal_no = seal_no;
       matchingContainer.gross_weight = gross_weight;
       matchingContainer.vehicle_no = vehicle_no;
