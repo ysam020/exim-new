@@ -22,13 +22,6 @@ import LocationDialog from "./LocationDialog.js";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
-// const GlassContainer = styled(Container)(({ theme }) => ({
-//   background: "rgba(255, 255, 255, 0.1)",
-//   backdropFilter: "blur(10px)",
-//   borderRadius: theme.shape.borderRadius,
-//   padding: theme.spacing(3),
-//   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-// }));
 const GlassContainer = styled(Container)(({ theme }) => ({
   background: "rgba(255, 255, 255, 0.8)", // Increase opacity for more solid background
   backdropFilter: "blur(15px)", // Increase blur effect
@@ -37,11 +30,6 @@ const GlassContainer = styled(Container)(({ theme }) => ({
   boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)", // Slightly stronger shadow for depth
 }));
 
-// const StyledAppBar = styled(AppBar)(({ theme }) => ({
-//   background: "rgba(255, 255, 255, 0.1)",
-//   backdropFilter: "blur(10px)",
-//   boxShadow: "none",
-// }));
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   background: "#111b21", // Use the primary color of your theme

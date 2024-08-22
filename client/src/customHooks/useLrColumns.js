@@ -601,16 +601,19 @@ function useLrColumns(props) {
       enableSorting: false,
       size: 200,
       Cell: ({ row }) => (
-        <StyledButton
+        <Button
           variant="contained"
+          className="btn"
           color="secondary"
-          // onClick={() => handleLocationClick(row.original)}
           onClick={() => handleLocationClick(row.original.sr_cel_FGUID)}
-          startIcon={<LocationOnIcon />}
-          sx={{ minWidth: "100%", textTransform: "none" }} // Ensure the button spans the full width
+          startIcon={<LocationOnIcon fontSize="small" color="inherit" />}
+          sx={{ minWidth: "60%", textTransform: "none" }}
+          disabled={
+            row.original.status === "Successful Collection of SR-CEL Lock"
+          }
         >
           GPS
-        </StyledButton>
+        </Button>
       ),
     },
     {
