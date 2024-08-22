@@ -612,7 +612,7 @@ function useLrColumns(props) {
             row.original.status === "Successful Collection of SR-CEL Lock"
           }
         >
-          GPS
+          Track Location
         </Button>
       ),
     },
