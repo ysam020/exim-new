@@ -515,7 +515,7 @@ function JobDetails() {
                 </div>
               </Col>
 
-              {user.username === "sameer_yadav" && (
+              {user.username === "manu_pillai" && (
                 <Col xs={12} lg={4}>
                   <div
                     className="job-detail-input-container"
@@ -561,7 +561,7 @@ function JobDetails() {
                   {formik.values.do_planning_date}
                 </div>
               </Col>
-              {user.username === "sameer_yadav" && (
+              {user.username === "manu_pillai" && (
                 <Col xs={12} lg={4}>
                   <div
                     className="job-detail-input-container"
@@ -625,7 +625,7 @@ function JobDetails() {
                 </div>
               </Col>
 
-              {user.username === "sameer_yadav" && (
+              {user.username === "manu_pillai" && (
                 <Col xs={12} lg={4}>
                   <div
                     className="job-detail-input-container"
@@ -667,7 +667,7 @@ function JobDetails() {
                   {formik.values.examination_planning_date}
                 </div>
               </Col>
-              {user.username === "sameer_yadav" && (
+              {user.username === "manu_pillai" && (
                 <Col xs={12} lg={4}>
                   <div
                     className="job-detail-input-container"

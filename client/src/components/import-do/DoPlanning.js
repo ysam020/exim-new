@@ -84,7 +84,12 @@ function DoPlanning() {
     enableGrouping: true, // Enable row grouping
     enableColumnFilters: false, // Disable column filters
     enableColumnActions: false,
+    enablePagination: false,
+    enableBottomToolbar: false,
     enableExpandAll: false,
+    muiTableContainerProps: {
+      sx: { maxHeight: "650px", overflowY: "auto" },
+    },
     muiTableBodyRowProps: ({ row }) => ({
       className: getTableRowsClassname(row),
     }),

@@ -121,6 +121,7 @@ import viewDSR from "./routes/import-dsr/viewDSR.mjs";
 // Import Operations
 import getOperationPlanningJobs from "./routes/import-operations/getOperationPlanningJobs.mjs";
 import updateOperationsJob from "./routes/import-operations/updateOperationsJob.mjs";
+import getOperationPlanningList from "./routes/import-operations/getOperationPlanningList.mjs";
 
 // Inward Register
 import addInwardRegister from "./routes/inward-register/addInwardRegister.mjs";
@@ -353,6 +354,7 @@ if (cluster.isPrimary) {
       // Import Operations
       app.use(getOperationPlanningJobs);
       app.use(updateOperationsJob);
+      app.use(getOperationPlanningList);
 
       // Inward Register
       app.use(addInwardRegister);

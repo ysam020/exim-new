@@ -291,10 +291,9 @@ function useFetchJobDetails(
           document_received_date: values.document_received_date,
         }
       );
-      resetForm();
-      localStorage.setItem("tab_value", 1);
-      setTabValue(1);
-      navigate("/import-dsr");
+      // localStorage.setItem("tab_value", 1);
+      // setTabValue(1);
+      // navigate("/import-dsr");
     },
   });
   console.log(formik.values.do_validity_upto_job_level);

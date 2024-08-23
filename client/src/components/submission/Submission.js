@@ -14,12 +14,15 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 function Submission() {
   const [rows, setRows] = React.useState([]);
   const [openModal, setOpenModal] = React.useState(false);
+  const [openDocumentModal, setOpenDocumentModal] = React.useState(false);
   const [currentRowIndex, setCurrentRowIndex] = React.useState(null);
   const [submissionQueries, setSubmissionQueries] = React.useState([]);
+  const [currentDocumentRow, setCurrentDocumentRow] = React.useState(null);
 
   React.useEffect(() => {
     async function getData() {
@@ -69,6 +72,10 @@ function Submission() {
     setOpenModal(false);
   };
 
+  const handleDocumentModalClose = () => {
+    setOpenDocumentModal(false);
+  };
+
   const handleAddQuery = () => {
     setSubmissionQueries([...submissionQueries, { query: "", reply: "" }]);
   };
@@ -81,11 +88,16 @@ function Submission() {
 
   const handleSubmitQueries = () => {
     setRows((prevRows) =>
-      prevRows.map((row, index) =>
+      prevRows?.map((row, index) =>
         index === currentRowIndex ? { ...row, submissionQueries } : row
       )
     );
     setOpenModal(false);
+  };
+
+  const handleDocumentClick = (row) => {
+    setCurrentDocumentRow(row); // Set the current row data
+    setOpenDocumentModal(true); // Open the modal
   };
 
   const columns = [
@@ -178,6 +190,17 @@ function Submission() {
       ),
     },
     {
+      accessorKey: "documents",
+      header: "Documents",
+      enableSorting: false,
+      size: 150,
+      Cell: ({ row }) => (
+        <IconButton onClick={() => handleDocumentClick(row.original)}>
+          <InsertDriveFileIcon />
+        </IconButton>
+      ),
+    },
+    {
       accessorKey: "save",
       header: "Save",
       enableSorting: false,
@@ -233,7 +256,7 @@ function Submission() {
           }}
         >
           <div>
-            {submissionQueries.map((item, index) => (
+            {submissionQueries?.map((item, index) => (
               <div key={index} style={{ marginBottom: "20px" }}>
                 <TextField
                   label="Query"
@@ -267,6 +290,61 @@ function Submission() {
               Cancel
             </button>
           </div>
+        </Box>
+      </Modal>
+
+      <Modal open={openDocumentModal} onClose={handleDocumentModalClose}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            height: 600,
+            transform: "translate(-50%, -50%)",
+            width: 800,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            overflowY: "auto",
+          }}
+        >
+          <h4>Documents</h4>
+          {currentDocumentRow && (
+            <div>
+              {currentDocumentRow.cth_documents?.map((doc, index) => (
+                <div key={index}>
+                  <p>
+                    <strong>{doc.document_name}:&nbsp;</strong>
+                    {doc.url && (
+                      <a
+                        href={doc.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View
+                      </a>
+                    )}
+                  </p>
+                </div>
+              ))}
+              {currentDocumentRow.documents?.map((doc, index) => (
+                <div key={index}>
+                  <p>
+                    <strong>{doc.document_name}:&nbsp;</strong>
+                    {doc.url && (
+                      <a
+                        href={doc.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View
+                      </a>
+                    )}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </Box>
       </Modal>
     </div>

@@ -7,6 +7,8 @@ function useTableConfig(rows, columns) {
     enableColumnResizing: true,
     enableColumnOrdering: true,
     enableDensityToggle: false, // Disable density toggle
+    enablePagination: false,
+    enableBottomToolbar: false,
     initialState: {
       density: "compact",
       columnPinning: { left: ["username", "employee_name", "job_no"] },
@@ -18,7 +20,7 @@ function useTableConfig(rows, columns) {
     enableStickyHeader: true, // Enable sticky header
     enablePinning: true, // Enable pinning for sticky columns
     muiTableContainerProps: {
-      sx: { maxHeight: "600px", overflowY: "auto" },
+      sx: { maxHeight: "650px", overflowY: "auto" },
     },
     muiTableHeadCellProps: {
       sx: {

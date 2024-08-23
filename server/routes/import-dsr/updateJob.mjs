@@ -15,6 +15,7 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
     arrival_date,
     free_time,
     checked,
+    do_validity_upto_job_level,
   } = req.body;
 
   function addDaysToDate(dateString, days) {
@@ -209,7 +210,7 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
         }
       });
     }
-
+    matchingJob.do_validity_upto_job_level = do_validity_upto_job_level;
     // Step 8: Save the updated job document
     await matchingJob.save();
 
