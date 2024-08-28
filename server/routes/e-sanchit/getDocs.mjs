@@ -7,7 +7,7 @@ router.get("/api/get-docs/", async (req, res) => {
   try {
     const data = await documentsModel.find({}).sort({ document_name: 1 });
     if (!data || data.length === 0) {
-      return res.status(404).send("Data not found");
+      return res.status(200).send("Data not found");
     }
     res.status(200).json(data);
   } catch (err) {

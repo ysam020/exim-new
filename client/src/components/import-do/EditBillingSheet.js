@@ -39,13 +39,17 @@ function EditBillingSheet() {
     initialValues: {
       icd_cfs_invoice: "",
       icd_cfs_invoice_img: [],
+      other_invoices_img: [],
       bill_document_sent_to_accounts: currentDate,
+      shipping_line_invoice_imgs: [],
     },
 
     onSubmit: async (values, { resetForm }) => {
       const data = {
         icd_cfs_invoice: values.icd_cfs_invoice,
         bill_document_sent_to_accounts: values.bill_document_sent_to_accounts,
+        other_invoices_img: values.other_invoices_img,
+        shipping_line_invoice_imgs: values.shipping_line_invoice_imgs,
         _id,
       };
 
@@ -68,6 +72,8 @@ function EditBillingSheet() {
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
+        <h5>Job Number: {data?.job_no}</h5>
+        <h5>Importer: {data?.importer}</h5>
         {data && data?.custom_house === "ICD Sabarmati, Ahmedabad" ? (
           <TextField
             select
@@ -117,6 +123,69 @@ function EditBillingSheet() {
           );
         })}
         <br />
+
+        {/* Upload Other Invoices */}
+        <label htmlFor="other_invoices_img" className="btn">
+          Upload Other Invoices
+        </label>
+        <input
+          type="file"
+          multiple
+          name="other_invoices_img"
+          id="other_invoices_img"
+          onChange={(e) =>
+            handleFileUpload(
+              e,
+              "other_invoices_img",
+              "other_invoices_img",
+              formik,
+              setFileSnackbar
+            )
+          }
+          style={{ display: "none" }}
+        />
+        <br />
+        <br />
+        {formik.values.other_invoices_img?.map((file, index) => {
+          return (
+            <div key={index}>
+              <a href={file}>{file}</a>
+              <br />
+            </div>
+          );
+        })}
+        <br />
+
+        {/* Upload Shipping Line Invoices */}
+        <label htmlFor="shipping_line_invoice_imgs" className="btn">
+          Upload Shipping Line Invoices
+        </label>
+        <input
+          type="file"
+          multiple
+          name="shipping_line_invoice_imgs"
+          id="shipping_line_invoice_imgs"
+          onChange={(e) =>
+            handleFileUpload(
+              e,
+              "shipping_line_invoice_imgs",
+              "shipping_line_invoice_imgs",
+              formik,
+              setFileSnackbar
+            )
+          }
+          style={{ display: "none" }}
+        />
+        <br />
+        <br />
+        {formik.values.shipping_line_invoice_imgs?.map((file, index) => {
+          return (
+            <div key={index}>
+              <a href={file}>{file}</a>
+              <br />
+            </div>
+          );
+        })}
 
         <TextField
           type="date"

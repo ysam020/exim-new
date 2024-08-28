@@ -1,6 +1,9 @@
 import { useMaterialReactTable } from "material-react-table";
+import { useNavigate } from "react-router-dom";
 
-function useTableConfig(rows, columns) {
+function useTableConfig(rows, columns, url) {
+  const navigate = useNavigate();
+
   const table = useMaterialReactTable({
     columns,
     data: rows,
@@ -22,6 +25,10 @@ function useTableConfig(rows, columns) {
     muiTableContainerProps: {
       sx: { maxHeight: "650px", overflowY: "auto" },
     },
+    muiTableBodyRowProps: ({ row }) => ({
+      onClick: () => navigate(`/${url}/${row.original._id}`), // Navigate on row click
+      style: { cursor: "pointer" }, // Change cursor to pointer on hover
+    }),
     muiTableHeadCellProps: {
       sx: {
         position: "sticky",

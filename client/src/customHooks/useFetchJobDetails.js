@@ -141,16 +141,19 @@ function useFetchJobDetails(
         );
 
         // Fetched CTH documents with URLs merged from data.cth_documents if they exist
-        const fetchedCthDocuments = cthRes.data.map((cthDoc) => {
-          const additionalData = data?.cth_documents.find(
-            (doc) => doc.document_name === cthDoc.document_name
-          );
+        console.log(Array.isArray(cthRes.data));
+        const fetchedCthDocuments =
+          Array.isArray(cthRes.data) &&
+          cthRes.data.map((cthDoc) => {
+            const additionalData = data?.cth_documents.find(
+              (doc) => doc.document_name === cthDoc.document_name
+            );
 
-          return {
-            ...cthDoc,
-            url: additionalData ? additionalData.url : "",
-          };
-        });
+            return {
+              ...cthDoc,
+              url: additionalData ? additionalData.url : "",
+            };
+          });
 
         // Start with initial cthDocuments
         let documentsToMerge = [...cthDocuments];
@@ -161,7 +164,9 @@ function useFetchJobDetails(
         }
 
         // Merge fetched CTH documents
-        documentsToMerge = [...documentsToMerge, ...fetchedCthDocuments];
+        documentsToMerge = fetchedCthDocuments
+          ? [...documentsToMerge, ...fetchedCthDocuments]
+          : [...documentsToMerge];
 
         // Merge data.cth_documents into the array
         documentsToMerge = [...documentsToMerge, ...data.cth_documents];
@@ -208,6 +213,7 @@ function useFetchJobDetails(
       detailed_status: "",
       free_time: "",
       arrival_date: "",
+      do_validity: "",
       do_validity_upto_job_level: "",
       do_revalidation_upto_job_level: "",
       checklist: [],
@@ -221,13 +227,14 @@ function useFetchJobDetails(
       nfmims_date: "",
       delivery_date: "",
       assessment_date: "",
-      examination_date: "",
       duty_paid_date: "",
       container_images: "",
       doPlanning: false,
       do_planning_date: "",
       examinationPlanning: false,
       examination_planning_date: "",
+      examination_date: "",
+      pcv_date: "",
       do_copies: [],
       do_queries: [],
       documentationQueries: [],
@@ -241,7 +248,7 @@ function useFetchJobDetails(
       out_of_charge: "",
       checked: false,
     },
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values) => {
       await axios.put(
         `${process.env.REACT_APP_API_STRING}/update-job/${params.selected_year}/${params.job_no}`,
         {
@@ -269,7 +276,6 @@ function useFetchJobDetails(
           gateway_igm_date: values.gateway_igm_date,
           discharge_date: values.discharge_date,
           assessment_date: values.assessment_date,
-          examination_date: values.examination_date,
           duty_paid_date: values.duty_paid_date,
           doPlanning: values.doPlanning,
           do_planning_date: values.do_planning_date,
@@ -291,9 +297,9 @@ function useFetchJobDetails(
           document_received_date: values.document_received_date,
         }
       );
-      // localStorage.setItem("tab_value", 1);
-      // setTabValue(1);
-      // navigate("/import-dsr");
+      localStorage.setItem("tab_value", 1);
+      setTabValue(1);
+      navigate("/import-dsr");
     },
   });
   console.log(formik.values.do_validity_upto_job_level);
@@ -404,6 +410,7 @@ function useFetchJobDetails(
           data.detailed_status === undefined
             ? "Estimated Time of Arrival"
             : data.detailed_status,
+        do_validity: data.do_validity === undefined ? "" : data.do_validity,
         doPlanning: data.doPlanning === undefined ? false : data.doPlanning,
         do_planning_date:
           data.do_planning_date === undefined ? "" : data.do_planning_date,
@@ -443,6 +450,7 @@ function useFetchJobDetails(
           data.assessment_date === undefined ? "" : data.assessment_date,
         examination_date:
           data.examination_date === undefined ? "" : data.examination_date,
+        pcv_date: data.pcv_date === undefined ? "" : data.pcv_date,
         duty_paid_date:
           data.duty_paid_date === undefined ? "" : data.duty_paid_date,
 

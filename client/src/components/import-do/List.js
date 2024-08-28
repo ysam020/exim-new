@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { MaterialReactTable } from "material-react-table";
 import useTableConfig from "../../customHooks/useTableConfig";
-import { Link } from "react-router-dom";
 
 function List() {
   const [rows, setRows] = useState([]);
@@ -23,19 +22,18 @@ function List() {
       header: "Job Number",
       enableSorting: false,
       size: 150,
-      Cell: ({ cell }) => {
-        return (
-          <Link to={`/edit-do-list/${cell.row.original._id}`}>
-            {cell.row.original.job_no}
-          </Link>
-        );
-      },
     },
     {
       accessorKey: "importer",
       header: "Party",
       enableSorting: false,
       size: 200,
+    },
+    {
+      accessorKey: "importer_address",
+      header: "Address",
+      enableSorting: false,
+      size: 250,
     },
     {
       accessorKey: "awb_bl_no",
@@ -53,17 +51,29 @@ function List() {
       accessorKey: "custom_house",
       header: "Custom House",
       enableSorting: false,
-      size: 200,
+      size: 150,
     },
     {
       accessorKey: "obl_telex_bl",
       header: "OBL Telex BL",
       enableSorting: false,
-      size: 200,
+      size: 100,
+    },
+    {
+      accessorKey: "vessel_flight",
+      header: "Vessel",
+      enableSorting: false,
+      size: 100,
+    },
+    {
+      accessorKey: "voyage_no",
+      header: "Voyage No",
+      enableSorting: false,
+      size: 100,
     },
   ];
 
-  const table = useTableConfig(rows, columns);
+  const table = useTableConfig(rows, columns, "edit-do-list");
 
   return (
     <>

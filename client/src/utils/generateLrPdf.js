@@ -4,6 +4,7 @@ import logo from "../assets/images/srcc.png";
 import axios from "axios";
 
 export const generateLrPdf = async (data, lrData) => {
+  console.log(lrData);
   if (data.length === 0) {
     alert("No Container Selected");
     return;

@@ -12,9 +12,12 @@ router.get("/api/get-do-module-jobs", async (req, res) => {
             $or: [{ do_documents: { $exists: false } }, { do_documents: [] }],
           },
           { $or: [{ doPlanning: true }, { doPlanning: "true" }] },
+          {
+            $or: [{ do_processed: "No" }, { do_processed: { $exists: false } }],
+          },
         ],
       },
-      "job_no year importer awb_bl_no shipping_line_airline custom_house obl_telex_bl payment_made"
+      "job_no year importer awb_bl_no shipping_line_airline custom_house obl_telex_bl payment_made importer_address voyage_no be_no vessel_flight"
     );
 
     res.status(200).send(jobs);

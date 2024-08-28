@@ -37,7 +37,6 @@ function EditDoPlanning() {
       security_amount: "",
       utr: [],
       other_invoices: false,
-      other_invoices_img: [],
       payment_made: false,
       do_processed: false,
       do_documents: [],
@@ -60,6 +59,7 @@ function EditDoPlanning() {
         other_invoices: values.other_invoices ? "Yes" : "No",
         security_deposit: values.security_deposit ? "Yes" : "No",
       };
+
       const res = await axios.post(
         `${process.env.REACT_APP_API_STRING}/update-do-planning`,
         data
@@ -112,6 +112,8 @@ function EditDoPlanning() {
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
+        <h5>Job Number: {data?.job_no}</h5>
+        <h5>Importer: {data?.importer}</h5>
         <strong>KYC Documents:&nbsp;</strong>
         <br />
         {kycData.kyc_documents?.map((doc, id) => (
@@ -277,38 +279,7 @@ function EditDoPlanning() {
               );
             })}
           </Col>
-          <Col>
-            {/* Upload Other Invoices */}
-            <label htmlFor="other_invoices_img" className="btn">
-              Upload Other Invoices
-            </label>
-            <input
-              type="file"
-              multiple
-              name="other_invoices_img"
-              id="other_invoices_img"
-              onChange={(e) =>
-                handleFileUpload(
-                  e,
-                  "other_invoices_img",
-                  "other_invoices_img",
-                  formik,
-                  setFileSnackbar
-                )
-              }
-              style={{ display: "none" }}
-            />
-            <br />
-            <br />
-            {formik.values.other_invoices_img?.map((file, index) => {
-              return (
-                <div key={index}>
-                  <a href={file}>{file}</a>
-                  <br />
-                </div>
-              );
-            })}
-          </Col>
+          <Col></Col>
         </Row>
 
         <br />
@@ -403,6 +374,21 @@ function EditDoPlanning() {
         <button type="button" className="btn" onClick={handleAddField}>
           Add Query
         </button>
+        <br />
+        <br />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={formik.values.do_processed}
+              onChange={(e) =>
+                formik.setFieldValue("do_processed", e.target.checked)
+              }
+              name="do_processed"
+              color="primary"
+            />
+          }
+          label="DO Processed"
+        />
         <br />
         <button type="submit" className="btn">
           Submit

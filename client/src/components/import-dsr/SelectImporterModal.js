@@ -7,6 +7,9 @@ import Autocomplete from "@mui/material/Autocomplete";
 import axios from "axios";
 import { SelectedYearContext } from "../../contexts/SelectedYearContext";
 import { convertToExcel } from "../../utils/convertToExcel";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
 
 const style = {
   position: "absolute",
@@ -23,6 +26,7 @@ export default function SelectImporterModal(props) {
   const { selectedYear } = React.useContext(SelectedYearContext);
   const [importerData, setImporterData] = React.useState([]);
   const [selectedImporter, setSelectedImporter] = React.useState("");
+  const [checked, setChecked] = React.useState(false);
 
   // Function to remove duplicates and map data with unique keys
   const getUniqueImporterNames = (importerData) => {
@@ -103,21 +107,43 @@ export default function SelectImporterModal(props) {
             Select an importer to download DSR
           </Typography>
           <br />
-          <Autocomplete
-            disablePortal
-            fullWidth
-            options={importerNames}
-            getOptionLabel={(option) => option.label}
-            value={
-              importerNames.find(
-                (option) => option.label === selectedImporter
-              ) || null
-            }
-            onChange={handleImporterChange}
-            renderInput={(params) => (
-              <TextField {...params} size="small" label="Select importer" />
-            )}
-          />
+
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={checked}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setChecked(true);
+                    } else {
+                      setChecked(false);
+                    }
+                  }}
+                />
+              }
+              label="Download all importers"
+            />
+          </FormGroup>
+
+          <br />
+          {!checked && (
+            <Autocomplete
+              disablePortal
+              fullWidth
+              options={importerNames}
+              getOptionLabel={(option) => option.label}
+              value={
+                importerNames.find(
+                  (option) => option.label === selectedImporter
+                ) || null
+              }
+              onChange={handleImporterChange}
+              renderInput={(params) => (
+                <TextField {...params} size="small" label="Select importer" />
+              )}
+            />
+          )}
 
           <button className="btn" onClick={handleReportDownload}>
             Download

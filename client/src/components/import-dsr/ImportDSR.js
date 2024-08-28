@@ -24,7 +24,6 @@ function ImportDSR() {
   const { a11yProps, CustomTabPanel } = useTabs();
   const { tabValue, setTabValue } = React.useContext(TabValueContext);
   const { user } = React.useContext(UserContext);
-  const [years, setYears] = React.useState([]);
   const [selectedYear, setSelectedYear] = React.useState("");
   const [alt, setAlt] = React.useState(false);
   const [lastJobsDate, setLastJobsDate] = React.useState("");
@@ -33,18 +32,6 @@ function ImportDSR() {
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
-
-  React.useEffect(() => {
-    async function getYears() {
-      const res = await axios.get(
-        `${process.env.REACT_APP_API_STRING}/get-years`
-      );
-      const filteredYears = res.data.filter((year) => year !== null);
-      setYears(filteredYears);
-      setSelectedYear(filteredYears[0]);
-    }
-    getYears();
-  }, []);
 
   React.useEffect(() => {
     async function getLastJobsDate() {
@@ -79,26 +66,7 @@ function ImportDSR() {
           </Tabs>
         </Box>
         <div className="flex-div">
-          <div style={{ flex: 1 }}>
-            <TextField
-              select
-              size="small"
-              margin="normal"
-              variant="outlined"
-              label="Select Year"
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(e.target.value)}
-              sx={{ width: "200px" }}
-            >
-              {years?.map((year) => {
-                return (
-                  <MenuItem key={year} value={year}>
-                    {year}
-                  </MenuItem>
-                );
-              })}
-            </TextField>
-          </div>
+          <div style={{ flex: 1 }}></div>
           {user.role === "Admin" && tabValue === 0 && (
             <>
               {loading ? (
@@ -107,7 +75,7 @@ function ImportDSR() {
                 <label
                   htmlFor="uploadBtn"
                   className="btn"
-                  style={{ marginLeft: "10px", marginTop: 0 }}
+                  style={{ marginLeft: "10px", marginTop: "20px" }}
                 >
                   Upload Party Data
                 </label>

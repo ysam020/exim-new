@@ -1,17 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
-function useJobColumns(detailedStatus) {
-  const allColumns = [
+function useJobColumns() {
+  const columns = [
     {
       accessorKey: "job_no",
       header: "Job Number",
       size: 130,
-      Cell: ({ cell }) => (
-        <Link to={`/job/${cell.row.original.job_no}/${cell.row.original.year}`}>
-          {cell.row.original.job_no}
-        </Link>
-      ),
     },
 
     {
@@ -27,8 +21,10 @@ function useJobColumns(detailedStatus) {
     {
       accessorKey: "awb_bl_no",
       header: "BL Number",
-      size: 200,
-      Cell: ({ cell }) => cell?.getValue()?.toString(),
+      size: 120,
+      Cell: ({ cell }) => {
+        return cell?.getValue()?.toString();
+      },
     },
     {
       accessorKey: "be_no",
@@ -63,66 +59,16 @@ function useJobColumns(detailedStatus) {
       size: 100,
     },
     {
-      accessorKey: "discharge_date",
-      header: "Discharge Date",
-      size: 180,
+      accessorKey: "loading_port",
+      header: "Loading Port",
+      size: 150,
     },
     {
-      accessorKey: "arrival_date",
-      header: "Arrival Date",
-      size: 180,
-      Cell: ({ cell }) =>
-        cell.row.original.container_nos?.map((container, id) => (
-          <React.Fragment key={id}>
-            {container.arrival_date}
-            <br />
-          </React.Fragment>
-        )),
-      filterFn: "includes",
-      accessorFn: (row) =>
-        row.container_nos
-          ?.map((container) => container.arrival_date)
-          .join(", "),
-    },
-    {
-      accessorKey: "out_of_charge",
-      header: "OOC Date",
+      accessorKey: "port_of_reporting",
+      header: "Port of Discharge",
       size: 150,
     },
   ];
-
-  const columns = allColumns.filter((column) => {
-    if (
-      column.accessorKey === "awb_bl_no" &&
-      [
-        "Estimated Time of Arrival",
-        "Gateway IGM Filed",
-        "Discharged",
-        "all",
-      ].includes(detailedStatus)
-    ) {
-      return false;
-    }
-    if (
-      column.accessorKey === "discharge_date" &&
-      detailedStatus !== "Discharged"
-    ) {
-      return false;
-    }
-    if (
-      column.accessorKey === "arrival_date" &&
-      detailedStatus !== "BE Noted, Clearance Pending"
-    ) {
-      return false;
-    }
-    if (
-      column.accessorKey === "out_of_charge" &&
-      detailedStatus !== "Custom Clearance Completed"
-    ) {
-      return false;
-    }
-    return true;
-  });
 
   return columns;
 }

@@ -20,9 +20,9 @@ function BillingSheet() {
   const columns = [
     {
       accessorKey: "job_no",
-      header: "Job Number",
+      header: "Job No",
       enableSorting: false,
-      size: 150,
+      size: 100,
       Cell: ({ cell }) => {
         return (
           <Link to={`/edit-billing-sheet/${cell.row.original._id}`}>
@@ -35,8 +35,9 @@ function BillingSheet() {
       accessorKey: "importer",
       header: "Party",
       enableSorting: false,
-      size: 300,
+      size: 250,
     },
+
     {
       accessorKey: "awb_bl_no",
       header: "BL Number",
@@ -69,7 +70,7 @@ function BillingSheet() {
     },
   ];
 
-  const table = useTableConfig(rows, columns);
+  const table = useTableConfig(rows, columns, "edit-billing-sheet");
 
   return (
     <div style={{ height: "80%" }}>

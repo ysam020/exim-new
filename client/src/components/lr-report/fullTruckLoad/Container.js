@@ -49,7 +49,7 @@ function Container() {
             pr_no={row.original.pr_no}
             locations={locations}
             truckTypes={truckTypes}
-            prData={rows}
+            prData={rows[row.id]}
           />
         </div>
       );

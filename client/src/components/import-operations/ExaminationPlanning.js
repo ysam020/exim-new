@@ -8,12 +8,14 @@ import {
 } from "material-react-table";
 import { UserContext } from "../../contexts/UserContext";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function ImportOperations() {
   const [years, setYears] = React.useState([]);
   const [selectedYear, setSelectedYear] = React.useState("");
   const [rows, setRows] = React.useState([]);
   const { user } = React.useContext(UserContext);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     async function getYears() {
@@ -43,13 +45,6 @@ function ImportOperations() {
       header: "Job No",
       enableSorting: false,
       size: 100,
-      Cell: ({ cell }) => (
-        <Link
-          to={`/import-operations/view-job/${cell.row.original.job_no}/${cell.row.original.year}`}
-        >
-          {cell.getValue()}
-        </Link>
-      ),
     },
     {
       accessorKey: "be_no",
@@ -69,6 +64,7 @@ function ImportOperations() {
         <div style={{ textAlign: "center" }}>{cell.getValue()}</div>
       ),
     },
+
     {
       accessorKey: "examination_planning_date",
       header: "Examination Planning Date",
@@ -142,6 +138,11 @@ function ImportOperations() {
     },
     muiTableBodyRowProps: ({ row }) => ({
       className: getTableRowsClassname(row),
+      onClick: () =>
+        navigate(
+          `/import-operations/view-job/${row.original.job_no}/${row.original.year}`
+        ), // Navigate on row click
+      style: { cursor: "pointer" }, // Change cursor to pointer on hover
     }),
     muiTableHeadCellProps: {
       sx: {

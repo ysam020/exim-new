@@ -6,10 +6,12 @@ import {
 } from "material-react-table";
 import { Link } from "react-router-dom";
 import DoPlanningContainerTable from "./DoPlanningContainerTable";
+import { useNavigate } from "react-router-dom";
 
 function DoPlanning() {
   const [rows, setRows] = useState([]);
-
+  const navigate = useNavigate();
+  console.log(rows);
   useEffect(() => {
     async function getData() {
       const res = await axios(
@@ -23,22 +25,21 @@ function DoPlanning() {
   const columns = [
     {
       accessorKey: "job_no",
-      header: "Job Number",
+      header: "Job No",
       enableSorting: false,
-      size: 150,
-      Cell: ({ cell }) => {
-        return (
-          <Link to={`/edit-do-planning/${cell.row.original._id}`}>
-            {cell.row.original.job_no}
-          </Link>
-        );
-      },
+      size: 100,
     },
     {
       accessorKey: "importer",
       header: "Party",
       enableSorting: false,
-      size: 300,
+      size: 200,
+    },
+    {
+      accessorKey: "importer_address",
+      header: "Address",
+      enableSorting: false,
+      size: 250,
     },
     {
       accessorKey: "awb_bl_no",
@@ -50,25 +51,37 @@ function DoPlanning() {
       accessorKey: "shipping_line_airline",
       header: "Shipping Line",
       enableSorting: false,
-      size: 250,
+      size: 200,
     },
     {
       accessorKey: "custom_house",
       header: "Custom House",
       enableSorting: false,
-      size: 250,
+      size: 150,
     },
     {
       accessorKey: "obl_telex_bl",
       header: "OBL Telex BL",
       enableSorting: false,
-      size: 150,
+      size: 100,
     },
     {
       accessorKey: "payment_made_date",
       header: "Payment Made Date",
       enableSorting: false,
-      size: 200,
+      size: 150,
+    },
+    {
+      accessorKey: "vessel_flight",
+      header: "Vessel",
+      enableSorting: false,
+      size: 100,
+    },
+    {
+      accessorKey: "voyage_no",
+      header: "Voyage No",
+      enableSorting: false,
+      size: 100,
     },
   ];
 
@@ -92,6 +105,8 @@ function DoPlanning() {
     },
     muiTableBodyRowProps: ({ row }) => ({
       className: getTableRowsClassname(row),
+      onClick: () => navigate(`/edit-do-planning/${row.original._id}`), // Navigate on row click
+      style: { cursor: "pointer" }, // Change cursor to pointer on hover
     }),
     renderDetailPanel: ({ row }) => {
       return (
