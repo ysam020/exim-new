@@ -173,7 +173,12 @@ function DSR() {
     const res = await axios.get(
       `${process.env.REACT_APP_API_STRING}/view-srcc-dsr`
     );
-    setRows(res.data);
+    const sortedRows = res.data.sort((a, b) => {
+      const aNumber = parseInt(a.tr_no.split("/")[2], 10);
+      const bNumber = parseInt(b.tr_no.split("/")[2], 10);
+      return bNumber - aNumber; // descending order
+    });
+    setRows(sortedRows);
   }, []);
 
   useEffect(() => {
