@@ -108,6 +108,7 @@ import updateDoContainer from "./routes/import-do/updateDoContainer.mjs";
 // Import DSR
 import addJobsFromExcel from "./routes/import-dsr/addJobsFromExcel.mjs";
 import downloadReport from "./routes/import-dsr/downloadReport.mjs";
+import downloadAllReport from "./routes/import-dsr/downloadAllReport.mjs";
 import getAssignedImporter from "./routes/import-dsr/getAssignedImporter.mjs";
 import getImporterJobs from "./routes/import-dsr/getImporterJobs.mjs";
 import getJob from "./routes/import-dsr/getJob.mjs";
@@ -341,6 +342,7 @@ if (cluster.isPrimary) {
       // Import DSR
       app.use(addJobsFromExcel);
       app.use(downloadReport);
+      app.use(downloadAllReport);
       app.use(getAssignedImporter);
       app.use(getImporterJobs);
       app.use(getJob);

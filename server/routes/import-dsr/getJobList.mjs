@@ -10,7 +10,7 @@ router.get("/api/:year/jobs/:status/:detailedStatus", async (req, res) => {
     // Create a query object with year
     const query = {
       year,
-      be_no: { $ne: "Cancelled" },
+      be_no: { $ne: "CANCELLED" },
     };
 
     // Filter by specific status
@@ -72,34 +72,31 @@ router.get("/api/:year/jobs/:status/:detailedStatus", async (req, res) => {
 
     // Apply the provided sorting logic to the jobs array
     jobs.sort((a, b) => {
-      const statusPriority = {
-        "Custom Clearance Completed": 1,
-        "BE Noted, Clearance Pending": 2,
-        "BE Noted, Arrival Pending": 3,
-        Discharged: 4,
-        "Gateway IGM Filed": 5,
-        "Estimated Time of Arrival": 6,
-      };
+      // First priority: 'Custom Clearance Completed'
+      if (a.detailed_status === "Custom Clearance Completed") return -1;
+      if (b.detailed_status === "Custom Clearance Completed") return 1;
 
-      const statusA = a.detailed_status;
-      const statusB = b.detailed_status;
+      // Second priority: if be_no is not available, sort by nearest vessel_berthing date to the current date
+      const currentDate = new Date().toISOString().split("T")[0]; // Format to 'yyyy-mm-dd'
 
-      // If detailed_status is empty, move job to the bottom
-      if (!statusA && !statusB) {
-        return 0;
-      } else if (!statusA) {
-        return 1;
-      } else if (!statusB) {
-        return -1;
+      if (!a.be_no && !b.be_no) {
+        const dateA = new Date(a.vessel_berthing);
+        const dateB = new Date(b.vessel_berthing);
+        const currentDateObj = new Date(currentDate);
+
+        // Calculate absolute difference from the current date
+        const diffA = Math.abs(dateA - currentDateObj);
+        const diffB = Math.abs(dateB - currentDateObj);
+
+        // Sort by nearest vessel_berthing date
+        return diffA - diffB;
       }
 
-      // Compare based on priority if both have detailed_status
-      const priorityDiff = statusPriority[statusA] - statusPriority[statusB];
-      if (priorityDiff !== 0) {
-        return priorityDiff;
-      }
+      // If only one has be_no missing, prioritize the one without be_no
+      if (!a.be_no) return -1;
+      if (!b.be_no) return 1;
 
-      // If priorities are the same, maintain relative order
+      // Otherwise, maintain relative order
       return 0;
     });
 

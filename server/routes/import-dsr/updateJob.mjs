@@ -180,9 +180,9 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
       });
     }
 
-    // Update do_processed based on the check
+    // Update do_completed based on the check
     if (shouldUpdateDoProcessed) {
-      matchingJob.do_processed = "No";
+      matchingJob.do_completed = "No";
     }
 
     Object.assign(matchingJob, updatedFields);

@@ -31,7 +31,7 @@ router.get("/api/do-team-list-of-jobs", async (req, res) => {
         },
       ],
     },
-    "job_no awb_bl_no shipping_line_airline custom_house obl_telex_bl importer importer_address vessel_flight voyage_no"
+    "job_no year awb_bl_no shipping_line_airline custom_house obl_telex_bl importer importer_address vessel_flight voyage_no"
   );
 
   res.status(200).send(jobs);
