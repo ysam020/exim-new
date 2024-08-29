@@ -4,14 +4,13 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import { Link } from "react-router-dom";
 import DoPlanningContainerTable from "./DoPlanningContainerTable";
 import { useNavigate } from "react-router-dom";
 
 function DoPlanning() {
   const [rows, setRows] = useState([]);
   const navigate = useNavigate();
-  console.log(rows);
+  
   useEffect(() => {
     async function getData() {
       const res = await axios(

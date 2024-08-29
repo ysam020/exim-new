@@ -46,6 +46,7 @@ function EditDoPlanning() {
       shipping_line_invoice_date: "",
       shipping_line_invoice_imgs: [],
       do_queries: [{ query: "", reply: "" }],
+      do_completed: false,
     },
 
     onSubmit: async (values, { resetForm }) => {
@@ -56,6 +57,7 @@ function EditDoPlanning() {
         shipping_line_invoice: values.shipping_line_invoice ? "Yes" : "No",
         payment_made: values.payment_made ? "Yes" : "No",
         do_processed: values.do_processed ? "Yes" : "No",
+        do_completed: values.do_completed ? "Yes" : "No",
         other_invoices: values.other_invoices ? "Yes" : "No",
         security_deposit: values.security_deposit ? "Yes" : "No",
       };
@@ -106,8 +108,6 @@ function EditDoPlanning() {
       ],
     });
   };
-
-  console.log(formik.values);
 
   return (
     <div>
@@ -379,15 +379,15 @@ function EditDoPlanning() {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formik.values.do_processed}
+              checked={formik.values.do_completed}
               onChange={(e) =>
-                formik.setFieldValue("do_processed", e.target.checked)
+                formik.setFieldValue("do_completed", e.target.checked)
               }
-              name="do_processed"
+              name="do_completed"
               color="primary"
             />
           }
-          label="DO Processed"
+          label="DO Completed"
         />
         <br />
         <button type="submit" className="btn">

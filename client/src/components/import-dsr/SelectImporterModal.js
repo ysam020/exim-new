@@ -7,6 +7,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import axios from "axios";
 import { SelectedYearContext } from "../../contexts/SelectedYearContext";
 import { convertToExcel } from "../../utils/convertToExcel";
+import { downloadAllReport } from "../../utils/downloadAllReport";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
@@ -94,6 +95,14 @@ export default function SelectImporterModal(props) {
     }
   };
 
+  const handleDownloadAll = async () => {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_STRING}/download-report/${selectedYear}/${props.status}`
+    );
+
+    downloadAllReport(res.data, props.status, props.detailedStatus);
+  };
+
   return (
     <div>
       <Modal
@@ -145,7 +154,10 @@ export default function SelectImporterModal(props) {
             />
           )}
 
-          <button className="btn" onClick={handleReportDownload}>
+          <button
+            className="btn"
+            onClick={checked ? handleDownloadAll : handleReportDownload}
+          >
             Download
           </button>
         </Box>

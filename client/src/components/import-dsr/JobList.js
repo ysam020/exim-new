@@ -21,6 +21,7 @@ function JobList(props) {
   const [detailedStatus, setDetailedStatus] = useState("all");
   const columns = useJobColumns(detailedStatus);
   const { rows } = useFetchJobList(detailedStatus, selectedYear, props.status);
+
   // Select importer modal
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);

@@ -39,13 +39,12 @@ function JobDetails() {
   const gatePassCopyRef = useRef();
   const weighmentSlipRef = useRef();
   const container_number_ref = useRef([]);
-  const today = new Date().toISOString().split("T")[0];
+
   const {
     data,
     detentionFrom,
     formik,
     cthDocuments,
-    documents,
     handleFileChange,
     selectedDocuments,
     handleDocumentChange,
