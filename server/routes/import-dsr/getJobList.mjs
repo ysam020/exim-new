@@ -10,11 +10,21 @@ router.get("/api/:year/jobs/:status/:detailedStatus", async (req, res) => {
     // Create a query object with year
     const query = {
       year,
-      be_no: { $ne: "CANCELLED" },
     };
 
-    // Filter by specific status
-    query.status = status;
+    if (status === "Cancelled") {
+      // Include jobs where be_no is "CANCELLED" if the status is "cancelled"
+      query.$or = [
+        { status: "Cancelled" },
+        { status: "Pending", be_no: "CANCELLED" },
+        { status: "Completed", be_no: "CANCELLED" },
+        { be_no: "CANCELLED" },
+      ];
+    } else {
+      // Exclude jobs where be_no is "CANCELLED" for other statuses
+      query.be_no = { $ne: "CANCELLED" };
+      query.status = status;
+    }
 
     // Match the detailed status stored in db
     if (detailedStatus !== "all") {
@@ -38,31 +48,31 @@ router.get("/api/:year/jobs/:status/:detailedStatus", async (req, res) => {
 
     if (detailedStatus === "all") {
       jobs = await JobModel.find(query).select(
-        "job_no year importer custom_house awb_bl_no container_nos vessel_berthing detailed_status be_no be_date loading_port port_of_reporting"
+        "job_no year importer custom_house awb_bl_no container_nos vessel_berthing detailed_status be_no be_date loading_port port_of_reporting type_of_b_e"
       );
     } else if (detailedStatus === "estimated_time_of_arrival") {
       jobs = await JobModel.find(query).select(
-        "job_no year importer custom_house awb_bl_no container_nos vessel_berthing detailed_status be_no be_date loading_port port_of_reporting"
+        "job_no year importer custom_house awb_bl_no container_nos vessel_berthing detailed_status be_no be_date loading_port port_of_reporting type_of_b_e"
       );
     } else if (detailedStatus === "discharged") {
       jobs = await JobModel.find(query).select(
-        "job_no year importer custom_house awb_bl_no container_nos vessel_berthing discharge_date  detailed_status be_no be_date loading_port port_of_reporting"
+        "job_no year importer custom_house awb_bl_no container_nos vessel_berthing discharge_date  detailed_status be_no be_date loading_port port_of_reporting type_of_b_e"
       );
     } else if (detailedStatus === "gateway_igm_filed") {
       jobs = await JobModel.find(query).select(
-        "job_no year importer custom_house awb_bl_no container_nos vessel_berthing detailed_status be_no be_date loading_port port_of_reporting"
+        "job_no year importer custom_house awb_bl_no container_nos vessel_berthing detailed_status be_no be_date loading_port port_of_reporting type_of_b_e"
       );
     } else if (detailedStatus === "be_noted_arrival_pending") {
       jobs = await JobModel.find(query).select(
-        "job_no year importer custom_house be_no be_date container_nos vessel_berthing detailed_status be_no be_date loading_port port_of_reporting"
+        "job_no year importer custom_house be_no be_date container_nos vessel_berthing detailed_status be_no be_date loading_port port_of_reporting type_of_b_e"
       );
     } else if (detailedStatus === "be_noted_clearance_pending") {
       jobs = await JobModel.find(query).select(
-        "job_no year importer custom_house be_no be_date container_nos vessel_berthing detailed_status be_no be_date loading_port port_of_reporting"
+        "job_no year importer custom_house be_no be_date container_nos vessel_berthing detailed_status be_no be_date loading_port port_of_reporting type_of_b_e"
       );
     } else if (detailedStatus === "custom_clearance_completed") {
       jobs = await JobModel.find(query).select(
-        "job_no year importer custom_house be_no be_date container_nos vessel_berthing out_of_charge detailed_status be_no be_date loading_port port_of_reporting"
+        "job_no year importer custom_house be_no be_date container_nos vessel_berthing out_of_charge detailed_status be_no be_date loading_port port_of_reporting type_of_b_e"
       );
     } else {
       jobs = await JobModel.find(query).select(
@@ -72,33 +82,103 @@ router.get("/api/:year/jobs/:status/:detailedStatus", async (req, res) => {
 
     // Apply the provided sorting logic to the jobs array
     jobs.sort((a, b) => {
-      // First priority: 'Custom Clearance Completed'
+      // 1st priority: 'Custom Clearance Completed'
       if (a.detailed_status === "Custom Clearance Completed") return -1;
       if (b.detailed_status === "Custom Clearance Completed") return 1;
 
-      // Second priority: if be_no is not available, sort by nearest vessel_berthing date to the current date
-      const currentDate = new Date().toISOString().split("T")[0]; // Format to 'yyyy-mm-dd'
+      // Check if be_no is missing or empty
+      const aHasBeNo = a.be_no && a.be_no.trim() !== "";
+      const bHasBeNo = b.be_no && b.be_no.trim() !== "";
 
-      if (!a.be_no && !b.be_no) {
-        const dateA = new Date(a.vessel_berthing);
-        const dateB = new Date(b.vessel_berthing);
-        const currentDateObj = new Date(currentDate);
+      // Function to parse and validate dates
+      const parseDate = (dateStr) => {
+        const date = new Date(dateStr);
+        return isNaN(date.getTime()) ? null : date;
+      };
 
-        // Calculate absolute difference from the current date
-        const diffA = Math.abs(dateA - currentDateObj);
-        const diffB = Math.abs(dateB - currentDateObj);
+      // Convert vessel_berthing to valid Date objects or null if invalid
+      const dateA = parseDate(a.vessel_berthing);
+      const dateB = parseDate(b.vessel_berthing);
 
-        // Sort by nearest vessel_berthing date
-        return diffA - diffB;
+      // 2nd priority: if be_no is not available, sort by valid vessel_berthing date
+      if (!aHasBeNo && !bHasBeNo) {
+        if (dateA && dateB) {
+          return dateA - dateB; // Sort in ascending order
+        }
+
+        // If only one has a valid vessel_berthing date, prioritize the one with the valid date
+        if (dateA) return -1;
+        if (dateB) return 1;
+
+        // If neither has a valid vessel_berthing date, consider them equal
+        return 0;
       }
 
-      // If only one has be_no missing, prioritize the one without be_no
-      if (!a.be_no) return -1;
-      if (!b.be_no) return 1;
+      // 3rd priority: if be_no is present, sort based on earliest detention_from date among all containers
+      if (aHasBeNo && bHasBeNo) {
+        const earliestDetentionA = a.container_nos.reduce(
+          (earliest, container) => {
+            const detentionDate = parseDate(container.detention_from);
+            return !earliest || (detentionDate && detentionDate < earliest)
+              ? detentionDate
+              : earliest;
+          },
+          null
+        );
 
-      // Otherwise, maintain relative order
+        const earliestDetentionB = b.container_nos.reduce(
+          (earliest, container) => {
+            const detentionDate = parseDate(container.detention_from);
+            return !earliest || (detentionDate && detentionDate < earliest)
+              ? detentionDate
+              : earliest;
+          },
+          null
+        );
+
+        if (!earliestDetentionA && !earliestDetentionB) return 0;
+        if (!earliestDetentionA) return 1;
+        if (!earliestDetentionB) return -1;
+
+        return earliestDetentionA - earliestDetentionB;
+      }
+
+      // If one has be_no and the other doesn't, prioritize the one with be_no
+      if (aHasBeNo && !bHasBeNo) return 1;
+      if (!aHasBeNo && bHasBeNo) return -1;
+
       return 0;
     });
+
+    // // Apply the provided sorting logic to the jobs array
+    // jobs.sort((a, b) => {
+    //   // First priority: 'Custom Clearance Completed'
+    //   if (a.detailed_status === "Custom Clearance Completed") return -1;
+    //   if (b.detailed_status === "Custom Clearance Completed") return 1;
+
+    //   // Second priority: if be_no is not available, sort by nearest vessel_berthing date to the current date
+    //   const currentDate = new Date().toISOString().split("T")[0]; // Format to 'yyyy-mm-dd'
+
+    //   if (!a.be_no && !b.be_no) {
+    //     const dateA = new Date(a.vessel_berthing);
+    //     const dateB = new Date(b.vessel_berthing);
+    //     const currentDateObj = new Date(currentDate);
+
+    //     // Calculate absolute difference from the current date
+    //     const diffA = Math.abs(dateA - currentDateObj);
+    //     const diffB = Math.abs(dateB - currentDateObj);
+
+    //     // Sort by nearest vessel_berthing date
+    //     return diffA - diffB;
+    //   }
+
+    //   // If only one has be_no missing, prioritize the one without be_no
+    //   if (!a.be_no) return -1;
+    //   if (!b.be_no) return 1;
+
+    //   // Otherwise, maintain relative order
+    //   return 0;
+    // });
 
     // Calculate the total count of matching documents
     const total = jobs.length;

@@ -159,6 +159,26 @@ function JobDetails() {
     }
   };
 
+  const handleAddContainer = () => {
+    formik.setFieldValue("container_nos", [
+      ...formik.values.container_nos,
+      {
+        container_number: "",
+        size: "",
+        arrival_date: "",
+        do_validity_upto_container_level: "",
+        do_revalidation_date: "",
+        do_revalidation: [],
+        physical_weight: "",
+        tare_weight: "",
+        actual_weight: "",
+        net_weight: "",
+        weight_shortage: "",
+        transporter: "",
+      },
+    ]);
+  };
+
   return (
     <>
       {data !== null && (
@@ -693,124 +713,92 @@ function JobDetails() {
           {/*************************** Row 10 ****************************/}
           <div className="job-details-container">
             <JobDetailsRowHeading heading="SIMS/PIMS/NFMIMS" />
+            <br />
             <Row>
-              <Col xs={12} lg={4}>
-                <FormControl>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    name="radio-buttons-group"
-                    value={setSelectedRegNo}
-                    onChange={handleRadioChange}
-                  >
-                    <FormControlLabel
-                      value="sims"
-                      control={<Radio checked={selectedRegNo === "sims"} />}
-                      label="SIMS"
-                    />
-                    <FormControlLabel
-                      value="pims"
-                      control={<Radio checked={selectedRegNo === "pims"} />}
-                      label="PIMS"
-                    />
-                    <FormControlLabel
-                      value="nfmims"
-                      control={<Radio checked={selectedRegNo === "nfmims"} />}
-                      label="NFMIMS"
-                    />
-                    <FormControlLabel
-                      value="clear"
-                      control={<Radio />}
-                      label="Clear"
-                    />
-                  </RadioGroup>
-                </FormControl>
+              <Col sx={12} lg={2}>
+                <strong>SIMS Reg No and Date</strong>
               </Col>
-              <Col xs={12} lg={4}>
-                <div className="job-detail-input-container">
-                  {selectedRegNo && (
-                    <>
-                      <strong>
-                        {selectedRegNo === "sims"
-                          ? "SIMS Reg"
-                          : selectedRegNo === "pims"
-                          ? "PIMS Reg"
-                          : selectedRegNo === "nfmims"
-                          ? "NFMIMS Reg"
-                          : ""}
-                        &nbsp;
-                      </strong>
-                      <TextField
-                        id="outlined-start-adornment"
-                        size="small"
-                        fullWidth
-                        sx={{ m: 1 }}
-                        name={
-                          selectedRegNo === "sims"
-                            ? "sims_reg_no"
-                            : selectedRegNo === "pims"
-                            ? "pims_reg_no"
-                            : selectedRegNo === "nfmims"
-                            ? "nfmims_reg_no"
-                            : ""
-                        }
-                        value={
-                          selectedRegNo === "sims"
-                            ? formik.values.sims_reg_no
-                            : selectedRegNo === "pims"
-                            ? formik.values.pims_reg_no
-                            : selectedRegNo === "nfmims"
-                            ? formik.values.nfmims_reg_no
-                            : ""
-                        }
-                        onChange={formik.handleChange}
-                      />
-                    </>
-                  )}
-                </div>
+              <Col>
+                <TextField
+                  id="outlined-start-adornment"
+                  size="small"
+                  fullWidth
+                  // sx={{ m: 1 }}
+                  name="sims_reg_no"
+                  value={formik.values.sims_reg_no}
+                  onChange={formik.handleChange}
+                />
               </Col>
-              <Col xs={12} lg={4}>
-                {selectedRegNo && (
-                  <div className="job-detail-input-container">
-                    <strong>
-                      {selectedRegNo === "sims"
-                        ? "SIMS Date"
-                        : selectedRegNo === "pims"
-                        ? "PIMS Date"
-                        : "NFMIMS Date"}
-                      &nbsp;
-                    </strong>
-                    <TextField
-                      fullWidth={true}
-                      size="small"
-                      type="date"
-                      margin="normal"
-                      variant="outlined"
-                      id={
-                        selectedRegNo === "sims"
-                          ? "sims_date"
-                          : selectedRegNo === "pims"
-                          ? "pims_date"
-                          : "nfmims_date"
-                      }
-                      name={
-                        selectedRegNo === "sims"
-                          ? "sims_date"
-                          : selectedRegNo === "pims"
-                          ? "pims_date"
-                          : "nfmims_date"
-                      }
-                      value={
-                        selectedRegNo === "sims"
-                          ? formik.values.sims_date
-                          : selectedRegNo === "pims"
-                          ? formik.values.pims_date
-                          : formik.values.nfmims_date
-                      }
-                      onChange={formik.handleChange}
-                    />
-                  </div>
-                )}
+              <Col>
+                <TextField
+                  fullWidth
+                  size="small"
+                  type="date"
+                  sx={{ margin: 0 }}
+                  variant="outlined"
+                  id="sims_date"
+                  name="sims_date"
+                  value={formik.values.sims_date}
+                  onChange={formik.handleChange}
+                />
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col sx={12} lg={2}>
+                <strong>PIMS Reg No and Date</strong>
+              </Col>
+              <Col>
+                <TextField
+                  id="outlined-start-adornment"
+                  size="small"
+                  fullWidth
+                  name="pims_reg_no"
+                  value={formik.values.pims_reg_no}
+                  onChange={formik.handleChange}
+                />
+              </Col>
+              <Col>
+                <TextField
+                  fullWidth
+                  size="small"
+                  type="date"
+                  variant="outlined"
+                  id="pims_date"
+                  name="pims_date"
+                  sx={{ margin: 0 }}
+                  value={formik.values.pims_date}
+                  onChange={formik.handleChange}
+                />
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col sx={12} lg={2}>
+                <strong>NFMIMS Reg No and Date</strong>
+              </Col>
+              <Col>
+                <TextField
+                  id="outlined-start-adornment"
+                  size="small"
+                  fullWidth
+                  name="nfmims_reg_no"
+                  value={formik.values.nfmims_reg_no}
+                  onChange={formik.handleChange}
+                />
+              </Col>
+              <Col>
+                <TextField
+                  fullWidth
+                  size="small"
+                  type="date"
+                  variant="outlined"
+                  id="nfmims_date"
+                  name="nfmims_date"
+                  sx={{ margin: 0 }}
+                  value={formik.values.nfmims_date}
+                  onChange={formik.handleChange}
+                />
               </Col>
             </Row>
           </div>
@@ -1160,7 +1148,15 @@ function JobDetails() {
                           <strong>
                             {index + 1}. Container Number:&nbsp;
                             <span ref={container_number_ref[index]}>
-                              {container.container_number}
+                              <TextField
+                                size="small"
+                                value={container.container_number}
+                                key={index}
+                                variant="outlined"
+                                id={`container_number_${index}`}
+                                name={`container_nos[${index}].container_number`}
+                                onChange={formik.handleChange}
+                              />
                             </span>
                             <IconButton
                               onClick={() =>
@@ -1483,6 +1479,13 @@ function JobDetails() {
                       </Row>
                     </div>
                     <hr />
+                    <button
+                      className="btn"
+                      type="button"
+                      onClick={handleAddContainer}
+                    >
+                      Add Container
+                    </button>
                   </div>
                 );
               })}

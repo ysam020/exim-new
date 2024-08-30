@@ -43,14 +43,11 @@ export const convertToExcel = async (
 
   const dateOfReport = new Date().toLocaleDateString();
   const headers = [
-    "JOB NO",
-    "JOB DATE",
+    "JOB NO AND DATE",
     "SUPPLIER/ EXPORTER",
-    "INVOICE NUMBER",
-    "INVOICE DATE",
+    "INVOICE NUMBER AND DATE",
     "INVOICE VALUE AND UNIT PRICE",
-    "AWB/ BL NUMBER",
-    "AWB/ BL DATE",
+    "BL NUMBER AND DATE",
     "COMMODITY",
     "NUMBER OF PACKAGES",
     "NET WEIGHT",
@@ -61,19 +58,44 @@ export const convertToExcel = async (
     "SHIPPING LINE",
     "CONTAINER NUMBER",
     "SIZE",
-    "REMARKS",
     "DO VALIDITY",
-    "BE NUMBER",
-    "BE DATE",
-    "ASSESSMENT DATE",
-    "EXAMINATION DATE",
-    "DUTY PAID DATE",
-    "OUT OF CHARGE DATE",
+    "BE NUMBER AND DATE",
+    "REMARKS",
     "DETAILED STATUS",
   ];
 
   // Row headers
   const dataWithHeaders = rowsWithoutBillNo.map((item) => {
+    const jobNoAndDate = `${item.job_no} | ${formatDate(item.job_date)} | ${
+      item.custom_house
+    } | ${item.type_of_b_e}`;
+    const invoiceNoAndDate = `${item.invoice_number} | ${formatDate(
+      item.invoice_date
+    )}`;
+    const blNoAndDate = `${item.awb_bl_no} | ${formatDate(item.awb_bl_date)}`;
+    const beNoAndDate = `${item.be_no} | ${formatDate(item.be_date)}`;
+    const remarks = `${item.discharge_date ? "Discharge Date: " : "ETA: "}${
+      item.discharge_date ? item.discharge_date : item.vessel_berthing
+    }${
+      item.assessment_date ? ` | Assessment Date: ${item.assessment_date}` : ""
+    }${
+      item.examination_date
+        ? ` | Examination Date: ${formatDate(item.examination_date)}`
+        : ""
+    }${
+      item.duty_paid_date
+        ? ` | Duty Paid Date: ${formatDate(item.duty_paid_date)}`
+        : ""
+    }${
+      item.out_of_charge ? ` | OOC Date: ${formatDate(item.out_of_charge)}` : ""
+    }${item.sims_reg_no ? ` | SIMS Reg No: ${item.sims_reg_no}` : ""}${
+      item.sims_date ? ` | SIMS Reg Date: ${item.sims_date}` : ""
+    }${item.pims_reg_no ? ` | PIMS Reg No: ${item.pims_reg_no}` : ""}${
+      item.pims_date ? ` | PIMS Reg Date: ${item.pims_date}` : ""
+    }${item.nfmims_reg_no ? ` | NFMIMS Reg No: ${item.nfmims_reg_no}` : ""}${
+      item.nfmims_date ? ` | NFMIMS Reg Date: ${item.nfmims_date}` : ""
+    }`;
+
     const arrivalDates = formatContainerDates(
       item.container_nos,
       "arrival_date"
@@ -99,60 +121,25 @@ export const convertToExcel = async (
     }, 0);
 
     const valueMap = {
-      "JOB NO": item.job_no,
-      "CUSTOM HOUSE": item.custom_house,
-      "SIMS REG NO": item.sims_reg_no,
-      "JOB DATE": formatDate(item.job_date),
-      IMPORTER: item.importer,
+      "JOB NO AND DATE": jobNoAndDate,
       "SUPPLIER/ EXPORTER": item.supplier_exporter,
-      "INVOICE NUMBER": item.invoice_number,
-      "INVOICE DATE": item.invoice_date,
-      "AWB/ BL NUMBER": item.awb_bl_no,
-      "AWB/ BL DATE": formatDate(item.awb_bl_date),
+      "INVOICE NUMBER AND DATE": invoiceNoAndDate,
+      "INVOICE VALUE AND UNIT PRICE": invoice_value_and_unit_price,
+      "BL NUMBER AND DATE": blNoAndDate,
       COMMODITY: item.description,
-      "BE NUMBER": item.be_no,
-      "BE DATE": formatDate(item.be_date),
-      "TYPE OF BE": item.type_of_b_e,
       "NUMBER OF PACKAGES": item.no_of_pkgs,
       "NET WEIGHT": net_weight,
-      UNIT: item.unit,
-      "GROSS WEIGHT": item.gross_weight,
-      "GATEWAY IGM": item.gateway_igm,
-      "GATEWAY IGM DATE": formatDate(item.gateway_igm_date),
-      "IGM NUMBER": item.igm_no,
-      "IGM DATE": formatDate(item.igm_date),
       "LOADING PORT": item.loading_port,
-      "ORIGIN COUNTRY": item.origin_country,
-      "PORT OF REPORTING": item.port_of_reporting,
+      "ARRIVAL DATE": arrivalDates,
+      "FREE TIME": item.free_time,
+      "DETENTION FROM": detentionFrom,
       "SHIPPING LINE": item.shipping_line_airline,
       "CONTAINER NUMBER": containerNumbers,
-      "ARRIVAL DATE": arrivalDates,
-      "DETENTION FROM": detentionFrom,
       SIZE: size,
-      "CONTAINER COUNT": item.container_count,
-      "NO OF CONTAINER": item.no_of_container,
-      TOI: item.toi,
-      "UNIT PRICE": item.unit_price,
-      "CIF AMOUNT": item.cif_amount,
-      "ASSBL VALUE": item.assbl_value,
-      "TOTAL DUTY": item.total_duty,
-      "OUT OF CHARGE": item.out_of_charge,
-      "CONSIGNMENT TYPE": item.consignment_type,
-      "BILL NUMBER": item.bill_no,
-      "BILL DATE": formatDate(item.bill_date),
-      "CTH NUMBER": item.cth_no,
-      STATUS: item.status,
-      "DETAILED STATUS": item.detailed_status,
-      CHECKLIST: item.checklist,
       "DO VALIDITY": item.do_validity,
-      vessel_berthing_date: formatDate(item.vessel_berthing_date),
-      "FREE TIME": item.free_time,
-      "INVOICE VALUE AND UNIT PRICE": invoice_value_and_unit_price,
-      REMARKS: item.remarks,
-      "ASSESSMENT DATE": formatDate(item.assessment_date),
-      "EXAMINATION DATE": formatDate(item.examination_date),
-      "DUTY PAID DATE": formatDate(item.duty_paid_date),
-      "OUT OF CHARGE DATE": formatDate(item.out_of_charge),
+      "BE NUMBER AND DATE": beNoAndDate,
+      REMARKS: remarks,
+      "DETAILED STATUS": item.detailed_status,
     };
 
     // eslint-disable-next-line
@@ -250,7 +237,9 @@ export const convertToExcel = async (
 
   // Set the title for title row
   const titleRow = worksheet.getRow(3);
-  titleRow.getCell(1).value = `${importer}: Status as of ${dateOfReport}`;
+  titleRow.getCell(1).value = `${importer}: Status as of ${formatDate(
+    dateOfReport
+  )}`;
 
   // Apply formatting to the title row
   titleRow.font = { size: 12, color: { argb: "FFFFFFFF" } };
@@ -474,6 +463,9 @@ export const convertToExcel = async (
     }
     if (headers[id] === "STATUS") {
       column.width = 15;
+    }
+    if (headers[id] === "REMARKS") {
+      column.width = 45;
     }
   });
 

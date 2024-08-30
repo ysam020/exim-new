@@ -7,9 +7,7 @@ router.get("/api/get-do-billing", async (req, res) => {
   try {
     const jobs = await JobModel.find(
       {
-        $or: [{ doPlanning: true }, { doPlanning: "true" }],
-        do_processed_attachment: { $ne: [] },
-        custom_house: "ICD Sabarmati, Ahmedabad",
+        do_completed: "Yes",
       },
       "job_no importer awb_bl_no shipping_line_airline custom_house obl_telex_bl bill_document_sent_to_accounts"
     );

@@ -1,5 +1,5 @@
 import React from "react";
-import { IconButton, TextField } from "@mui/material";
+import { IconButton } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 function useJobColumns() {
@@ -16,14 +16,21 @@ function useJobColumns() {
   const columns = [
     {
       accessorKey: "job_no",
-      header: "Job Number",
-      size: 130,
+      header: "Job No",
+      size: 100,
+      Cell: ({ cell }) => {
+        return (
+          <>
+            {cell.row.original.job_no} <br /> {cell.row.original.type_of_b_e}
+          </>
+        );
+      },
     },
 
     {
       accessorKey: "importer",
       header: "Importer",
-      size: 250,
+      size: 200,
     },
     {
       accessorKey: "custom_house",
@@ -78,7 +85,7 @@ function useJobColumns() {
     {
       accessorKey: "container_numbers",
       header: "Container Numbers",
-      size: 250,
+      size: 160,
       Cell: ({ cell }) =>
         cell.row.original.container_nos?.map((container, id) => (
           <React.Fragment key={id}>

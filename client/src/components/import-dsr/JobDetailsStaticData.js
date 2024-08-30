@@ -83,16 +83,20 @@ function JobDetailsStaticData(props) {
           <strong>CTH No:&nbsp;</strong>
           <span className="non-editable-text">{props.data.cth_no}</span>
         </Col>
-        <Col xs={12} lg={5}>
-          <strong>Bill of Entry Number:&nbsp;</strong>
-          <span className="non-editable-text">{props.data.be_no}</span>
-        </Col>
       </Row>
       {/*************************** Row 5 ****************************/}
       <Row className="job-detail-row">
         <Col xs={12} lg={5}>
+          <strong>Bill of Entry No:&nbsp;</strong>
+          <span className="non-editable-text">{props.data.be_no}</span>
+        </Col>
+        <Col xs={12} lg={5}>
           <strong>Bill of Entry Date:&nbsp;</strong>
           <span className="non-editable-text">{props.data.be_date}</span>
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={12} lg={5}>
           <strong>Bill of Lading Number:&nbsp;</strong>
           <span ref={props.bl_no_ref} className="non-editable-text">
             {props.data.awb_bl_no?.toString()}

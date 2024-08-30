@@ -20,63 +20,73 @@ router.get(
       const jobs = await JobModel.find(query);
       // Sort jobs based on detailed_status priority or move empty detailed_status to the end
       jobs.sort((a, b) => {
-        const statusPriority = {
-          "Custom Clearance Completed": 1,
-          "BE Noted, Clearance Pending": 2,
-          "BE Noted, Arrival Pending": 3,
-          Discharged: 4,
-          "Gateway IGM Filed": 5,
-          "Estimated Time of Arrival": 6,
+        // 1st priority: 'Custom Clearance Completed'
+        if (a.detailed_status === "Custom Clearance Completed") return -1;
+        if (b.detailed_status === "Custom Clearance Completed") return 1;
+
+        // Check if be_no is missing or empty
+        const aHasBeNo = a.be_no && a.be_no.trim() !== "";
+        const bHasBeNo = b.be_no && b.be_no.trim() !== "";
+
+        // Function to parse and validate dates
+        const parseDate = (dateStr) => {
+          const date = new Date(dateStr);
+          return isNaN(date.getTime()) ? null : date;
         };
 
-        const statusA = a.detailed_status;
-        const statusB = b.detailed_status;
+        // Convert vessel_berthing to valid Date objects or null if invalid
+        const dateA = parseDate(a.vessel_berthing);
+        const dateB = parseDate(b.vessel_berthing);
 
-        // If detailed_status is empty, move job to the bottom
-        if (!statusA && !statusB) {
+        // 2nd priority: if be_no is not available, sort by valid vessel_berthing date
+        if (!aHasBeNo && !bHasBeNo) {
+          if (dateA && dateB) {
+            return dateA - dateB; // Sort in ascending order
+          }
+
+          // If only one has a valid vessel_berthing date, prioritize the one with the valid date
+          if (dateA) return -1;
+          if (dateB) return 1;
+
+          // If neither has a valid vessel_berthing date, consider them equal
           return 0;
-        } else if (!statusA) {
-          return 1;
-        } else if (!statusB) {
-          return -1;
         }
 
-        // Compare based on priority if both have detailed_status
-        const priorityDiff = statusPriority[statusA] - statusPriority[statusB];
-        if (priorityDiff !== 0) {
-          return priorityDiff;
+        // 3rd priority: if be_no is present, sort based on earliest detention_from date among all containers
+        if (aHasBeNo && bHasBeNo) {
+          const earliestDetentionA = a.container_nos.reduce(
+            (earliest, container) => {
+              const detentionDate = parseDate(container.detention_from);
+              return !earliest || (detentionDate && detentionDate < earliest)
+                ? detentionDate
+                : earliest;
+            },
+            null
+          );
+
+          const earliestDetentionB = b.container_nos.reduce(
+            (earliest, container) => {
+              const detentionDate = parseDate(container.detention_from);
+              return !earliest || (detentionDate && detentionDate < earliest)
+                ? detentionDate
+                : earliest;
+            },
+            null
+          );
+
+          if (!earliestDetentionA && !earliestDetentionB) return 0;
+          if (!earliestDetentionA) return 1;
+          if (!earliestDetentionB) return -1;
+
+          return earliestDetentionA - earliestDetentionB;
         }
 
-        // If priorities are the same, maintain relative order
+        // If one has be_no and the other doesn't, prioritize the one with be_no
+        if (aHasBeNo && !bHasBeNo) return 1;
+        if (!aHasBeNo && bHasBeNo) return -1;
+
         return 0;
       });
-      // jobs.sort((a, b) => {
-      //   const statusPriority = {
-      //     "Custom Clearance Completed": 1,
-      //     "BE Noted, Clearance Pending": 2,
-      //     "BE Noted, Arrival Pending": 3,
-      //     Discharged: 4,
-      //     "Gateway IGM Filed": 5,
-      //     "Estimated Time of Arrival": 6,
-      //   };
-
-      //   const statusA = a.detailed_status;
-      //   const statusB = b.detailed_status;
-
-      //   if (statusA === "" && statusB === "") {
-      //     // If both have empty detailed_status, keep their relative order
-      //     return 0;
-      //   } else if (statusA === "") {
-      //     // Put empty detailed_status at the end
-      //     return 1;
-      //   } else if (statusB === "") {
-      //     // Put empty detailed_status at the end
-      //     return -1;
-      //   } else {
-      //     // Use the priority values for sorting non-empty detailed_status
-      //     return statusPriority[statusA] - statusPriority[statusB];
-      //   }
-      // });
 
       res.send(jobs);
     } catch (error) {

@@ -6,11 +6,22 @@ import {
 } from "material-react-table";
 import DoPlanningContainerTable from "./DoPlanningContainerTable";
 import { useNavigate } from "react-router-dom";
+import { IconButton } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 function List() {
   const [rows, setRows] = useState([]);
   const navigate = useNavigate();
-  console.log(rows);
+  const handleCopy = (event, text) => {
+    event.stopPropagation();
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {})
+      .catch((err) => {
+        console.error("Failed to copy:", err);
+      });
+  };
+
   useEffect(() => {
     async function getData() {
       const res = await axios(
@@ -32,19 +43,70 @@ function List() {
       accessorKey: "importer",
       header: "Party",
       enableSorting: false,
-      size: 200,
+      size: 250,
+      Cell: ({ cell }) => {
+        return (
+          <React.Fragment>
+            {cell?.getValue()?.toString()}
+
+            <IconButton
+              size="small"
+              onClick={(event) => {
+                handleCopy(event, cell?.getValue()?.toString());
+              }}
+            >
+              <ContentCopyIcon fontSize="inherit" />
+            </IconButton>
+            <br />
+          </React.Fragment>
+        );
+      },
     },
     {
       accessorKey: "importer_address",
       header: "Address",
       enableSorting: false,
       size: 250,
+      Cell: ({ cell }) => {
+        return (
+          <React.Fragment>
+            {cell?.getValue()?.toString()}
+
+            <IconButton
+              size="small"
+              onClick={(event) => {
+                handleCopy(event, cell?.getValue()?.toString());
+              }}
+            >
+              <ContentCopyIcon fontSize="inherit" />
+            </IconButton>
+            <br />
+          </React.Fragment>
+        );
+      },
     },
     {
       accessorKey: "awb_bl_no",
       header: "BL Number",
       enableSorting: false,
       size: 200,
+      Cell: ({ cell }) => {
+        return (
+          <React.Fragment>
+            {cell?.getValue()?.toString()}
+
+            <IconButton
+              size="small"
+              onClick={(event) => {
+                handleCopy(event, cell?.getValue()?.toString());
+              }}
+            >
+              <ContentCopyIcon fontSize="inherit" />
+            </IconButton>
+            <br />
+          </React.Fragment>
+        );
+      },
     },
     {
       accessorKey: "shipping_line_airline",
@@ -69,12 +131,46 @@ function List() {
       header: "Vessel",
       enableSorting: false,
       size: 100,
+      Cell: ({ cell }) => {
+        return (
+          <React.Fragment>
+            {cell?.getValue()?.toString()}
+
+            <IconButton
+              size="small"
+              onClick={(event) => {
+                handleCopy(event, cell?.getValue()?.toString());
+              }}
+            >
+              <ContentCopyIcon fontSize="inherit" />
+            </IconButton>
+            <br />
+          </React.Fragment>
+        );
+      },
     },
     {
       accessorKey: "voyage_no",
       header: "Voyage No",
       enableSorting: false,
       size: 100,
+      Cell: ({ cell }) => {
+        return (
+          <React.Fragment>
+            {cell?.getValue()?.toString()}
+
+            <IconButton
+              size="small"
+              onClick={(event) => {
+                handleCopy(event, cell?.getValue()?.toString());
+              }}
+            >
+              <ContentCopyIcon fontSize="inherit" />
+            </IconButton>
+            <br />
+          </React.Fragment>
+        );
+      },
     },
   ];
 
