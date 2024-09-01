@@ -1,23 +1,36 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { IconButton } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
-function useJobColumns(detailedStatus) {
-  const allColumns = [
+function useJobColumns() {
+  const handleCopy = (event, text) => {
+    event.stopPropagation();
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {})
+      .catch((err) => {
+        console.error("Failed to copy:", err);
+      });
+  };
+
+  const columns = [
     {
       accessorKey: "job_no",
-      header: "Job Number",
-      size: 130,
-      Cell: ({ cell }) => (
-        <Link to={`/job/${cell.row.original.job_no}/${cell.row.original.year}`}>
-          {cell.row.original.job_no}
-        </Link>
-      ),
+      header: "Job No",
+      size: 100,
+      Cell: ({ cell }) => {
+        return (
+          <>
+            {cell.row.original.job_no} <br /> {cell.row.original.type_of_b_e}
+          </>
+        );
+      },
     },
 
     {
       accessorKey: "importer",
       header: "Importer",
-      size: 250,
+      size: 200,
     },
     {
       accessorKey: "custom_house",
@@ -28,7 +41,26 @@ function useJobColumns(detailedStatus) {
       accessorKey: "awb_bl_no",
       header: "BL Number",
       size: 200,
-      Cell: ({ cell }) => cell?.getValue()?.toString(),
+      Cell: ({ cell }) => {
+        return cell?.getValue()?.toString();
+      },
+      Cell: ({ cell }) => {
+        return (
+          <React.Fragment>
+            {cell?.getValue()?.toString()}
+
+            <IconButton
+              size="small"
+              onClick={(event) => {
+                handleCopy(event, cell?.getValue()?.toString());
+              }}
+            >
+              <ContentCopyIcon fontSize="inherit" />
+            </IconButton>
+            <br />
+          </React.Fragment>
+        );
+      },
     },
     {
       accessorKey: "be_no",
@@ -41,14 +73,33 @@ function useJobColumns(detailedStatus) {
       size: 150,
     },
     {
+      accessorKey: "loading_port",
+      header: "Loading Port",
+      size: 150,
+    },
+    {
+      accessorKey: "port_of_reporting",
+      header: "Port of Discharge",
+      size: 150,
+    },
+    {
       accessorKey: "container_numbers",
       header: "Container Numbers",
-      size: 180,
+      size: 160,
       Cell: ({ cell }) =>
         cell.row.original.container_nos?.map((container, id) => (
           <React.Fragment key={id}>
-            {container.container_number}
-            <br />
+            <span style={{ display: "block", marginBottom: "4px" }}>
+              {container.container_number}
+              <IconButton
+                size="small"
+                onClick={(event) => {
+                  handleCopy(event, container.container_number);
+                }}
+              >
+                <ContentCopyIcon fontSize="inherit" />
+              </IconButton>
+            </span>
           </React.Fragment>
         )),
       filterFn: "includes",
@@ -57,20 +108,16 @@ function useJobColumns(detailedStatus) {
           ?.map((container) => container.container_number)
           .join(", "),
     },
+
     {
       accessorKey: "vessel_berthing",
       header: "ETA",
-      size: 100,
-    },
-    {
-      accessorKey: "discharge_date",
-      header: "Discharge Date",
-      size: 180,
+      size: 150,
     },
     {
       accessorKey: "arrival_date",
       header: "Arrival Date",
-      size: 180,
+      size: 150,
       Cell: ({ cell }) =>
         cell.row.original.container_nos?.map((container, id) => (
           <React.Fragment key={id}>
@@ -78,51 +125,21 @@ function useJobColumns(detailedStatus) {
             <br />
           </React.Fragment>
         )),
-      filterFn: "includes",
-      accessorFn: (row) =>
-        row.container_nos
-          ?.map((container) => container.arrival_date)
-          .join(", "),
     },
+
     {
-      accessorKey: "out_of_charge",
-      header: "OOC Date",
+      accessorKey: "detention_from",
+      header: "Detention From",
       size: 150,
+      Cell: ({ cell }) =>
+        cell.row.original.container_nos?.map((container, id) => (
+          <React.Fragment key={id}>
+            {container.detention_from}
+            <br />
+          </React.Fragment>
+        )),
     },
   ];
-
-  const columns = allColumns.filter((column) => {
-    if (
-      column.accessorKey === "awb_bl_no" &&
-      [
-        "Estimated Time of Arrival",
-        "Gateway IGM Filed",
-        "Discharged",
-        "all",
-      ].includes(detailedStatus)
-    ) {
-      return false;
-    }
-    if (
-      column.accessorKey === "discharge_date" &&
-      detailedStatus !== "Discharged"
-    ) {
-      return false;
-    }
-    if (
-      column.accessorKey === "arrival_date" &&
-      detailedStatus !== "BE Noted, Clearance Pending"
-    ) {
-      return false;
-    }
-    if (
-      column.accessorKey === "out_of_charge" &&
-      detailedStatus !== "Custom Clearance Completed"
-    ) {
-      return false;
-    }
-    return true;
-  });
 
   return columns;
 }

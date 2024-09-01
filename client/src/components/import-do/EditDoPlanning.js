@@ -61,7 +61,6 @@ function EditDoPlanning() {
       security_amount: "",
       utr: [],
       other_invoices: false,
-      other_invoices_img: [],
       payment_made: false,
       do_processed: false,
       do_documents: [],
@@ -71,6 +70,7 @@ function EditDoPlanning() {
       shipping_line_invoice_date: "",
       shipping_line_invoice_imgs: [],
       do_queries: [{ query: "", reply: "" }],
+      do_completed: false,
     },
 
     onSubmit: async (values, { resetForm }) => {
@@ -81,9 +81,11 @@ function EditDoPlanning() {
         shipping_line_invoice: values.shipping_line_invoice ? "Yes" : "No",
         payment_made: values.payment_made ? "Yes" : "No",
         do_processed: values.do_processed ? "Yes" : "No",
+        do_completed: values.do_completed ? "Yes" : "No",
         other_invoices: values.other_invoices ? "Yes" : "No",
         security_deposit: values.security_deposit ? "Yes" : "No",
       };
+
       const res = await axios.post(
         `${process.env.REACT_APP_API_STRING}/update-do-planning`,
         data
@@ -238,11 +240,11 @@ function EditDoPlanning() {
     });
   };
 
-  console.log(formik.values);
-
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
+        <h5>Job Number: {data?.job_no}</h5>
+        <h5>Importer: {data?.importer}</h5>
         <strong>KYC Documents:&nbsp;</strong>
         <br />
         {kycData.kyc_documents?.map((doc, id) => (
@@ -381,24 +383,7 @@ function EditDoPlanning() {
 
             {renderImagePreview("do_documents")}
           </Col>
-          <Col>
-            {/* Upload Other Invoices */}
-            <label htmlFor="other_invoices_img" className="btn">
-              Upload Other Invoices
-            </label>
-            <input
-              type="file"
-              multiple
-              name="other_invoices_img"
-              id="other_invoices_img"
-              onChange={(e) => handleFileUpload(e, "other_invoices_img")}
-              style={{ display: "none" }}
-            />
-            <br />
-            <br />
-
-            {renderImagePreview("other_invoices_img")}
-          </Col>
+          <Col></Col>
         </Row>
 
         <br />
@@ -480,6 +465,21 @@ function EditDoPlanning() {
         <button type="button" className="btn" onClick={handleAddField}>
           Add Query
         </button>
+        <br />
+        <br />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={formik.values.do_completed}
+              onChange={(e) =>
+                formik.setFieldValue("do_completed", e.target.checked)
+              }
+              name="do_completed"
+              color="primary"
+            />
+          }
+          label="DO Completed"
+        />
         <br />
         <button type="submit" className="btn">
           Submit

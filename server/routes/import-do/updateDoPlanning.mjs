@@ -23,6 +23,8 @@ router.post("/api/update-do-planning", async (req, res) => {
       do_processed_date: currentDate,
       shipping_line_invoice_date: currentDate,
       other_invoices_date: currentDate,
+      do_validity: req.body.do_validity,
+      do_processed: req.body.do_processed,
     };
 
     // Update fields

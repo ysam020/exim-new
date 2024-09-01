@@ -9,7 +9,7 @@ router.get("/api/get-submission-jobs", async (req, res) => {
       $or: [{ be_no: { $exists: false } }, { be_no: "" }],
       document_entry_completed: true,
     }).select(
-      "job_no year importer custom_house gateway_igm_date discharge_date checklist_verified_on submission_date submission_queries"
+      "job_no year importer custom_house gateway_igm_date discharge_date checklist_verified_on submission_date submission_queries cth_documents documents"
     ); // Include only job_no and year in the results
 
     if (!data || data.length === 0) {

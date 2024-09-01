@@ -6,22 +6,39 @@ import useFetchJobList from "../../customHooks/useFetchJobList";
 import { detailedStatusOptions } from "../../assets/data/detailedStatusOptions";
 import { SelectedYearContext } from "../../contexts/SelectedYearContext";
 import { MenuItem, TextField, IconButton } from "@mui/material";
+import axios from "axios";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
 import DownloadIcon from "@mui/icons-material/Download";
 import SelectImporterModal from "./SelectImporterModal";
+import { useNavigate } from "react-router-dom";
 
 function JobList(props) {
-  const { selectedYear } = useContext(SelectedYearContext);
+  const [years, setYears] = React.useState([]);
+  const { selectedYear, setSelectedYear } = useContext(SelectedYearContext);
   const [detailedStatus, setDetailedStatus] = useState("all");
   const columns = useJobColumns(detailedStatus);
   const { rows } = useFetchJobList(detailedStatus, selectedYear, props.status);
+
   // Select importer modal
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    async function getYears() {
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_STRING}/get-years`
+      );
+      const filteredYears = res.data.filter((year) => year !== null);
+      setYears(filteredYears);
+      setSelectedYear(filteredYears[0]);
+    }
+    getYears();
+  }, []);
 
   const table = useMaterialReactTable({
     columns,
@@ -38,10 +55,13 @@ function JobList(props) {
     enableStickyHeader: true, // Enable sticky header
     enablePinning: true, // Enable pinning for sticky columns
     muiTableContainerProps: {
-      sx: { maxHeight: "520px", overflowY: "auto" },
+      sx: { maxHeight: "590px", overflowY: "auto" },
     },
     muiTableBodyRowProps: ({ row }) => ({
       className: getTableRowsClassname(row),
+      onClick: () =>
+        navigate(`/job/${row.original.job_no}/${row.original.year}`), // Navigate on row click
+      style: { cursor: "pointer" }, // Change cursor to pointer on hover
     }),
     muiTableHeadCellProps: {
       sx: {
@@ -63,6 +83,23 @@ function JobList(props) {
             flex: 1,
           }}
         >
+          <TextField
+            select
+            size="small"
+            margin="normal"
+            variant="outlined"
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            sx={{ width: "200px", margin: 0, marginRight: "20px" }}
+          >
+            {years?.map((year) => {
+              return (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              );
+            })}
+          </TextField>
           <TextField
             select
             size="small"

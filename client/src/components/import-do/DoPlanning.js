@@ -4,11 +4,23 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import { Link } from "react-router-dom";
 import DoPlanningContainerTable from "./DoPlanningContainerTable";
+import { useNavigate } from "react-router-dom";
+import { IconButton } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 function DoPlanning() {
   const [rows, setRows] = useState([]);
+  const navigate = useNavigate();
+  const handleCopy = (event, text) => {
+    event.stopPropagation();
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {})
+      .catch((err) => {
+        console.error("Failed to copy:", err);
+      });
+  };
 
   useEffect(() => {
     async function getData() {
@@ -26,49 +38,139 @@ function DoPlanning() {
       header: "Job Number",
       enableSorting: false,
       size: 150,
-      Cell: ({ cell }) => {
-        return (
-          <Link to={`/edit-do-planning/${cell.row.original._id}`}>
-            {cell.row.original.job_no}
-          </Link>
-        );
-      },
     },
     {
       accessorKey: "importer",
       header: "Party",
       enableSorting: false,
-      size: 300,
+      size: 250,
+      Cell: ({ cell }) => {
+        return (
+          <React.Fragment>
+            {cell?.getValue()?.toString()}
+
+            <IconButton
+              size="small"
+              onClick={(event) => {
+                handleCopy(event, cell?.getValue()?.toString());
+              }}
+            >
+              <ContentCopyIcon fontSize="inherit" />
+            </IconButton>
+            <br />
+          </React.Fragment>
+        );
+      },
+    },
+    {
+      accessorKey: "importer_address",
+      header: "Address",
+      enableSorting: false,
+      size: 250,
+      Cell: ({ cell }) => {
+        return (
+          <React.Fragment>
+            {cell?.getValue()?.toString()}
+
+            <IconButton
+              size="small"
+              onClick={(event) => {
+                handleCopy(event, cell?.getValue()?.toString());
+              }}
+            >
+              <ContentCopyIcon fontSize="inherit" />
+            </IconButton>
+            <br />
+          </React.Fragment>
+        );
+      },
     },
     {
       accessorKey: "awb_bl_no",
       header: "BL Number",
       enableSorting: false,
-      size: 150,
+      size: 200,
+      Cell: ({ cell }) => {
+        return (
+          <React.Fragment>
+            {cell?.getValue()?.toString()}
+
+            <IconButton
+              size="small"
+              onClick={(event) => {
+                handleCopy(event, cell?.getValue()?.toString());
+              }}
+            >
+              <ContentCopyIcon fontSize="inherit" />
+            </IconButton>
+            <br />
+          </React.Fragment>
+        );
+      },
     },
     {
       accessorKey: "shipping_line_airline",
       header: "Shipping Line",
       enableSorting: false,
-      size: 250,
+      size: 200,
     },
     {
       accessorKey: "custom_house",
       header: "Custom House",
       enableSorting: false,
-      size: 250,
+      size: 150,
     },
     {
       accessorKey: "obl_telex_bl",
       header: "OBL Telex BL",
       enableSorting: false,
-      size: 150,
+      size: 100,
     },
     {
-      accessorKey: "payment_made_date",
-      header: "Payment Made Date",
+      accessorKey: "vessel_flight",
+      header: "Vessel",
       enableSorting: false,
-      size: 200,
+      size: 100,
+      Cell: ({ cell }) => {
+        return (
+          <React.Fragment>
+            {cell?.getValue()?.toString()}
+
+            <IconButton
+              size="small"
+              onClick={(event) => {
+                handleCopy(event, cell?.getValue()?.toString());
+              }}
+            >
+              <ContentCopyIcon fontSize="inherit" />
+            </IconButton>
+            <br />
+          </React.Fragment>
+        );
+      },
+    },
+    {
+      accessorKey: "voyage_no",
+      header: "Voyage No",
+      enableSorting: false,
+      size: 100,
+      Cell: ({ cell }) => {
+        return (
+          <React.Fragment>
+            {cell?.getValue()?.toString()}
+
+            <IconButton
+              size="small"
+              onClick={(event) => {
+                handleCopy(event, cell?.getValue()?.toString());
+              }}
+            >
+              <ContentCopyIcon fontSize="inherit" />
+            </IconButton>
+            <br />
+          </React.Fragment>
+        );
+      },
     },
   ];
 
@@ -84,9 +186,16 @@ function DoPlanning() {
     enableGrouping: true, // Enable row grouping
     enableColumnFilters: false, // Disable column filters
     enableColumnActions: false,
+    enablePagination: false,
+    enableBottomToolbar: false,
     enableExpandAll: false,
+    muiTableContainerProps: {
+      sx: { maxHeight: "650px", overflowY: "auto" },
+    },
     muiTableBodyRowProps: ({ row }) => ({
       className: getTableRowsClassname(row),
+      onClick: () => navigate(`/edit-do-planning/${row.original._id}`), // Navigate on row click
+      style: { cursor: "pointer" }, // Change cursor to pointer on hover
     }),
     renderDetailPanel: ({ row }) => {
       return (

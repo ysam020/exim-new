@@ -108,6 +108,7 @@ import updateDoContainer from "./routes/import-do/updateDoContainer.mjs";
 // Import DSR
 import addJobsFromExcel from "./routes/import-dsr/addJobsFromExcel.mjs";
 import downloadReport from "./routes/import-dsr/downloadReport.mjs";
+import downloadAllReport from "./routes/import-dsr/downloadAllReport.mjs";
 import getAssignedImporter from "./routes/import-dsr/getAssignedImporter.mjs";
 import getImporterJobs from "./routes/import-dsr/getImporterJobs.mjs";
 import getJob from "./routes/import-dsr/getJob.mjs";
@@ -121,6 +122,7 @@ import viewDSR from "./routes/import-dsr/viewDSR.mjs";
 // Import Operations
 import getOperationPlanningJobs from "./routes/import-operations/getOperationPlanningJobs.mjs";
 import updateOperationsJob from "./routes/import-operations/updateOperationsJob.mjs";
+import getOperationPlanningList from "./routes/import-operations/getOperationPlanningList.mjs";
 
 // Inward Register
 import addInwardRegister from "./routes/inward-register/addInwardRegister.mjs";
@@ -341,6 +343,7 @@ if (cluster.isPrimary) {
       // Import DSR
       app.use(addJobsFromExcel);
       app.use(downloadReport);
+      app.use(downloadAllReport);
       app.use(getAssignedImporter);
       app.use(getImporterJobs);
       app.use(getJob);
@@ -354,6 +357,7 @@ if (cluster.isPrimary) {
       // Import Operations
       app.use(getOperationPlanningJobs);
       app.use(updateOperationsJob);
+      app.use(getOperationPlanningList);
 
       // Inward Register
       app.use(addInwardRegister);

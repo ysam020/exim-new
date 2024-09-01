@@ -1,24 +1,21 @@
 import express from "express";
+const router = express.Router();
 import JobModel from "../../model/jobModel.mjs";
 
-const router = express.Router();
-
-router.get("/api/dsr/:year", async (req, res) => {
+router.get("/api/download-report/:year/:status", async (req, res) => {
   try {
-    const { year } = req.params;
-    const formattedStatus = "Pending";
+    const { year, status } = req.params;
+    console.log(year, status);
 
     // Create a query object with year
     const query = {
       year,
-      status: formattedStatus,
+      status,
     };
 
     // Query the database based on the criteria in the query object
-    const jobs = await JobModel.find(query).select(
-      "job_no importer job_date supplier_exporter invoice_number invoice_date awb_bl_no awb_bl_date commodity no_of_pkgs net_weight loading_port free_time container_nos transporter remarks detailed_status"
-    );
-
+    const jobs = await JobModel.find(query);
+    // Sort jobs based on detailed_status priority or move empty detailed_status to the end
     jobs.sort((a, b) => {
       // 1st priority: 'Custom Clearance Completed'
       if (a.detailed_status === "Custom Clearance Completed") return -1;

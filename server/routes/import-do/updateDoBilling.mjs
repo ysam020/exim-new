@@ -6,7 +6,9 @@ router.post("/api/update-do-billing", async (req, res) => {
   const {
     icd_cfs_invoice,
     icd_cfs_invoice_img,
+    other_invoices_img,
     bill_document_sent_to_accounts,
+    shipping_line_invoice_imgs,
     _id,
   } = req.body;
 
@@ -27,8 +29,10 @@ router.post("/api/update-do-billing", async (req, res) => {
     updateFields.icd_cfs_invoice = icd_cfs_invoice;
     updateFields.icd_cfs_invoice_img = icd_cfs_invoice_img;
     updateFields.icd_cfs_invoice_date = currentDate;
+    updateFields.other_invoices_img = other_invoices_img;
     updateFields.bill_document_sent_to_accounts =
       bill_document_sent_to_accounts;
+    updateFields.shipping_line_invoice_imgs = shipping_line_invoice_imgs;
 
     await JobModel.findOneAndUpdate(
       { _id },

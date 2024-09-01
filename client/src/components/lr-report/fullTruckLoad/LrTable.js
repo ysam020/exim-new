@@ -35,9 +35,7 @@ function LrTable(props) {
         <IconButton onClick={handleAddRow}>
           <TableRowsIcon />
         </IconButton>
-        <IconButton
-          onClick={() => generateLrPdf(selectedRows, props.prData[0])}
-        >
+        <IconButton onClick={() => generateLrPdf(selectedRows, props.prData)}>
           <PrintIcon />
         </IconButton>
       </>

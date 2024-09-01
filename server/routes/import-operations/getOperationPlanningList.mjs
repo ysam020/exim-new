@@ -4,7 +4,7 @@ import User from "../../model/userModel.mjs";
 
 const router = express.Router();
 
-router.get("/api/get-operations-planning-list/:username", async (req, res) => {
+router.get("/api/get-operations-planning-jobs/:username", async (req, res) => {
   const { username } = req.params;
   const user = await User.findOne({ username });
 
@@ -41,30 +41,7 @@ router.get("/api/get-operations-planning-list/:username", async (req, res) => {
 
   const jobs = await JobModel.find(
     {
-      $or: [
-        {
-          $and: [
-            {
-              $or: [
-                { examinationPlanning: true },
-                { examinationPlanning: "true" },
-              ],
-            },
-            customHouseCondition,
-          ],
-        },
-        {
-          $and: [
-            customHouseCondition,
-            {
-              "container_nos.arrival_date": {
-                $exists: true,
-                $gte: currentDate,
-              },
-            },
-          ],
-        },
-      ],
+      vessel_berthing: { $exists: true, $gt: currentDate },
     },
     "job_no be_no be_date container_nos examination_planning_date examination_planning_time pcv_date custom_house out_of_charge year"
   ).sort({ examination_planning_date: 1 });

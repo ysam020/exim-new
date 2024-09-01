@@ -19,12 +19,7 @@ const formatContainerDates = (containers, dateField) => {
   return allDatesSame ? validDates[0] : validDates.join(",\n");
 };
 
-export const convertToExcel = async (
-  rows,
-  importer,
-  status,
-  detailedStatus
-) => {
+export const downloadAllReport = async (rows, status, detailedStatus) => {
   const rowsWithoutBillNo = rows.filter(
     (row) => row.bill_no === "" || row.bill_no === undefined
   );
@@ -44,6 +39,7 @@ export const convertToExcel = async (
   const dateOfReport = new Date().toLocaleDateString();
   const headers = [
     "JOB NO AND DATE",
+    "IMPORTER",
     "SUPPLIER/ EXPORTER",
     "INVOICE NUMBER AND DATE",
     "INVOICE VALUE AND UNIT PRICE",
@@ -122,6 +118,7 @@ export const convertToExcel = async (
 
     const valueMap = {
       "JOB NO AND DATE": jobNoAndDate,
+      IMPORTER: item.importer,
       "SUPPLIER/ EXPORTER": item.supplier_exporter,
       "INVOICE NUMBER AND DATE": invoiceNoAndDate,
       "INVOICE VALUE AND UNIT PRICE": invoice_value_and_unit_price,
@@ -237,9 +234,7 @@ export const convertToExcel = async (
 
   // Set the title for title row
   const titleRow = worksheet.getRow(3);
-  titleRow.getCell(1).value = `${importer}: Status as of ${formatDate(
-    dateOfReport
-  )}`;
+  titleRow.getCell(1).value = `Status as of ${dateOfReport}`;
 
   // Apply formatting to the title row
   titleRow.font = { size: 12, color: { argb: "FFFFFFFF" } };
@@ -615,14 +610,13 @@ export const convertToExcel = async (
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
 
-  // Sanitize the importer and detailedStatus for the filename
-  const sanitizedImporter = importer?.replace(/\./g, "");
+  // Sanitize the detailedStatus for the filename
   const sanitizedDetailedStatus = detailedStatus?.replace(/\./g, "");
 
   const newFilename =
     sanitizedDetailedStatus === ""
-      ? `${sanitizedImporter} - ${status}.xlsx`
-      : `${sanitizedImporter} - ${sanitizedDetailedStatus}.xlsx`;
+      ? `DSR - ${status}.xlsx`
+      : `DSR - ${sanitizedDetailedStatus}.xlsx`;
 
   saveAs(data, newFilename);
 };

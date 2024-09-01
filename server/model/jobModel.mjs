@@ -204,6 +204,7 @@ const jobSchema = new mongoose.Schema({
   shipping_line_invoice_date: { type: String },
   shipping_line_invoice_imgs: [{ type: String, trim: true }],
   do_queries: [{ query: { type: String }, reply: { type: String } }],
+  do_completed: { type: String, trim: true },
   // *******
   icd_cfs_invoice: { type: String, trim: true },
   icd_cfs_invoice_img: [{ type: String, trim: true }],

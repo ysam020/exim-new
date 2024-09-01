@@ -65,20 +65,29 @@ function JobDetailsStaticData(props) {
           <span className="non-editable-text">{props.data.loading_port}</span>
         </Col>
         <Col xs={12} lg={3}>
+          <strong>POD:&nbsp;</strong>
+          <span className="non-editable-text">
+            {props.data.port_of_reporting}
+          </span>
+        </Col>
+        <Col xs={12} lg={4}>
           <strong>Shipping Line:&nbsp;</strong>
           <span className="non-editable-text">
             {props.data.shipping_line_airline}
           </span>
         </Col>
-        <Col xs={12} lg={4}>
-          <strong>CTH No:&nbsp;</strong>
-          <span className="non-editable-text">{props.data.cth_no}</span>
-        </Col>
       </Row>
       {/*************************** Row 4 ****************************/}
       <Row className="job-detail-row">
         <Col xs={12} lg={5}>
-          <strong>Bill of Entry Number:&nbsp;</strong>
+          <strong>CTH No:&nbsp;</strong>
+          <span className="non-editable-text">{props.data.cth_no}</span>
+        </Col>
+      </Row>
+      {/*************************** Row 5 ****************************/}
+      <Row className="job-detail-row">
+        <Col xs={12} lg={5}>
+          <strong>Bill of Entry No:&nbsp;</strong>
           <span className="non-editable-text">{props.data.be_no}</span>
         </Col>
         <Col xs={12} lg={5}>
@@ -86,8 +95,7 @@ function JobDetailsStaticData(props) {
           <span className="non-editable-text">{props.data.be_date}</span>
         </Col>
       </Row>
-      {/*************************** Row 5 ****************************/}
-      <Row className="job-detail-row">
+      <Row>
         <Col xs={12} lg={5}>
           <strong>Bill of Lading Number:&nbsp;</strong>
           <span ref={props.bl_no_ref} className="non-editable-text">

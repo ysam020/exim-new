@@ -15,6 +15,7 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
     arrival_date,
     free_time,
     checked,
+    do_validity_upto_job_level,
   } = req.body;
 
   function addDaysToDate(dateString, days) {
@@ -147,6 +148,43 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
       containers_arrived_on_same_date: checked,
     };
 
+    let shouldUpdateDoProcessed = false;
+
+    if (req.body.container_nos && req.body.container_nos.length > 0) {
+      req.body.container_nos.forEach((incomingContainer, index) => {
+        const dbContainer = matchingJob.container_nos[index];
+
+        if (dbContainer) {
+          // Check if lengths of do_revalidation arrays are different
+          if (
+            dbContainer.do_revalidation.length !==
+            incomingContainer.do_revalidation.length
+          ) {
+            shouldUpdateDoProcessed = true;
+          }
+          // Check if any do_revalidation_upto values differ
+          for (let i = 0; i < dbContainer.do_revalidation.length; i++) {
+            console.log(
+              dbContainer.do_revalidation[i].do_revalidation_upto,
+              incomingContainer.do_revalidation[i].do_revalidation_upto
+            );
+            if (
+              dbContainer.do_revalidation[i].do_revalidation_upto !==
+              incomingContainer.do_revalidation[i].do_revalidation_upto
+            ) {
+              shouldUpdateDoProcessed = true;
+              break;
+            }
+          }
+        }
+      });
+    }
+
+    // Update do_completed based on the check
+    if (shouldUpdateDoProcessed) {
+      matchingJob.do_completed = "No";
+    }
+
     Object.assign(matchingJob, updatedFields);
 
     if (checked) {
@@ -209,6 +247,7 @@ router.put("/api/update-job/:year/:jobNo", async (req, res) => {
         }
       });
     }
+    matchingJob.do_validity_upto_job_level = do_validity_upto_job_level;
 
     // Step 8: Save the updated job document
     await matchingJob.save();
