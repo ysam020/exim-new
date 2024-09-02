@@ -193,7 +193,7 @@ function List() {
       sx: { maxHeight: "650px", overflowY: "auto" },
     },
     muiTableBodyRowProps: ({ row }) => ({
-      onClick: () => navigate(`/edit-do-planning/${row.original._id}`), // Navigate on row click
+      onClick: () => navigate(`/edit-do-list/${row.original._id}`), // Navigate on row click
       style: { cursor: "pointer" }, // Change cursor to pointer on hover
     }),
     renderDetailPanel: ({ row }) => {

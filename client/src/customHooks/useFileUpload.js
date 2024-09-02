@@ -145,54 +145,7 @@ function useFileUpload(inputRef, alt, setAlt) {
       return modifiedItem;
     });
 
-    // modifiedData.forEach((item) => {
-    //   if (item.container_nos && typeof item.container_nos === "string") {
-    //     const containerNumbers = item.container_nos.split(",");
-
-    //     // Parse the "No Of Container" field to get quantities and sizes
-    //     const noOfContainer = item.no_of_container; // Assuming this field contains "3x40HC,1x20"
-    //     let sizes = {};
-
-    //     if (noOfContainer) {
-    //       const sizeEntries = noOfContainer.split(","); // Split by comma
-
-    //       sizeEntries.forEach((entry) => {
-    //         const [count, size] = entry.split("x"); // Split each entry by "x"
-
-    //         const sizeKey = size.includes("40")
-    //           ? "40"
-    //           : size.includes("20")
-    //           ? "20"
-    //           : null;
-
-    //         if (sizeKey) {
-    //           sizes[sizeKey] = parseInt(count, 10); // Parse the count as integer
-    //         }
-    //       });
-
-    //       // Determine the predominant size
-    //       const predominantSize = sizes["40"] > sizes["20"] ? "40" : "20";
-
-    //       // Assign the size to each container
-    //       const containers = containerNumbers.map((container) => ({
-    //         container_number: container.trim(),
-    //         size: predominantSize,
-    //       }));
-
-    //       // Replace container_nos with the array of objects
-    //       item.container_nos = containers;
-    //     } else {
-    //       // Handle cases where no_of_container is missing or empty
-    //       item.container_nos = containerNumbers.map((container) => ({
-    //         container_number: container.trim(),
-    //       }));
-    //     }
-    //   } else {
-    //     // Handle cases where container_nos is missing or not a string
-    //     item.container_nos = []; // Set as an empty array or handle it accordingly
-    //   }
-    // });
-
+   
     modifiedData.forEach((item) => {
       if (item.container_nos && typeof item.container_nos === "string") {
         const containerNumbers = item.container_nos.split(",");
