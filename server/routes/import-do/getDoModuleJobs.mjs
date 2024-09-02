@@ -13,7 +13,7 @@ router.get("/api/get-do-module-jobs", async (req, res) => {
           },
           { $or: [{ doPlanning: true }, { doPlanning: "true" }] },
           {
-            $or: [{ do_processed: "No" }, { do_processed: { $exists: false } }],
+            $or: [{ do_completed: "No" }, { do_completed: { $exists: false } }],
           },
         ],
       },
