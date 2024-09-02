@@ -29,14 +29,26 @@ const Vehicles = () => {
     },
 
     validationSchema: validationSchema,
+
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_STRING}/add-vehicle`,
-        values
-      );
-      resetForm();
-      alert(res.data.message);
+      try {
+        const res = await axios.post(
+          `${process.env.REACT_APP_API_STRING}/add-vehicle`,
+          values
+        );
+        // Reset the form
+        resetForm();
+        // Show success alert
+        alert(res.data.message);
+      } catch (error) {
+        if (error.response && error.response.status === 400) {
+          // Show alert for existing vehicle
+          alert(error.response.data.message);
+        } else {
+          // Handle other errors
+          alert("An error occurred while adding the vehicle.");
+        }
+      }
     },
   });
 
