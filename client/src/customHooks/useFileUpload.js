@@ -130,9 +130,12 @@ function useFileUpload(inputRef, alt, setAlt) {
           } else if (modifiedKey === "bill_no") {
             // Remove duplicate bill no
             modifiedItem.bill_no = item[key].split(",")[0];
-          } else if (modifiedKey === "bill_date") {
+          } else if (modifiedKey === "bill_no") {
+            // Remove duplicate bill no
+            modifiedItem.bill_no = item[key].split(",")[0];
+          } else if (modifiedKey === "consignment_type") {
             // Remove duplicate bill date
-            modifiedItem.bill_date = item[key].split(",")[0];
+            modifiedItem.consignment_type = item[key].split(",")[0];
           } else if (
             modifiedKey !== "noofconts" &&
             modifiedKey !== "noofcontsbytype"
@@ -145,7 +148,6 @@ function useFileUpload(inputRef, alt, setAlt) {
       return modifiedItem;
     });
 
-   
     modifiedData.forEach((item) => {
       if (item.container_nos && typeof item.container_nos === "string") {
         const containerNumbers = item.container_nos.split(",");
@@ -205,6 +207,7 @@ function useFileUpload(inputRef, alt, setAlt) {
         `${process.env.REACT_APP_API_STRING}/jobs/add-job`,
         modifiedData
       );
+      console.log(`modifiedData: ${JSON.stringify(modifiedData)}`);
       if (res.status === 200) {
         setSnackbar(true);
       } else {

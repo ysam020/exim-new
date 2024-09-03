@@ -20,15 +20,19 @@ function useJobColumns() {
       header: "Job No",
       size: 100,
       Cell: ({ cell }) => {
-        const { job_no, year } = cell.row.original;
+        const { job_no, year, type_of_b_e, consignment_type } =
+          cell.row.original;
+
+        // Add console.log here to debug
 
         return (
           <div
             onClick={() => navigate(`/job/${job_no}/${year}`)}
-            style={{ cursor: "pointer", color: "blue" }} // Adding cursor style to indicate clickability
+            style={{ cursor: "pointer", color: "blue" }}
           >
-            {job_no} <br /> {cell.row.original.type_of_b_e} <br />{" "}
-            {cell.row.original.consignment_type}
+            {job_no} <br />
+            {type_of_b_e} <br />
+            {consignment_type}
           </div>
         );
       },
