@@ -150,36 +150,6 @@ router.get("/api/:year/jobs/:status/:detailedStatus", async (req, res) => {
       return 0;
     });
 
-    // // Apply the provided sorting logic to the jobs array
-    // jobs.sort((a, b) => {
-    //   // First priority: 'Custom Clearance Completed'
-    //   if (a.detailed_status === "Custom Clearance Completed") return -1;
-    //   if (b.detailed_status === "Custom Clearance Completed") return 1;
-
-    //   // Second priority: if be_no is not available, sort by nearest vessel_berthing date to the current date
-    //   const currentDate = new Date().toISOString().split("T")[0]; // Format to 'yyyy-mm-dd'
-
-    //   if (!a.be_no && !b.be_no) {
-    //     const dateA = new Date(a.vessel_berthing);
-    //     const dateB = new Date(b.vessel_berthing);
-    //     const currentDateObj = new Date(currentDate);
-
-    //     // Calculate absolute difference from the current date
-    //     const diffA = Math.abs(dateA - currentDateObj);
-    //     const diffB = Math.abs(dateB - currentDateObj);
-
-    //     // Sort by nearest vessel_berthing date
-    //     return diffA - diffB;
-    //   }
-
-    //   // If only one has be_no missing, prioritize the one without be_no
-    //   if (!a.be_no) return -1;
-    //   if (!b.be_no) return 1;
-
-    //   // Otherwise, maintain relative order
-    //   return 0;
-    // });
-
     // Calculate the total count of matching documents
     const total = jobs.length;
 
