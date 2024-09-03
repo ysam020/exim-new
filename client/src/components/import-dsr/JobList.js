@@ -59,9 +59,9 @@ function JobList(props) {
     },
     muiTableBodyRowProps: ({ row }) => ({
       className: getTableRowsClassname(row),
-      onClick: () =>
-        navigate(`/job/${row.original.job_no}/${row.original.year}`), // Navigate on row click
-      style: { cursor: "pointer" }, // Change cursor to pointer on hover
+      // onClick: () =>
+      //   navigate(`/job/${row.original.job_no}/${row.original.year}`), // Navigate on row click
+      // style: { cursor: "pointer" }, // Change cursor to pointer on hover
     }),
     muiTableHeadCellProps: {
       sx: {

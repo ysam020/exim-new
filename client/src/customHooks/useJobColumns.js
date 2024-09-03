@@ -1,8 +1,9 @@
 import React from "react";
 import { IconButton } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-
+import { useNavigate } from "react-router-dom";
 function useJobColumns() {
+  const navigate = useNavigate();
   const handleCopy = (event, text) => {
     event.stopPropagation();
     navigator.clipboard
@@ -19,10 +20,16 @@ function useJobColumns() {
       header: "Job No",
       size: 100,
       Cell: ({ cell }) => {
+        const { job_no, year } = cell.row.original;
+
         return (
-          <>
-            {cell.row.original.job_no} <br /> {cell.row.original.type_of_b_e}
-          </>
+          <div
+            onClick={() => navigate(`/job/${job_no}/${year}`)}
+            style={{ cursor: "pointer", color: "blue" }} // Adding cursor style to indicate clickability
+          >
+            {job_no} <br /> {cell.row.original.type_of_b_e} <br />{" "}
+            {cell.row.original.consignment_type}
+          </div>
         );
       },
     },
