@@ -4,14 +4,48 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useNavigate } from "react-router-dom";
 function useJobColumns() {
   const navigate = useNavigate();
+  // const handleCopy = (event, text) => {
+  //   event.stopPropagation();
+  //   navigator.clipboard
+  //     .writeText(text)
+  //     .then(() => {})
+  //     .catch((err) => {
+  //       console.error("Failed to copy:", err);
+  //     });
+  // };
+
   const handleCopy = (event, text) => {
     event.stopPropagation();
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {})
-      .catch((err) => {
-        console.error("Failed to copy:", err);
-      });
+
+    if (
+      navigator.clipboard &&
+      typeof navigator.clipboard.writeText === "function"
+    ) {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          console.log("Text copied to clipboard:", text);
+        })
+        .catch((err) => {
+          alert("Failed to copy text to clipboard.");
+          console.error("Failed to copy:", err);
+        });
+    } else {
+      // Fallback approach for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand("copy");
+        console.log("Text copied to clipboard using fallback method:", text);
+      } catch (err) {
+        alert("Failed to copy text to clipboard.");
+        console.error("Fallback copy failed:", err);
+      }
+      document.body.removeChild(textArea);
+    }
   };
 
   const columns = [
